@@ -1,121 +1,133 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useEffect, useState } from 'react'
+import { evaluate, hush, initStrudel } from '@strudel/web'
 import './App.css'
 
+const STORAGE_KEY = 'trudel-playground-code'
+const DEFAULT_CODE = `setcpm(110)
+stack(
+  s("bd ~ bd [~ bd]"),
+  s("~ hh*2 ~ hh*2").gain(.55),
+  note("<c3 eb3 f3 g3>").s("triangle").lpf(900)
+)`
+
+type TransportStatus = 'idle' | 'playing' | 'error'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [code, setCode] = useState(() => localStorage.getItem(STORAGE_KEY) ?? DEFAULT_CODE)
+  const [status, setStatus] = useState<TransportStatus>('idle')
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, code)
+  }, [code])
+
+  useEffect(() => {
+    initStrudel()
+    return () => hush()
+  }, [])
+
+  const play = async () => {
+    try {
+      setError(null)
+      await evaluate(code)
+      setStatus('playing')
+    } catch (playError) {
+      setStatus('error')
+      setError(playError instanceof Error ? playError.message : 'Không thể chạy pattern.')
+    }
+  }
+
+  const stop = () => {
+    hush()
+    setStatus('idle')
+  }
+
+  const reset = () => {
+    stop()
+    setCode(DEFAULT_CODE)
+    setError(null)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main className="app-shell">
+      <header className="topbar">
+        <a className="wordmark" href="/" aria-label="Strudel playground home">
+          <span className="wordmark-mark">/</span>trudel
+        </a>
+        <div className="topbar-note">
+          <span className={`status-dot status-${status}`} />
+          {status === 'playing' ? 'live session' : status === 'error' ? 'needs attention' : 'ready to play'}
         </div>
+      </header>
+
+      <section className="intro">
+        <p className="eyebrow">A small place to make sound</p>
+        <h1>Write a pattern.<br /><em>Hear it become alive.</em></h1>
+        <p className="intro-copy">
+          A first, friendly playground for exploring Strudel patterns in React.
+          Edit the code, then let the browser do the rhythmic thinking.
+        </p>
+      </section>
+
+      <section className="studio" aria-label="Strudel playground">
+        <div className="studio-heading">
+          <div>
+            <span className="section-kicker">01 / pattern editor</span>
+            <h2>Make a loop</h2>
+          </div>
+          <span className="cycle-label">browser audio / cycle 01</span>
+        </div>
+
+        <div className="editor-frame">
+          <div className="editor-toolbar">
+            <span className="traffic-lights"><i /><i /><i /></span>
+            <span className="file-name">untitled.strudel.js</span>
+            <span className="save-state">saved locally</span>
+          </div>
+          <div className="editor-body">
+            <div className="line-numbers" aria-hidden="true">
+              {code.split('\n').map((_, index) => <span key={index}>{String(index + 1).padStart(2, '0')}</span>)}
+            </div>
+            <textarea
+              aria-label="Strudel pattern code"
+              spellCheck={false}
+              value={code}
+              onChange={(event) => setCode(event.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="controls-row">
+          <div className="button-group">
+            <button className="play-button" type="button" onClick={play}>
+              <span className="play-icon">▶</span> Play pattern
+            </button>
+            <button className="stop-button" type="button" onClick={stop}>Stop</button>
+            <button className="reset-button" type="button" onClick={reset}>Reset</button>
+          </div>
+          <p className="shortcut"><kbd>⌘</kbd><kbd>↵</kbd> to play</p>
+        </div>
+
+        {error && <div className="error-box" role="alert">{error}</div>}
+      </section>
+
+      <section className="quick-start">
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
+          <span className="section-kicker">02 / tiny vocabulary</span>
+          <h2>Three ways in.</h2>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="vocabulary-grid">
+          <article><code>s("bd sd")</code><p>samples</p></article>
+          <article><code>note("c3 e3 g3")</code><p>notes</p></article>
+          <article><code>stack(a, b)</code><p>layers</p></article>
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <footer>
+        <span>react-strudel-toolkit / first sketch</span>
+        <a href="https://strudel.cc/learn/mini-notation/" target="_blank" rel="noreferrer">mini-notation ↗</a>
+      </footer>
+    </main>
   )
 }
 
