@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import { evaluate, hush, initStrudel } from '@strudel/web'
 import './App.css'
+import { useStrudel } from './hooks/useStrudel'
 
 const STORAGE_KEY = 'trudel-playground-code'
 const DEFAULT_CODE = `setcpm(110)
@@ -10,43 +9,9 @@ stack(
   note("<c3 eb3 f3 g3>").s("triangle").lpf(900)
 )`
 
-type TransportStatus = 'idle' | 'playing' | 'error'
 
 function App() {
-  const [code, setCode] = useState(() => localStorage.getItem(STORAGE_KEY) ?? DEFAULT_CODE)
-  const [status, setStatus] = useState<TransportStatus>('idle')
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, code)
-  }, [code])
-
-  useEffect(() => {
-    initStrudel()
-    return () => hush()
-  }, [])
-
-  const play = async () => {
-    try {
-      setError(null)
-      await evaluate(code)
-      setStatus('playing')
-    } catch (playError) {
-      setStatus('error')
-      setError(playError instanceof Error ? playError.message : 'Không thể chạy pattern.')
-    }
-  }
-
-  const stop = () => {
-    hush()
-    setStatus('idle')
-  }
-
-  const reset = () => {
-    stop()
-    setCode(DEFAULT_CODE)
-    setError(null)
-  }
+  const { code, setCode, status, error, play, stop, reset } = useStrudel({ key: STORAGE_KEY, code: DEFAULT_CODE })
 
   return (
     <main className="app-shell">
