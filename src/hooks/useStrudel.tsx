@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { evaluate, hush, initStrudel } from '@strudel/web'
+import type { TransportStatus } from '../lib/types'
 
 
-type TransportStatus = 'idle' | 'playing' | 'error'
 
 type Props = {
     key: string
