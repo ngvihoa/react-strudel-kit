@@ -13,3 +13,7 @@ declare module '@strudel/web' {
         [key: string]: unknown
     }): Promise<unknown>
 }
+
+declare module '@strudel/mini/krill-parser.js' {
+    export function parse(code: string, options?: { startRule?: string }): unknown
+}

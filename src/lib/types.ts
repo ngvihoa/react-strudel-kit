@@ -1,15 +1,22 @@
 import type { Pattern } from '@strudel/web'
 
+declare const miniNotationBrand: unique symbol
+
 /**
- * The mini-notation string accepted by Strudel pattern functions.
+ * A Mini-Notation string that has passed Strudel's parser.
  *
  * @example
  * ```ts
- * const rhythm: MiniNotation = 'bd ~ sd ~'
- * const melody: MiniNotation = '<c3 eb3 f3 g3>'
+ * import { mini } from './mini'
+ *
+ * const rhythm = mini('bd ~ sd ~')
+ * const melody = mini('<c3 eb3 f3 g3>')
  * ```
  */
-export type MiniNotation = string
+export type MiniNotation = string & { readonly [miniNotationBrand]: 'MiniNotation' }
+
+/** A plain string accepted only when intentionally bypassing Mini-Notation validation. */
+export type RawMiniNotation = string
 
 /**
  * A scalar value or a mini-notation pattern for a numeric control.
@@ -44,7 +51,7 @@ export type BooleanPattern = boolean | MiniNotation
  * const args: readonly StrudelArgument[] = [
  *   'bd',
  *   0.8,
- *   { source: { name: 's', args: ['hh'] } },
+ *   { source: { name: 's', args: [mini('hh')] } },
  *   ['left', 'right'],
  * ]
  * // "bd", 0.8, s("hh"), ["left", "right"]
@@ -74,7 +81,7 @@ export type PatternFactoryName = 's' | 'sound' | 'note' | 'n' | 'stack' | 'seq' 
  *
  * @example
  * ```ts
- * const drums: SoundCall = { name: 's', args: ['bd sd'] }
+ * const drums: SoundCall = { name: 's', args: [mini('bd sd')] }
  * // s("bd sd")
  * ```
  */
@@ -88,7 +95,7 @@ export type SoundCall = {
  *
  * @example
  * ```ts
- * const melody: NoteCall = { name: 'note', args: ['c3 eb3 g3'] }
+ * const melody: NoteCall = { name: 'note', args: [mini('c3 eb3 g3')] }
  * // note("c3 eb3 g3")
  * ```
  */
@@ -102,7 +109,7 @@ export type NoteCall = {
  *
  * @example
  * ```ts
- * const degrees: NoteIndexCall = { name: 'n', args: ['0 2 4 7'] }
+ * const degrees: NoteIndexCall = { name: 'n', args: [mini('0 2 4 7')] }
  * // n("0 2 4 7")
  * ```
  */
@@ -119,8 +126,8 @@ export type NoteIndexCall = {
  * const layer: StackCall = {
  *   name: 'stack',
  *   args: [
- *     { source: { name: 's', args: ['bd ~ bd ~'] } },
- *     { source: { name: 's', args: ['~ hh ~ hh'] } },
+ *     { source: { name: 's', args: [mini('bd ~ bd ~')] } },
+ *     { source: { name: 's', args: [mini('~ hh ~ hh')] } },
  *   ],
  * }
  * // stack(s("bd ~ bd ~"), s("~ hh ~ hh"))
@@ -139,8 +146,8 @@ export type StackCall = {
  * const phrase: SequenceCall = {
  *   name: 'cat',
  *   args: [
- *     { source: { name: 'note', args: ['c3 e3'] } },
- *     { source: { name: 'note', args: ['g3 a3'] } },
+ *     { source: { name: 'note', args: [mini('c3 e3')] } },
+ *     { source: { name: 'note', args: [mini('g3 a3')] } },
  *   ],
  * }
  * // cat(note("c3 e3"), note("g3 a3"))
@@ -172,7 +179,7 @@ export type SilenceCall = {
  *
  * @example
  * ```ts
- * const source: PatternFactoryCall = { name: 's', args: ['bd sd'] }
+ * const source: PatternFactoryCall = { name: 's', args: [mini('bd sd')] }
  * // Unsupported factory names are rejected by TypeScript.
  * ```
  */
@@ -222,7 +229,7 @@ export type GainModifier = {
  *
  * @example
  * ```ts
- * const modifier: VelocityModifier = { name: 'velocity', args: ['0.5 1'] }
+ * const modifier: VelocityModifier = { name: 'velocity', args: [mini('0.5 1')] }
  * // .velocity("0.5 1")
  * ```
  */
@@ -430,7 +437,7 @@ export type PatternModifierCall =
  * @example
  * ```ts
  * const pattern: PatternExpression = {
- *   source: { name: 's', args: ['bd sd'] },
+ *   source: { name: 's', args: [mini('bd sd')] },
  *   chain: [
  *     { name: 'gain', args: [0.8] },
  *     { name: 'lpf', args: [1200] },
@@ -449,7 +456,7 @@ export type PatternExpression = {
  *
  * @example
  * ```ts
- * const typed: StrudelCodeInput = { source: { name: 's', args: ['bd'] } }
+ * const typed: StrudelCodeInput = { source: { name: 's', args: [mini('bd')] } }
  * const legacy: StrudelCodeInput = 's("bd")'
  * ```
  */
@@ -487,7 +494,7 @@ export type StrudelPattern = Pattern
  *
  * @example
  * ```ts
- * await play({ source: { name: 's', args: ['bd sd'] } })
+ * await play({ source: { name: 's', args: [mini('bd sd')] } })
  * await play('s("bd sd")')
  * await play(nativePattern)
  * ```
@@ -530,7 +537,7 @@ export type StrudelError = {
  *
  * return (
  *   <>
- *     <button onClick={() => play({ source: { name: 's', args: ['bd'] } })}>
+ *     <button onClick={() => play({ source: { name: 's', args: [mini('bd')] } })}>
  *       Play
  *     </button>
  *     <button onClick={stop}>Stop</button>
