@@ -1,15 +1,14 @@
 # React Strudel Kit
 
-This repository contains a typed Strudel domain model and a Vite playground.
-The public core API is available from `src/lib` while the package extraction is
-kept under `packages/react-strudel-kit`.
+This repository contains a typed Strudel domain model, the `react-strudel-kit`
+package, and a Vite playground.
 
 ## Typed function API
 
 Use one registry function instead of importing one helper per Strudel function:
 
 ```ts
-import { fn, mini, toStrudelCode } from './src/lib'
+import { fn, mini, toStrudelCode } from 'react-strudel-kit'
 
 const code = toStrudelCode(fn(
   'stack',
