@@ -67,6 +67,7 @@ export type StrudelArgument =
     | boolean
     | null
     | MiniNode
+    | PatternCallback
     | PatternExpression
     | readonly StrudelArgument[]
 
@@ -214,6 +215,32 @@ export type PatternModifierName =
     | 'rev'
     | 'degrade'
     | 'undegrade'
+    | 'every'
+    | 'firstOf'
+    | 'lastOf'
+    | 'sometimes'
+    | 'often'
+    | 'rarely'
+    | 'when'
+
+/**
+ * A typed callback body such as `x => x.rev().fast(2)`.
+ *
+ * @example
+ * ```ts
+ * const transform: PatternCallback = {
+ *   chain: [
+ *     { name: 'rev' },
+ *     { name: 'fast', args: [2] },
+ *   ],
+ * }
+ * // x => x.rev().fast(2)
+ * ```
+ */
+export type PatternCallback = {
+    readonly parameter?: string
+    readonly chain: readonly PatternModifierCall[]
+}
 
 /**
  * Changes event amplitude.
@@ -412,6 +439,70 @@ export type UndegradeModifier = {
 }
 
 /**
+ * Applies a callback every `cycles` cycles.
+ *
+ * @example
+ * ```ts
+ * const modifier: EveryModifier = {
+ *   name: 'every',
+ *   args: [4, { chain: [{ name: 'rev' }] }],
+ * }
+ * // .every(4, x => x.rev())
+ * ```
+ */
+export type EveryModifier = {
+    readonly name: Extract<PatternModifierName, 'every'>
+    readonly args: readonly [number, PatternCallback]
+}
+
+/** Applies a callback starting from the first cycle. */
+export type FirstOfModifier = {
+    readonly name: Extract<PatternModifierName, 'firstOf'>
+    readonly args: readonly [number, PatternCallback]
+}
+
+/** Applies a callback starting from the last cycle. */
+export type LastOfModifier = {
+    readonly name: Extract<PatternModifierName, 'lastOf'>
+    readonly args: readonly [number, PatternCallback]
+}
+
+/**
+ * Applies a callback with a 50% probability.
+ *
+ * @example
+ * ```ts
+ * const modifier: SometimesModifier = {
+ *   name: 'sometimes',
+ *   args: [{ chain: [{ name: 'rev' }] }],
+ * }
+ * // .sometimes(x => x.rev())
+ * ```
+ */
+export type SometimesModifier = {
+    readonly name: Extract<PatternModifierName, 'sometimes'>
+    readonly args: readonly [PatternCallback]
+}
+
+/** Applies a callback with a high probability. */
+export type OftenModifier = {
+    readonly name: Extract<PatternModifierName, 'often'>
+    readonly args: readonly [PatternCallback]
+}
+
+/** Applies a callback with a low probability. */
+export type RarelyModifier = {
+    readonly name: Extract<PatternModifierName, 'rarely'>
+    readonly args: readonly [PatternCallback]
+}
+
+/** Applies a callback while a condition is active. */
+export type WhenModifier = {
+    readonly name: Extract<PatternModifierName, 'when'>
+    readonly args: readonly [MiniPattern, PatternCallback]
+}
+
+/**
  * A typed chainable modifier call.
  *
  * @example
@@ -435,6 +526,13 @@ export type PatternModifierCall =
     | ReverseModifier
     | DegradeModifier
     | UndegradeModifier
+    | EveryModifier
+    | FirstOfModifier
+    | LastOfModifier
+    | SometimesModifier
+    | OftenModifier
+    | RarelyModifier
+    | WhenModifier
 
 /**
  * A serializable Strudel pattern made from a factory and optional modifiers.

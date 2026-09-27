@@ -1,7 +1,19 @@
-import type { PatternExpression, PatternFactoryCall, PatternModifierCall, StrudelArgument, StrudelCodeInput } from './types'
+import type { PatternCallback, PatternExpression, PatternFactoryCall, PatternModifierCall, StrudelArgument, StrudelCodeInput } from './types'
 import type { MiniNode } from './mini-ast'
 import { toMiniNotation } from './mini-serializer'
 
+/**
+ * Checks whether an argument is a typed Mini-Notation AST node.
+ *
+ * @param argument The value to inspect.
+ * @returns `true` when the value has a MiniNode discriminant.
+ *
+ * @example
+ * ```ts
+ * isMiniNode(sample('bd')) // true
+ * isMiniNode({ root: { name: 's', args: ['bd'] } }) // false
+ * ```
+ */
 const isMiniNode = (argument: StrudelArgument): argument is MiniNode => {
     return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'kind' in argument
 }
@@ -20,6 +32,22 @@ const isMiniNode = (argument: StrudelArgument): argument is MiniNode => {
  */
 const isPatternExpression = (argument: StrudelArgument): argument is PatternExpression => {
     return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'root' in argument
+}
+
+/**
+ * Checks whether an argument is a typed callback expression.
+ *
+ * @param argument The value to inspect.
+ * @returns `true` for a callback body and `false` for a pattern expression.
+ *
+ * @example
+ * ```ts
+ * isPatternCallback({ chain: [{ name: 'rev' }] }) // true
+ * isPatternCallback({ root: { name: 's', args: ['bd'] } }) // false
+ * ```
+ */
+const isPatternCallback = (argument: StrudelArgument): argument is PatternCallback => {
+    return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'chain' in argument && !('root' in argument)
 }
 
 /**
@@ -47,6 +75,12 @@ const serializeArgument = (argument: StrudelArgument): string => {
 
     if (isMiniNode(argument)) {
         return JSON.stringify(toMiniNotation(argument))
+    }
+
+    if (isPatternCallback(argument)) {
+        const parameter = argument.parameter ?? 'x'
+        const body = argument.chain.reduce((code, modifier) => `${code}.${serializeCall(modifier)}`, parameter)
+        return `${parameter} => ${body}`
     }
 
     if (Array.isArray(argument)) {

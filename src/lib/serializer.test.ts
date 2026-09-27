@@ -43,4 +43,15 @@ describe('toStrudelCode', () => {
             },
         })).toBe('s("bd*4 hh*2")')
     })
+
+    it('serializes typed callback modifiers', () => {
+        expect(toStrudelCode({
+            root: { name: 's', args: [mini('bd')] },
+            chain: [
+                { name: 'every', args: [4, { chain: [{ name: 'rev' }] }] },
+                { name: 'sometimes', args: [{ chain: [{ name: 'fast', args: [2] }] }] },
+                { name: 'when', args: [mini('0 1'), { chain: [{ name: 'degrade' }] }] },
+            ],
+        })).toBe('s("bd").every(4, x => x.rev()).sometimes(x => x.fast(2)).when("0 1", x => x.degrade())')
+    })
 })
