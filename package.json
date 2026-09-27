@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "workspaces": ["packages/react-strudel-kit"],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -10,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.json && vite build --config packages/react-strudel-kit/vite.config.ts"
   },
   "dependencies": {
     "@strudel/mini": "1.2.6",

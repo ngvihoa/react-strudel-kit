@@ -1,0 +1,22 @@
+{
+  "name": "react-strudel-kit",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/packages/react-strudel-kit/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/packages/react-strudel-kit/src/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "dependencies": {
+    "@strudel/mini": "1.2.6",
+    "@strudel/web": "^1.3.0"
+  }
+}

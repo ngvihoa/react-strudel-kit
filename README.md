@@ -1,4 +1,36 @@
-# React + TypeScript + Vite
+# React Strudel Kit
+
+This repository contains a typed Strudel domain model and a Vite playground.
+The public core API is available from `src/lib` while the package extraction is
+kept under `packages/react-strudel-kit`.
+
+## Typed function API
+
+Use one registry function instead of importing one helper per Strudel function:
+
+```ts
+import { fn, mini, toStrudelCode } from './src/lib'
+
+const code = toStrudelCode(fn(
+  'stack',
+  fn('sample', mini('bd')),
+  fn('note', mini('c3 eb3')),
+))
+
+// stack(s("bd"), note("c3 eb3"))
+```
+
+Domain names such as `sample`, `layer`, and `lowPass` are mapped to Strudel
+runtime names by the shared registry. Invalid function names and argument
+shapes are rejected by TypeScript.
+
+## Development
+
+```bash
+npm run build
+npm test -- --run
+npm run lint
+```
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
