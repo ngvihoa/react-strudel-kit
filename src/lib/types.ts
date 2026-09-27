@@ -51,7 +51,7 @@ export type BooleanPattern = boolean | MiniNotation
  * const args: readonly StrudelArgument[] = [
  *   'bd',
  *   0.8,
- *   { source: { name: 's', args: [mini('hh')] } },
+ *   { root: { name: 's', args: [mini('hh')] } },
  *   ['left', 'right'],
  * ]
  * // "bd", 0.8, s("hh"), ["left", "right"]
@@ -86,7 +86,7 @@ export type PatternFactoryName = 's' | 'sound' | 'note' | 'n' | 'stack' | 'seq' 
  * ```
  */
 export type SoundCall = {
-    readonly name: 's' | 'sound'
+    readonly name: Extract<PatternFactoryName, 's' | 'sound'>
     readonly args: readonly [MiniNotation]
 }
 
@@ -100,7 +100,7 @@ export type SoundCall = {
  * ```
  */
 export type NoteCall = {
-    readonly name: 'note'
+    readonly name: Extract<PatternFactoryName, 'note'>
     readonly args: readonly [MiniNotation]
 }
 
@@ -114,7 +114,7 @@ export type NoteCall = {
  * ```
  */
 export type NoteIndexCall = {
-    readonly name: 'n'
+    readonly name: Extract<PatternFactoryName, 'n'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -126,15 +126,15 @@ export type NoteIndexCall = {
  * const layer: StackCall = {
  *   name: 'stack',
  *   args: [
- *     { source: { name: 's', args: [mini('bd ~ bd ~')] } },
- *     { source: { name: 's', args: [mini('~ hh ~ hh')] } },
+ *     { root: { name: 's', args: [mini('bd ~ bd ~')] } },
+ *     { root: { name: 's', args: [mini('~ hh ~ hh')] } },
  *   ],
  * }
  * // stack(s("bd ~ bd ~"), s("~ hh ~ hh"))
  * ```
  */
 export type StackCall = {
-    readonly name: 'stack'
+    readonly name: Extract<PatternFactoryName, 'stack'>
     readonly args: readonly [PatternExpression, ...PatternExpression[]]
 }
 
@@ -146,15 +146,15 @@ export type StackCall = {
  * const phrase: SequenceCall = {
  *   name: 'cat',
  *   args: [
- *     { source: { name: 'note', args: [mini('c3 e3')] } },
- *     { source: { name: 'note', args: [mini('g3 a3')] } },
+ *     { root: { name: 'note', args: [mini('c3 e3')] } },
+ *     { root: { name: 'note', args: [mini('g3 a3')] } },
  *   ],
  * }
  * // cat(note("c3 e3"), note("g3 a3"))
  * ```
  */
 export type SequenceCall = {
-    readonly name: 'seq' | 'cat'
+    readonly name: Extract<PatternFactoryName, 'seq' | 'cat'>
     readonly args: readonly [PatternExpression, ...PatternExpression[]]
 }
 
@@ -165,13 +165,13 @@ export type SequenceCall = {
  *
  * @example
  * ```ts
- * const rest: SilenceCall = { name: 'silence', args: [] }
+ * const rest: SilenceCall = { name: 'silence' }
  * // silence
  * ```
  */
 export type SilenceCall = {
-    readonly name: 'silence'
-    readonly args: readonly []
+    readonly name: Extract<PatternFactoryName, 'silence'>
+    readonly args?: readonly []
 }
 
 /**
@@ -220,7 +220,7 @@ export type PatternModifierName =
  * ```
  */
 export type GainModifier = {
-    readonly name: 'gain'
+    readonly name: Extract<PatternModifierName, 'gain'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -234,7 +234,7 @@ export type GainModifier = {
  * ```
  */
 export type VelocityModifier = {
-    readonly name: 'velocity'
+    readonly name: Extract<PatternModifierName, 'velocity'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -248,7 +248,7 @@ export type VelocityModifier = {
  * ```
  */
 export type PanModifier = {
-    readonly name: 'pan'
+    readonly name: Extract<PatternModifierName, 'pan'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -262,7 +262,7 @@ export type PanModifier = {
  * ```
  */
 export type OrbitModifier = {
-    readonly name: 'orbit'
+    readonly name: Extract<PatternModifierName, 'orbit'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -276,7 +276,7 @@ export type OrbitModifier = {
  * ```
  */
 export type LowPassModifier = {
-    readonly name: 'lpf'
+    readonly name: Extract<PatternModifierName, 'lpf'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -290,7 +290,7 @@ export type LowPassModifier = {
  * ```
  */
 export type HighPassModifier = {
-    readonly name: 'hpf'
+    readonly name: Extract<PatternModifierName, 'hpf'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -304,7 +304,7 @@ export type HighPassModifier = {
  * ```
  */
 export type RoomModifier = {
-    readonly name: 'room'
+    readonly name: Extract<PatternModifierName, 'room'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -318,7 +318,7 @@ export type RoomModifier = {
  * ```
  */
 export type SizeModifier = {
-    readonly name: 'size'
+    readonly name: Extract<PatternModifierName, 'size'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -332,7 +332,7 @@ export type SizeModifier = {
  * ```
  */
 export type FastModifier = {
-    readonly name: 'fast'
+    readonly name: Extract<PatternModifierName, 'fast'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -346,7 +346,7 @@ export type FastModifier = {
  * ```
  */
 export type SlowModifier = {
-    readonly name: 'slow'
+    readonly name: Extract<PatternModifierName, 'slow'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -360,7 +360,7 @@ export type SlowModifier = {
  * ```
  */
 export type ClipModifier = {
-    readonly name: 'clip'
+    readonly name: Extract<PatternModifierName, 'clip'>
     readonly args: readonly [NumericPattern]
 }
 
@@ -369,13 +369,13 @@ export type ClipModifier = {
  *
  * @example
  * ```ts
- * const modifier: ReverseModifier = { name: 'rev', args: [] }
+ * const modifier: ReverseModifier = { name: 'rev' }
  * // .rev()
  * ```
  */
 export type ReverseModifier = {
-    readonly name: 'rev'
-    readonly args: readonly []
+    readonly name: Extract<PatternModifierName, 'rev'>
+    readonly args?: readonly []
 }
 
 /**
@@ -383,13 +383,13 @@ export type ReverseModifier = {
  *
  * @example
  * ```ts
- * const modifier: DegradeModifier = { name: 'degrade', args: [] }
+ * const modifier: DegradeModifier = { name: 'degrade' }
  * // .degrade()
  * ```
  */
 export type DegradeModifier = {
-    readonly name: 'degrade'
-    readonly args: readonly []
+    readonly name: Extract<PatternModifierName, 'degrade'>
+    readonly args?: readonly []
 }
 
 /**
@@ -397,13 +397,13 @@ export type DegradeModifier = {
  *
  * @example
  * ```ts
- * const modifier: UndegradeModifier = { name: 'undegrade', args: [] }
+ * const modifier: UndegradeModifier = { name: 'undegrade' }
  * // .undegrade()
  * ```
  */
 export type UndegradeModifier = {
-    readonly name: 'undegrade'
-    readonly args: readonly []
+    readonly name: Extract<PatternModifierName, 'undegrade'>
+    readonly args?: readonly []
 }
 
 /**
@@ -437,7 +437,7 @@ export type PatternModifierCall =
  * @example
  * ```ts
  * const pattern: PatternExpression = {
- *   source: { name: 's', args: [mini('bd sd')] },
+ *   root: { name: 's', args: [mini('bd sd')] },
  *   chain: [
  *     { name: 'gain', args: [0.8] },
  *     { name: 'lpf', args: [1200] },
@@ -447,7 +447,7 @@ export type PatternModifierCall =
  * ```
  */
 export type PatternExpression = {
-    readonly source: PatternFactoryCall
+    readonly root: PatternFactoryCall
     readonly chain?: readonly PatternModifierCall[]
 }
 
@@ -456,7 +456,7 @@ export type PatternExpression = {
  *
  * @example
  * ```ts
- * const typed: StrudelCodeInput = { source: { name: 's', args: [mini('bd')] } }
+ * const typed: StrudelCodeInput = { root: { name: 's', args: [mini('bd')] } }
  * const legacy: StrudelCodeInput = 's("bd")'
  * ```
  */
@@ -494,7 +494,7 @@ export type StrudelPattern = Pattern
  *
  * @example
  * ```ts
- * await play({ source: { name: 's', args: [mini('bd sd')] } })
+ * await play({ root: { name: 's', args: [mini('bd sd')] } })
  * await play('s("bd sd")')
  * await play(nativePattern)
  * ```
@@ -537,7 +537,7 @@ export type StrudelError = {
  *
  * return (
  *   <>
- *     <button onClick={() => play({ source: { name: 's', args: [mini('bd')] } })}>
+ *     <button onClick={() => play({ root: { name: 's', args: [mini('bd')] } })}>
  *       Play
  *     </button>
  *     <button onClick={stop}>Stop</button>

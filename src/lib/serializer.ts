@@ -8,12 +8,12 @@ import type { PatternExpression, PatternFactoryCall, PatternModifierCall, Strude
  *
  * @example
  * ```ts
- * isPatternExpression({ source: { name: 's', args: ['bd'] } }) // true
+ * isPatternExpression({ root: { name: 's', args: ['bd'] } }) // true
  * isPatternExpression(['bd']) // false
  * ```
  */
 const isPatternExpression = (argument: StrudelArgument): argument is PatternExpression => {
-    return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'source' in argument
+    return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'root' in argument
 }
 
 /**
@@ -67,11 +67,12 @@ const serializeCall = (call: PatternFactoryCall | PatternModifierCall): string =
         return 'silence'
     }
 
-    return `${call.name}(${call.args.map(serializeArgument).join(', ')})`
+    const args = call.args ?? []
+    return `${call.name}(${args.map(serializeArgument).join(', ')})`
 }
 
 /**
- * Serializes a complete pattern source and its modifier chain.
+ * Serializes a complete pattern root and its modifier chain.
  *
  * @param expression A typed pattern expression.
  * @returns Executable Strudel JavaScript.
@@ -79,14 +80,14 @@ const serializeCall = (call: PatternFactoryCall | PatternModifierCall): string =
  * @example
  * ```ts
  * serializeExpression({
- *   source: { name: 's', args: ['bd'] },
+ *   root: { name: 's', args: ['bd'] },
  *   chain: [{ name: 'fast', args: [2] }],
  * }) // 's("bd").fast(2)'
  * ```
  */
 const serializeExpression = (expression: PatternExpression): string => {
-    const source = serializeCall(expression.source)
-    return expression.chain?.reduce((code, modifier) => `${code}.${serializeCall(modifier)}`, source) ?? source
+    const root = serializeCall(expression.root)
+    return expression.chain?.reduce((code, modifier) => `${code}.${serializeCall(modifier)}`, root) ?? root
 }
 
 /**
@@ -98,7 +99,7 @@ const serializeExpression = (expression: PatternExpression): string => {
  * @example
  * ```ts
  * toStrudelCode({
- *   source: { name: 's', args: ['bd sd'] },
+ *   root: { name: 's', args: ['bd sd'] },
  *   chain: [
  *     { name: 'gain', args: [0.8] },
  *     { name: 'fast', args: [2] },
