@@ -7,43 +7,12 @@ import type {
 } from './types'
 import { pattern } from './builders'
 import type { PatternFactoryCall } from './types'
-
-/** Names accepted by the generic type-safe function registry. */
-export type FunctionName =
-    | 'sample'
-    | 'sound'
-    | 'note'
-    | 'n'
-    | 'stack'
-    | 'layer'
-    | 'sequence'
-    | 'cat'
-    | 'silence'
-    | 'gain'
-    | 'velocity'
-    | 'pan'
-    | 'orbit'
-    | 'lowPass'
-    | 'highPass'
-    | 'room'
-    | 'size'
-    | 'fast'
-    | 'slow'
-    | 'clip'
-    | 'rev'
-    | 'degrade'
-    | 'undegrade'
-    | 'every'
-    | 'firstOf'
-    | 'lastOf'
-    | 'sometimes'
-    | 'often'
-    | 'rarely'
-    | 'when'
+import { functionRegistry, type FactoryFunctionName, type FunctionName, type ModifierFunctionName } from './registry'
 
 type ChildPatterns = readonly [PatternExpression, ...PatternExpression[]]
 type CallbackArgs = readonly [PatternCallback]
 type CycleCallbackArgs = readonly [number, PatternCallback]
+type NumericCallbackArgs = readonly [NumericPattern, PatternCallback]
 
 type FunctionArguments = {
     sample: readonly [MiniPattern]
@@ -66,6 +35,11 @@ type FunctionArguments = {
     fast: readonly [NumericPattern]
     slow: readonly [NumericPattern]
     clip: readonly [NumericPattern]
+    compress: readonly [NumericPattern, NumericPattern]
+    early: readonly [NumericPattern]
+    late: readonly [NumericPattern]
+    swing: readonly [NumericPattern]
+    swingBy: readonly [NumericPattern, NumericPattern]
     rev: readonly []
     degrade: readonly []
     undegrade: readonly []
@@ -75,52 +49,17 @@ type FunctionArguments = {
     sometimes: CallbackArgs
     often: CallbackArgs
     rarely: CallbackArgs
+    sometimesBy: NumericCallbackArgs
+    inside: NumericCallbackArgs
+    outside: NumericCallbackArgs
+    off: NumericCallbackArgs
     when: readonly [MiniPattern, PatternCallback]
 }
 
-type FactoryFunctionName = 'sample' | 'sound' | 'note' | 'n' | 'stack' | 'layer' | 'sequence' | 'cat' | 'silence'
-type ModifierFunctionName = Exclude<FunctionName, FactoryFunctionName>
-
-/** Maps domain-friendly names to Strudel runtime names. */
-const strudelNames: Record<FunctionName, string> = {
-    sample: 's',
-    sound: 'sound',
-    note: 'note',
-    n: 'n',
-    stack: 'stack',
-    layer: 'stack',
-    sequence: 'seq',
-    cat: 'cat',
-    silence: 'silence',
-    gain: 'gain',
-    velocity: 'velocity',
-    pan: 'pan',
-    orbit: 'orbit',
-    lowPass: 'lpf',
-    highPass: 'hpf',
-    room: 'room',
-    size: 'size',
-    fast: 'fast',
-    slow: 'slow',
-    clip: 'clip',
-    rev: 'rev',
-    degrade: 'degrade',
-    undegrade: 'undegrade',
-    every: 'every',
-    firstOf: 'firstOf',
-    lastOf: 'lastOf',
-    sometimes: 'sometimes',
-    often: 'often',
-    rarely: 'rarely',
-    when: 'when',
-}
-
-const factoryNames = new Set<FactoryFunctionName>(['sample', 'sound', 'note', 'n', 'stack', 'layer', 'sequence', 'cat', 'silence'])
-
-const isFactory = (name: FunctionName): name is FactoryFunctionName => factoryNames.has(name as FactoryFunctionName)
+const isFactory = (name: FunctionName): name is FactoryFunctionName => functionRegistry[name].kind === 'factory'
 
 const toFactoryCall = (name: FactoryFunctionName, args: readonly unknown[]): PatternFactoryCall => {
-    const runtimeName = strudelNames[name]
+    const runtimeName = functionRegistry[name].runtime
 
     if (runtimeName === 'silence') {
         return { name: 'silence' }
@@ -130,7 +69,7 @@ const toFactoryCall = (name: FactoryFunctionName, args: readonly unknown[]): Pat
 }
 
 const toModifierCall = (name: ModifierFunctionName, args: readonly unknown[]): PatternModifierCall => {
-    return { name: strudelNames[name] as PatternModifierCall['name'], args } as PatternModifierCall
+    return { name: functionRegistry[name].runtime as PatternModifierCall['name'], args } as PatternModifierCall
 }
 
 /**

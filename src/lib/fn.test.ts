@@ -30,4 +30,15 @@ describe('fn registry', () => {
             fn('every', 4, { chain: [fn('rev')] }),
         ))).toBe('s("bd").every(4, x => x.rev())')
     })
+
+    it('supports temporal and callback modifiers from the registry', () => {
+        expect(toStrudelCode(chain(
+            fn('sample', mini('hh*8')),
+            fn('swing', 4),
+            fn('early', 0.25),
+            fn('compress', 0.25, 0.75),
+            fn('inside', 4, { chain: [fn('rev')] }),
+            fn('sometimesBy', 0.4, { chain: [fn('fast', 2)] }),
+        ))).toBe('s("hh*8").swing(4).early(0.25).compress(0.25, 0.75).inside(4, x => x.rev()).sometimesBy(0.4, x => x.fast(2))')
+    })
 })
