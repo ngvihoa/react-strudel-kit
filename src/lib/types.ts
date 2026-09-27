@@ -1,4 +1,5 @@
 import type { Pattern } from '@strudel/web'
+import type { MiniNode } from './mini-ast'
 
 declare const miniNotationBrand: unique symbol
 
@@ -18,6 +19,9 @@ export type MiniNotation = string & { readonly [miniNotationBrand]: 'MiniNotatio
 /** A plain string accepted only when intentionally bypassing Mini-Notation validation. */
 export type RawMiniNotation = string
 
+/** A validated string or typed Mini-Notation AST value. */
+export type MiniPattern = MiniNotation | MiniNode
+
 /**
  * A scalar value or a mini-notation pattern for a numeric control.
  *
@@ -27,7 +31,7 @@ export type RawMiniNotation = string
  * const changingGain: NumericPattern = '<0.4 0.8 1>'
  * ```
  */
-export type NumericPattern = number | MiniNotation
+export type NumericPattern = number | MiniPattern
 
 /**
  * A scalar value or a mini-notation pattern for a boolean control.
@@ -38,7 +42,7 @@ export type NumericPattern = number | MiniNotation
  * const alternating: BooleanPattern = '0 1'
  * ```
  */
-export type BooleanPattern = boolean | MiniNotation
+export type BooleanPattern = boolean | MiniPattern
 
 /**
  * A value that can be serialized as a Strudel function argument.
@@ -62,6 +66,7 @@ export type StrudelArgument =
     | number
     | boolean
     | null
+    | MiniNode
     | PatternExpression
     | readonly StrudelArgument[]
 
@@ -87,7 +92,7 @@ export type PatternFactoryName = 's' | 'sound' | 'note' | 'n' | 'stack' | 'seq' 
  */
 export type SoundCall = {
     readonly name: Extract<PatternFactoryName, 's' | 'sound'>
-    readonly args: readonly [MiniNotation]
+    readonly args: readonly [MiniPattern]
 }
 
 /**
@@ -101,7 +106,7 @@ export type SoundCall = {
  */
 export type NoteCall = {
     readonly name: Extract<PatternFactoryName, 'note'>
-    readonly args: readonly [MiniNotation]
+    readonly args: readonly [MiniPattern]
 }
 
 /**

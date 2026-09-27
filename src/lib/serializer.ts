@@ -1,4 +1,10 @@
 import type { PatternExpression, PatternFactoryCall, PatternModifierCall, StrudelArgument, StrudelCodeInput } from './types'
+import type { MiniNode } from './mini-ast'
+import { toMiniNotation } from './mini-serializer'
+
+const isMiniNode = (argument: StrudelArgument): argument is MiniNode => {
+    return typeof argument === 'object' && argument !== null && !Array.isArray(argument) && 'kind' in argument
+}
 
 /**
  * Checks whether an argument is a nested typed pattern expression.
@@ -37,6 +43,10 @@ const serializeArgument = (argument: StrudelArgument): string => {
 
     if (argument === null || typeof argument === 'number' || typeof argument === 'boolean') {
         return String(argument)
+    }
+
+    if (isMiniNode(argument)) {
+        return JSON.stringify(toMiniNotation(argument))
     }
 
     if (Array.isArray(argument)) {

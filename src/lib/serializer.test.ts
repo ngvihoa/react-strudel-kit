@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { mini } from './mini'
+import { fast, repeat, sample, sequence } from './mini-ast'
 import { toStrudelCode } from './serializer'
 
 describe('toStrudelCode', () => {
@@ -32,5 +33,14 @@ describe('toStrudelCode', () => {
 
     it('passes raw Strudel code through unchanged', () => {
         expect(toStrudelCode('s("bd sd")')).toBe('s("bd sd")')
+    })
+
+    it('serializes typed Mini-Notation AST inside Strudel calls', () => {
+        expect(toStrudelCode({
+            root: {
+                name: 's',
+                args: [sequence(repeat(sample('bd'), 4), fast(sample('hh'), 2))],
+            },
+        })).toBe('s("bd*4 hh*2")')
     })
 })
