@@ -1,26 +1,52 @@
 # React Strudel Kit
 
-This repository contains a typed Strudel domain model, the `react-strudel-kit`
-package, and a Vite playground.
+A TypeScript toolkit for creating Strudel patterns, with a browser-only React
+playback hook and a small Vite playground. Strudel owns the pattern engine and
+audio scheduler; this package provides typed composition and React integration.
 
-The package implementation lives in `packages/react-strudel-kit/src`; the
-playground consumes its built entrypoints. Editor state and localStorage remain
-in the playground.
+The package is currently a **private workspace package**, not an npm release.
 
-## React playback API
+## Run the playground
 
-Import React integration separately from pattern helpers:
+Use Node.js 24.15 or later in the Node 24 series; local checks use 24.22.0.
+
+```bash
+npm install
+npm run dev
+```
+
+Open the localhost URL printed by Vite. Press **Play pattern** to start the
+built-in melody. Begin with your output volume low.
+
+- Edit the code, then press **Ctrl+Enter** or **⌘+Enter** to apply it.
+- **Escape** or **Stop** stops playback, including pending requests.
+- **Reset** stops playback and restores the default melody.
+- Load **Melody**, **Bass**, or **Layers** to replace the editor content without
+  automatically playing it. All three use built-in synths, with no sample downloads.
+- Edits, loaded examples, and resets are saved on this device when localStorage
+  works. **Session only** means persistence failed; copy your code before leaving.
+  An untouched default is labeled **New draft**. Reload never starts playback.
+
+## React playback
+
+Use the workspace package after it has been built. React integration is a
+separate entrypoint and must run in a browser/client component.
 
 ```tsx
-import { fn, mini } from 'react-strudel-kit'
+import { chain, fn, mini } from 'react-strudel-kit'
 import { useStrudel } from 'react-strudel-kit/react'
 
-function Player() {
+const melody = chain(
+  fn('note', mini('c4 e4 g4 b4')),
+  fn('gain', 0.25),
+)
+
+export function Player() {
   const { play, stop, status, error } = useStrudel()
 
   return (
     <>
-      <button onClick={() => play(fn('sample', mini('bd')))}>Play</button>
+      <button onClick={() => void play(melody)}>Play</button>
       <button onClick={stop}>Stop</button>
       <output>{status}</output>
       {error && <p role="alert">{error.message}</p>}
@@ -29,187 +55,69 @@ function Player() {
 }
 ```
 
-`play(input)` accepts Strudel code, a typed `PatternExpression`, or a
-native Strudel pattern with a `play()` method. The hook owns transport state;
-consumers own their editor content and persistence.
+`play(input)` accepts code, a typed `PatternExpression`, or a native Strudel
+pattern. Call it from a click or keyboard gesture so the browser can enable audio.
+All mounted hooks share one transport. Unmounting the last consumer stops
+playback; the Strudel-owned engine/context remain available for remounts.
 
-All mounted hooks share one engine and observe the same `status` and `error`.
-The engine initializes once, including under React Strict Mode. Play waits for
-initialization and resumes browser audio from the calling event handler; invoke
-it from a click or keyboard gesture. Initialization failures can be retried with
-Play. Errors carry an `initialization`, `evaluation`, or `transport` code.
+See [the usage guide](docs/usage.md) for lifecycle, error handling, supported
+functions, Mini-Notation, compatibility, and troubleshooting.
 
-Playback requests are serialized, and only the latest request starts playback.
-Stop cancels pending requests and clears the current error. Unmounting one
-consumer leaves others playing; unmounting the last consumer stops playback
-and invalidates pending work. A scheduler start already in progress is stopped
-again when it settles after cancellation. The engine and Strudel-owned audio
-context are retained for remounts; this hook does not close that shared context.
-
-The adapter targets `@strudel/web` **1.3.0** (pinned). It prepares patterns without
-autoplay, checks evaluation errors in the returned engine state, and awaits
-explicit scheduler start. Native patterns use `setPattern` rather than their
-fire-and-forget `.play()` method. Automated lifecycle tests mock the Strudel
-and Web Audio boundaries. A Chrome smoke check also covers synth playback
-state, Stop, syntax errors, recovery, rapid Play/Stop, and persistence on reload.
-Audible output and browser/device compatibility still need manual validation.
-
-## Typed function API
-
-Use one registry function instead of importing one helper per Strudel function:
-
-```ts
-import { fn, mini, toStrudelCode } from 'react-strudel-kit'
-
-const code = toStrudelCode(fn(
-  'stack',
-  fn('sample', mini('bd')),
-  fn('note', mini('c3 eb3')),
-))
-
-// stack(s("bd"), note("c3 eb3"))
-```
-
-Domain names such as `sample`, `layer`, and `lowPass` are mapped to Strudel
-runtime names by the shared registry. Invalid function names and argument
-shapes are rejected by TypeScript.
-
-Compose modifiers and callbacks through the same public entrypoint:
+## Typed composition
 
 ```ts
 import { chain, fn, mini, patternCallback, toStrudelCode } from 'react-strudel-kit'
 
-const drums = chain(
-  fn('sample', mini('bd sd')),
+const melody = chain(
+  fn('note', mini('c4 e4 g4 b4')),
   fn('lowPass', 900),
   fn('every', 4, patternCallback(fn('rev'))),
 )
 
-toStrudelCode(drums)
-// s("bd sd").lpf(900).every(4, x => x.rev())
+toStrudelCode(melody)
+// note("c4 e4 g4 b4").lpf(900).every(4, x => x.rev())
 ```
 
-`pattern(root, modifiers?)`, `chain(expression, ...modifiers)`, and
-`patternCallback(...modifiers)` are public composition helpers. `fast`, `slow`,
-and `degrade` exported from the main entrypoint are Mini-Notation AST helpers;
-use `fn('fast', 2)` etc. for Strudel pattern modifiers.
-
-The registry is checked against the factory and modifier call types. `fn` derives
-one overload per entry, preserving argument counts and literal runtime names.
-`FunctionArguments<'compress'>` and `FunctionResult<'lowPass'>` expose those
-contracts to consumers. Narrow a dynamic function name before calling `fn`.
-TypeScript strict mode is enabled; build checks also compile consumer examples
-against the generated declarations with `skipLibCheck: false` and no app shims.
-Types cover this supported API subset; Mini-Notation strings are syntax-checked
-by `mini()`, while sample availability, musical values, and raw code still depend
-on Strudel at runtime.
-
-## Nested Mini-Notation
-
-AST nodes preserve their nesting when serialized:
-
-```ts
-import { fast, sample, sequence, toMiniNotation } from 'react-strudel-kit'
-
-toMiniNotation(fast(sequence(sample('bd'), sample('sd')), 2))
-// '[bd sd]*2': both notes play twice per cycle.
-
-toMiniNotation(sequence(sample('bd'), sequence(sample('sd'), sample('hh'))))
-// 'bd [sd hh]': sd and hh share the second step.
-```
-
-Nested parallel patterns, choices, and modifier operands are grouped as well.
-Sequence lanes inside a stack, choice, or polymeter keep their full step counts.
-`raw(...)` is an opaque escape hatch: root fragments remain verbatim, while
-nested fragments are enclosed in brackets. Use typed `sequence(...)` nodes
-when individual steps must be exposed to a polymeter lane.
+`fn` checks function names, argument tuples, and exact return types against the
+shared registry. `mini()` validates Mini-Notation syntax with Strudel's parser.
+This covers the declared API subset; it does not verify sample availability,
+musical values, or raw JavaScript code.
 
 ## Development
 
-```bash
-npm install
-npm run dev
-npm run build
-npm test -- --run
-npm run lint
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Build the workspace package, then run Vite with HMR |
+| `npm run build` | Build package, check types, and build the playground |
+| `npm run build:package` | Emit package ESM and declarations |
+| `npm run typecheck` | Check app, package, tests, and standalone consumer declarations |
+| `npm test -- --run` | Build the package, then run the full Vitest suite |
+| `npm run lint` | Run ESLint |
+| `npm run preview` | Serve a previously built playground |
+
+After editing package source during a dev/test watch session, run
+`npm run build:package` again. App source changes use Vite HMR directly.
+
+```text
+packages/react-strudel-kit/src/  Typed API, serializers, transport, unit tests
+src/                            Reference playground and integration tests
+src/test/public-api.type-test.ts  Compile-time checks against the built package
+docs/                           Usage guide and historical design notes
 ```
 
-`dev`, `build`, and `test` build the workspace package first. After editing
-package source during a dev or test watch session, run `npm run build:package`
-again. `build` also checks app, package, and type-test files. Unit tests live
-beside the package implementation; playground integration tests import the
-built package through its public exports and mock the audio engine.
+The package's `tsconfig.json` includes source and tests so the editor loads local
+declarations. `tsconfig.build.json` emits production declarations and excludes
+tests. Consumer type-tests use `skipLibCheck: false` without the app's ambient shims.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tests cover parser/serializer behavior, real Strudel pattern timing without
+audio, shared transport lifecycle, React Strict Mode, error/cancellation paths,
+and the playground through built package exports. Web Audio lifecycle is mocked
+in automated playback tests; audible output and device compatibility need manual checks.
 
-Currently, two official plugins are available:
+## License and release status
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+Both the root project and package remain private. This repository has no project
+license selected yet. The pinned Strudel packages declare `AGPL-3.0-or-later`;
+read the [upstream integration and license guidance](https://strudel.cc/technical-manual/project-start/)
+before distributing an application or publishing a package. Choosing a compatible
+project license and completing release packaging remain separate release work.

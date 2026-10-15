@@ -16,6 +16,7 @@ describe('playground code persistence', () => {
         const { result } = renderHook(() => usePlaygroundCode({ key: 'pattern', code: 'default pattern' }))
 
         expect(result.current.code).toBe('stored pattern')
+        expect(result.current.saveStatus).toBe('saved')
 
         act(() => result.current.setCode('edited pattern'))
         expect(window.localStorage.getItem('pattern')).toBe('edited pattern')
@@ -39,5 +40,15 @@ describe('playground code persistence', () => {
 
         act(() => result.current.reset())
         expect(result.current.code).toBe('fallback')
+        expect(result.current.saveStatus).toBe('unavailable')
+    })
+
+    it('distinguishes a new default from an actually saved draft', () => {
+        const { result } = renderHook(() => usePlaygroundCode({ key: 'pattern', code: 'default' }))
+        expect(result.current.saveStatus).toBe('unsaved')
+        expect(window.localStorage.getItem('pattern')).toBeNull()
+        act(() => result.current.setCode('edited'))
+        expect(result.current.saveStatus).toBe('saved')
+        expect(window.localStorage.getItem('pattern')).toBe('edited')
     })
 })
