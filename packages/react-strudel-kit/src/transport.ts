@@ -89,7 +89,7 @@ export const createTransport = (dependencies: Dependencies) => {
                 publish({ status: 'error', error: prepared.error })
                 return
             }
-            const activeEngine = prepared.engine!
+            const activeEngine = prepared.engine
             let stage: StrudelErrorCode = input !== null && typeof input === 'object' && 'play' in input
                 ? 'transport' : 'evaluation'
             try {

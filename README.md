@@ -29,7 +29,7 @@ function Player() {
 }
 ```
 
-`play(input)` accepts Strudel code, a typed `PatternExpression`, or a native
+`play(input)` accepts Strudel code, a typed `PatternExpression`, or a
 native Strudel pattern with a `play()` method. The hook owns transport state;
 consumers own their editor content and persistence.
 
@@ -73,6 +73,36 @@ const code = toStrudelCode(fn(
 Domain names such as `sample`, `layer`, and `lowPass` are mapped to Strudel
 runtime names by the shared registry. Invalid function names and argument
 shapes are rejected by TypeScript.
+
+Compose modifiers and callbacks through the same public entrypoint:
+
+```ts
+import { chain, fn, mini, patternCallback, toStrudelCode } from 'react-strudel-kit'
+
+const drums = chain(
+  fn('sample', mini('bd sd')),
+  fn('lowPass', 900),
+  fn('every', 4, patternCallback(fn('rev'))),
+)
+
+toStrudelCode(drums)
+// s("bd sd").lpf(900).every(4, x => x.rev())
+```
+
+`pattern(root, modifiers?)`, `chain(expression, ...modifiers)`, and
+`patternCallback(...modifiers)` are public composition helpers. `fast`, `slow`,
+and `degrade` exported from the main entrypoint are Mini-Notation AST helpers;
+use `fn('fast', 2)` etc. for Strudel pattern modifiers.
+
+The registry is checked against the factory and modifier call types. `fn` derives
+one overload per entry, preserving argument counts and literal runtime names.
+`FunctionArguments<'compress'>` and `FunctionResult<'lowPass'>` expose those
+contracts to consumers. Narrow a dynamic function name before calling `fn`.
+TypeScript strict mode is enabled; build checks also compile consumer examples
+against the generated declarations with `skipLibCheck: false` and no app shims.
+Types cover this supported API subset; Mini-Notation strings are syntax-checked
+by `mini()`, while sample availability, musical values, and raw code still depend
+on Strudel at runtime.
 
 ## Nested Mini-Notation
 

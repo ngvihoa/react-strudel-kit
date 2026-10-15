@@ -1,14 +1,7 @@
 {
   "extends": "../../tsconfig.app.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": false
+    "tsBuildInfoFile": "../../node_modules/.tmp/strudel-tests.tsbuildinfo"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "src/**/*.type-test.ts"]
+  "include": ["src", "test"]
 }

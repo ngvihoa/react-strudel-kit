@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.app.json",
+  "compilerOptions": {
+    "skipLibCheck": false,
+    "types": [],
+    "tsBuildInfoFile": "../../node_modules/.tmp/public-api.tsbuildinfo"
+  },
+  "include": ["public-api.type-test.ts"]
+}

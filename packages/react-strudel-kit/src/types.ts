@@ -27,7 +27,7 @@ export type MiniPattern = MiniNotation | MiniNode
  * @example
  * ```ts
  * const fixedGain: NumericPattern = 0.8
- * const changingGain: NumericPattern = '<0.4 0.8 1>'
+ * const changingGain: NumericPattern = mini('<0.4 0.8 1>')
  * ```
  */
 export type NumericPattern = number | MiniPattern
@@ -38,7 +38,7 @@ export type NumericPattern = number | MiniPattern
  * @example
  * ```ts
  * const enabled: BooleanPattern = true
- * const alternating: BooleanPattern = '0 1'
+ * const alternating: BooleanPattern = mini('0 1')
  * ```
  */
 export type BooleanPattern = boolean | MiniPattern
@@ -79,7 +79,7 @@ export type StrudelArgument =
  * // stack(...)
  * ```
  */
-export type PatternFactoryName = 's' | 'sound' | 'note' | 'n' | 'stack' | 'seq' | 'cat' | 'silence'
+export type PatternFactoryName = PatternFactoryCall['name']
 
 /**
  * Creates a sample or synth pattern from mini-notation.
@@ -91,9 +91,11 @@ export type PatternFactoryName = 's' | 'sound' | 'note' | 'n' | 'stack' | 'seq' 
  * ```
  */
 export type SoundCall = {
-    readonly name: Extract<PatternFactoryName, 's' | 'sound'>
-    readonly args: readonly [MiniPattern]
-}
+    [Name in 's' | 'sound']: {
+        readonly name: Name
+        readonly args: readonly [MiniPattern]
+    }
+}['s' | 'sound']
 
 /**
  * Creates a pitch pattern from note names or mini-notation.
@@ -105,7 +107,7 @@ export type SoundCall = {
  * ```
  */
 export type NoteCall = {
-    readonly name: Extract<PatternFactoryName, 'note'>
+    readonly name: 'note'
     readonly args: readonly [MiniPattern]
 }
 
@@ -119,7 +121,7 @@ export type NoteCall = {
  * ```
  */
 export type NoteIndexCall = {
-    readonly name: Extract<PatternFactoryName, 'n'>
+    readonly name: 'n'
     readonly args: readonly [NumericPattern]
 }
 
@@ -139,7 +141,7 @@ export type NoteIndexCall = {
  * ```
  */
 export type StackCall = {
-    readonly name: Extract<PatternFactoryName, 'stack'>
+    readonly name: 'stack'
     readonly args: readonly [PatternExpression, ...PatternExpression[]]
 }
 
@@ -159,9 +161,11 @@ export type StackCall = {
  * ```
  */
 export type SequenceCall = {
-    readonly name: Extract<PatternFactoryName, 'seq' | 'cat'>
-    readonly args: readonly [PatternExpression, ...PatternExpression[]]
-}
+    [Name in 'seq' | 'cat']: {
+        readonly name: Name
+        readonly args: readonly [PatternExpression, ...PatternExpression[]]
+    }
+}['seq' | 'cat']
 
 /**
  * Represents Strudel's silent pattern value.
@@ -175,7 +179,7 @@ export type SequenceCall = {
  * ```
  */
 export type SilenceCall = {
-    readonly name: Extract<PatternFactoryName, 'silence'>
+    readonly name: 'silence'
     readonly args?: readonly []
 }
 
@@ -199,28 +203,7 @@ export type PatternFactoryCall = SoundCall | NoteCall | NoteIndexCall | StackCal
  * // .lpf(...)
  * ```
  */
-export type PatternModifierName =
-    | 'gain'
-    | 'velocity'
-    | 'pan'
-    | 'orbit'
-    | 'lpf'
-    | 'hpf'
-    | 'room'
-    | 'size'
-    | 'fast'
-    | 'slow'
-    | 'clip'
-    | 'rev'
-    | 'degrade'
-    | 'undegrade'
-    | 'every'
-    | 'firstOf'
-    | 'lastOf'
-    | 'sometimes'
-    | 'often'
-    | 'rarely'
-    | 'when'
+export type PatternModifierName = PatternModifierCall['name']
 
 /**
  * A typed callback body such as `x => x.rev().fast(2)`.
@@ -251,7 +234,7 @@ export type PatternCallback = {
  * ```
  */
 export type GainModifier = {
-    readonly name: Extract<PatternModifierName, 'gain'>
+    readonly name: 'gain'
     readonly args: readonly [NumericPattern]
 }
 
@@ -265,7 +248,7 @@ export type GainModifier = {
  * ```
  */
 export type VelocityModifier = {
-    readonly name: Extract<PatternModifierName, 'velocity'>
+    readonly name: 'velocity'
     readonly args: readonly [NumericPattern]
 }
 
@@ -279,7 +262,7 @@ export type VelocityModifier = {
  * ```
  */
 export type PanModifier = {
-    readonly name: Extract<PatternModifierName, 'pan'>
+    readonly name: 'pan'
     readonly args: readonly [NumericPattern]
 }
 
@@ -293,7 +276,7 @@ export type PanModifier = {
  * ```
  */
 export type OrbitModifier = {
-    readonly name: Extract<PatternModifierName, 'orbit'>
+    readonly name: 'orbit'
     readonly args: readonly [NumericPattern]
 }
 
@@ -307,7 +290,7 @@ export type OrbitModifier = {
  * ```
  */
 export type LowPassModifier = {
-    readonly name: Extract<PatternModifierName, 'lpf'>
+    readonly name: 'lpf'
     readonly args: readonly [NumericPattern]
 }
 
@@ -321,7 +304,7 @@ export type LowPassModifier = {
  * ```
  */
 export type HighPassModifier = {
-    readonly name: Extract<PatternModifierName, 'hpf'>
+    readonly name: 'hpf'
     readonly args: readonly [NumericPattern]
 }
 
@@ -335,7 +318,7 @@ export type HighPassModifier = {
  * ```
  */
 export type RoomModifier = {
-    readonly name: Extract<PatternModifierName, 'room'>
+    readonly name: 'room'
     readonly args: readonly [NumericPattern]
 }
 
@@ -349,7 +332,7 @@ export type RoomModifier = {
  * ```
  */
 export type SizeModifier = {
-    readonly name: Extract<PatternModifierName, 'size'>
+    readonly name: 'size'
     readonly args: readonly [NumericPattern]
 }
 
@@ -363,7 +346,7 @@ export type SizeModifier = {
  * ```
  */
 export type FastModifier = {
-    readonly name: Extract<PatternModifierName, 'fast'>
+    readonly name: 'fast'
     readonly args: readonly [NumericPattern]
 }
 
@@ -377,7 +360,7 @@ export type FastModifier = {
  * ```
  */
 export type SlowModifier = {
-    readonly name: Extract<PatternModifierName, 'slow'>
+    readonly name: 'slow'
     readonly args: readonly [NumericPattern]
 }
 
@@ -391,7 +374,7 @@ export type SlowModifier = {
  * ```
  */
 export type ClipModifier = {
-    readonly name: Extract<PatternModifierName, 'clip'>
+    readonly name: 'clip'
     readonly args: readonly [NumericPattern]
 }
 
@@ -405,7 +388,7 @@ export type ClipModifier = {
  * ```
  */
 export type ReverseModifier = {
-    readonly name: Extract<PatternModifierName, 'rev'>
+    readonly name: 'rev'
     readonly args?: readonly []
 }
 
@@ -419,7 +402,7 @@ export type ReverseModifier = {
  * ```
  */
 export type DegradeModifier = {
-    readonly name: Extract<PatternModifierName, 'degrade'>
+    readonly name: 'degrade'
     readonly args?: readonly []
 }
 
@@ -433,7 +416,7 @@ export type DegradeModifier = {
  * ```
  */
 export type UndegradeModifier = {
-    readonly name: Extract<PatternModifierName, 'undegrade'>
+    readonly name: 'undegrade'
     readonly args?: readonly []
 }
 
@@ -450,19 +433,19 @@ export type UndegradeModifier = {
  * ```
  */
 export type EveryModifier = {
-    readonly name: Extract<PatternModifierName, 'every'>
+    readonly name: 'every'
     readonly args: readonly [number, PatternCallback]
 }
 
 /** Applies a callback starting from the first cycle. */
 export type FirstOfModifier = {
-    readonly name: Extract<PatternModifierName, 'firstOf'>
+    readonly name: 'firstOf'
     readonly args: readonly [number, PatternCallback]
 }
 
 /** Applies a callback starting from the last cycle. */
 export type LastOfModifier = {
-    readonly name: Extract<PatternModifierName, 'lastOf'>
+    readonly name: 'lastOf'
     readonly args: readonly [number, PatternCallback]
 }
 
@@ -479,26 +462,80 @@ export type LastOfModifier = {
  * ```
  */
 export type SometimesModifier = {
-    readonly name: Extract<PatternModifierName, 'sometimes'>
+    readonly name: 'sometimes'
     readonly args: readonly [PatternCallback]
 }
 
 /** Applies a callback with a high probability. */
 export type OftenModifier = {
-    readonly name: Extract<PatternModifierName, 'often'>
+    readonly name: 'often'
     readonly args: readonly [PatternCallback]
 }
 
 /** Applies a callback with a low probability. */
 export type RarelyModifier = {
-    readonly name: Extract<PatternModifierName, 'rarely'>
+    readonly name: 'rarely'
     readonly args: readonly [PatternCallback]
 }
 
 /** Applies a callback while a condition is active. */
 export type WhenModifier = {
-    readonly name: Extract<PatternModifierName, 'when'>
+    readonly name: 'when'
     readonly args: readonly [MiniPattern, PatternCallback]
+}
+
+/** Compresses a pattern into the given cycle interval. */
+export type CompressModifier = {
+    readonly name: 'compress'
+    readonly args: readonly [NumericPattern, NumericPattern]
+}
+
+/** Shifts a pattern earlier in time. */
+export type EarlyModifier = {
+    readonly name: 'early'
+    readonly args: readonly [NumericPattern]
+}
+
+/** Shifts a pattern later in time. */
+export type LateModifier = {
+    readonly name: 'late'
+    readonly args: readonly [NumericPattern]
+}
+
+/** Adds swing using the given subdivision. */
+export type SwingModifier = {
+    readonly name: 'swing'
+    readonly args: readonly [NumericPattern]
+}
+
+/** Adds swing with an explicit amount and subdivision. */
+export type SwingByModifier = {
+    readonly name: 'swingBy'
+    readonly args: readonly [NumericPattern, NumericPattern]
+}
+
+/** Applies a callback with the given probability. */
+export type SometimesByModifier = {
+    readonly name: 'sometimesBy'
+    readonly args: readonly [NumericPattern, PatternCallback]
+}
+
+/** Applies a callback within subdivided cycles. */
+export type InsideModifier = {
+    readonly name: 'inside'
+    readonly args: readonly [NumericPattern, PatternCallback]
+}
+
+/** Applies a callback across enlarged cycles. */
+export type OutsideModifier = {
+    readonly name: 'outside'
+    readonly args: readonly [NumericPattern, PatternCallback]
+}
+
+/** Layers a time-shifted, transformed copy of a pattern. */
+export type OffModifier = {
+    readonly name: 'off'
+    readonly args: readonly [NumericPattern, PatternCallback]
 }
 
 /**
@@ -532,6 +569,15 @@ export type PatternModifierCall =
     | OftenModifier
     | RarelyModifier
     | WhenModifier
+    | CompressModifier
+    | EarlyModifier
+    | LateModifier
+    | SwingModifier
+    | SwingByModifier
+    | SometimesByModifier
+    | InsideModifier
+    | OutsideModifier
+    | OffModifier
 
 /**
  * A serializable Strudel pattern made from a factory and optional modifiers.

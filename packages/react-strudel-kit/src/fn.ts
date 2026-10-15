@@ -1,99 +1,63 @@
 import type {
-    MiniPattern,
-    NumericPattern,
-    PatternCallback,
-    PatternExpression,
-    PatternModifierCall,
+    PatternExpression, PatternFactoryCall, PatternFactoryName, PatternModifierCall,
+    PatternModifierName, StrudelArgument,
 } from './types'
-import { pattern } from './builders'
-import type { PatternFactoryCall } from './types'
 import { functionRegistry, type FactoryFunctionName, type FunctionName, type ModifierFunctionName } from './registry'
 
-type ChildPatterns = readonly [PatternExpression, ...PatternExpression[]]
-type CallbackArgs = readonly [PatternCallback]
-type CycleCallbackArgs = readonly [number, PatternCallback]
-type NumericCallbackArgs = readonly [NumericPattern, PatternCallback]
+type RuntimeCall<Name extends FunctionName> = Extract<
+    PatternFactoryCall | PatternModifierCall,
+    { readonly name: typeof functionRegistry[Name]['runtime'] }
+>
 
-type FunctionArguments = {
-    sample: readonly [MiniPattern]
-    sound: readonly [MiniPattern]
-    note: readonly [MiniPattern]
-    n: readonly [NumericPattern]
-    stack: ChildPatterns
-    layer: ChildPatterns
-    sequence: ChildPatterns
-    cat: ChildPatterns
-    silence: readonly []
-    gain: readonly [NumericPattern]
-    velocity: readonly [NumericPattern]
-    pan: readonly [NumericPattern]
-    orbit: readonly [NumericPattern]
-    lowPass: readonly [NumericPattern]
-    highPass: readonly [NumericPattern]
-    room: readonly [NumericPattern]
-    size: readonly [NumericPattern]
-    fast: readonly [NumericPattern]
-    slow: readonly [NumericPattern]
-    clip: readonly [NumericPattern]
-    compress: readonly [NumericPattern, NumericPattern]
-    early: readonly [NumericPattern]
-    late: readonly [NumericPattern]
-    swing: readonly [NumericPattern]
-    swingBy: readonly [NumericPattern, NumericPattern]
-    rev: readonly []
-    degrade: readonly []
-    undegrade: readonly []
-    every: CycleCallbackArgs
-    firstOf: CycleCallbackArgs
-    lastOf: CycleCallbackArgs
-    sometimes: CallbackArgs
-    often: CallbackArgs
-    rarely: CallbackArgs
-    sometimesBy: NumericCallbackArgs
-    inside: NumericCallbackArgs
-    outside: NumericCallbackArgs
-    off: NumericCallbackArgs
-    when: readonly [MiniPattern, PatternCallback]
+/** Argument tuple for a supported function, derived from its runtime call. */
+export type FunctionArguments<Name extends FunctionName> = NonNullable<RuntimeCall<Name>['args']>
+
+type FunctionResults = {
+    [Name in FactoryFunctionName]: Pick<PatternExpression, 'chain'> & { readonly root: RuntimeCall<Name> }
+} & {
+    [Name in ModifierFunctionName]: RuntimeCall<Name> & { readonly args: FunctionArguments<Name> }
 }
 
-const isFactory = (name: FunctionName): name is FactoryFunctionName => functionRegistry[name].kind === 'factory'
+/** Exact runtime call for modifiers, or a typed expression for factories. */
+export type FunctionResult<Name extends FunctionName> = FunctionResults[Name]
 
-const toFactoryCall = (name: FactoryFunctionName, args: readonly unknown[]): PatternFactoryCall => {
-    const runtimeName = functionRegistry[name].runtime
+type UnionToIntersection<Union> = (
+    Union extends unknown ? (value: Union) => void : never
+) extends (value: infer Intersection) => void ? Intersection : never
 
-    if (runtimeName === 'silence') {
-        return { name: 'silence' }
+type FunctionApi = UnionToIntersection<{
+    [Name in FunctionName]: (name: Name, ...args: FunctionArguments<Name>) => FunctionResult<Name>
+}[FunctionName]>
+
+type RuntimeResult =
+    | { readonly root: { readonly name: PatternFactoryName; readonly args?: readonly StrudelArgument[] } }
+    | { readonly name: PatternModifierName; readonly args?: readonly StrudelArgument[] }
+
+const createFunction = (name: FunctionName, ...args: readonly StrudelArgument[]): RuntimeResult => {
+    const entry = functionRegistry[name]
+    if (entry.kind === 'factory') {
+        return {
+            root: entry.runtime === 'silence'
+                ? { name: entry.runtime }
+                : { name: entry.runtime, args },
+        } satisfies RuntimeResult
     }
-
-    return { name: runtimeName as PatternFactoryCall['name'], args } as PatternFactoryCall
+    return { name: entry.runtime, args } satisfies RuntimeResult
 }
 
-const toModifierCall = (name: ModifierFunctionName, args: readonly unknown[]): PatternModifierCall => {
-    return { name: functionRegistry[name].runtime as PatternModifierCall['name'], args } as PatternModifierCall
-}
-
+// The implementation constructs the mapped runtime name and forwards its arguments.
+// The assertion exposes one checked overload per registry entry, without allowing
+// a generic union name to mix one function's arguments with another's name.
 /**
  * Creates a typed function expression from the shared function registry.
  *
- * Domain names are mapped to Strudel names during serialization, so callers
- * can use `sample`, `layer`, and `lowPass` without importing one helper per function.
+ * Domain names map to Strudel names, such as `sample` -> `s` and `lowPass` -> `lpf`.
+ * Both argument tuples and return types derive from the runtime call contracts.
  *
  * @example
  * ```ts
- * const expression = fn(
- *   'stack',
- *   fn('sample', mini('bd')),
- *   fn('note', mini('c3 eb3')),
- * )
+ * fn('stack', fn('sample', mini('bd')), fn('note', mini('c3 eb3')))
  * // stack(s("bd"), note("c3 eb3"))
  * ```
  */
-export function fn<Name extends FunctionName>(name: Name, ...args: FunctionArguments[Name]):
-    Name extends FactoryFunctionName ? PatternExpression : PatternModifierCall
-export function fn(name: FunctionName, ...args: readonly unknown[]): PatternExpression | PatternModifierCall {
-    if (isFactory(name)) {
-        return pattern(toFactoryCall(name, args))
-    }
-
-    return toModifierCall(name, args)
-}
+export const fn = createFunction as FunctionApi

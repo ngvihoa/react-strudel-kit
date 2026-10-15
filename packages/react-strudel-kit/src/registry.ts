@@ -1,8 +1,9 @@
+import type { PatternFactoryName, PatternModifierName } from './types'
+
 /** Describes how a domain function maps to the Strudel runtime. */
-export type FunctionRegistryEntry = {
-    readonly runtime: string
-    readonly kind: 'factory' | 'modifier'
-}
+export type FunctionRegistryEntry =
+    | { readonly runtime: PatternFactoryName; readonly kind: 'factory' }
+    | { readonly runtime: PatternModifierName; readonly kind: 'modifier' }
 
 /**
  * The domain-to-Strudel function registry.

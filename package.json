@@ -8,14 +8,14 @@
     "predev": "npm run build:package",
     "dev": "vite",
     "build": "npm run typecheck && vite build",
-    "typecheck": "npm run build:package && tsc -b && tsc -p packages/react-strudel-kit/tsconfig.test.json",
+    "typecheck": "npm run build:package && tsc -b && tsc -p packages/react-strudel-kit/tsconfig.test.json && tsc -p src/test/tsconfig.public-api.json",
     "lint": "eslint .",
     "preview": "vite preview",
     "pretest": "npm run build:package",
     "test": "vitest",
     "test:ui": "npm test -- --ui",
     "coverage": "npm test -- --run --coverage",
-    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.json && vite build --config packages/react-strudel-kit/vite.config.ts"
+    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.build.json && vite build --config packages/react-strudel-kit/vite.config.ts"
   },
   "dependencies": {
     "react-strudel-kit": "*",

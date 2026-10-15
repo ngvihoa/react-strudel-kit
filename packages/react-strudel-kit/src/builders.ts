@@ -106,9 +106,9 @@ export const when = (condition: MiniPattern, callback: PatternCallback): Pattern
 /**
  * Appends modifiers to a typed pattern expression.
  *
- * @param input A typed expression or raw Strudel code.
+ * @param input A typed pattern expression.
  * @param modifiers Modifiers to append in order.
- * @returns A typed pattern expression, or the raw input unchanged when given a string.
+ * @returns A typed pattern expression with the appended modifiers.
  */
 export const chain = (input: PatternExpression, ...modifiers: readonly PatternModifierCall[]): PatternExpression => ({
     root: input.root,
