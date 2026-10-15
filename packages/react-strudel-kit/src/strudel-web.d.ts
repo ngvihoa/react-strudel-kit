@@ -29,3 +29,13 @@ declare module '@strudel/web' {
 declare module '@strudel/mini/krill-parser.js' {
     export function parse(code: string, options?: { startRule?: string }): unknown
 }
+
+// The pinned ESM bundle lets integration tests query patterns without audio.
+declare module '@strudel/web/dist/index.mjs' {
+    export function m(code: string): {
+        queryArc: (begin: number, end: number) => {
+            value: unknown
+            whole: { begin: unknown; end: unknown }
+        }[]
+    }
+}

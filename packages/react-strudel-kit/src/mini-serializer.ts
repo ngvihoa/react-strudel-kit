@@ -1,22 +1,21 @@
 import type { MiniNode } from './mini-ast'
 
-/**
- * Converts a typed Mini-Notation AST into a Strudel Mini-Notation string.
- *
- * @param value The typed Mini-Notation node to serialize.
- * @returns A Mini-Notation string accepted by Strudel.
- *
- * @example
- * ```ts
- * toMiniNotation(sequence(
- *   repeat(sample('bd'), 4),
- *   rest(),
- *   sample('sd'),
- * ))
- * // 'bd*4 ~ sd'
- * ```
- */
-export const toMiniNotation = (value: MiniNode): string => {
+// Sequences contain slices; stack/choice/polymeter lanes contain sequences.
+// Operators need their own slice so nested weights and modifiers stay scoped.
+type Context = 'root' | 'slice' | 'lane' | 'operand'
+
+const serialize = (value: MiniNode, context: Context): string => {
+    const code = serializeNode(value)
+    const grouped = value.kind === 'raw'
+        || value.kind === 'stack'
+        || value.kind === 'choice'
+        || (value.kind === 'sequence' && context !== 'lane')
+        || (context === 'operand' && ['repeat', 'speed', 'weight', 'degrade'].includes(value.kind))
+
+    return context !== 'root' && grouped ? `[${code}]` : code
+}
+
+const serializeNode = (value: MiniNode): string => {
     switch (value.kind) {
         case 'sample':
         case 'pitch':
@@ -27,22 +26,33 @@ export const toMiniNotation = (value: MiniNode): string => {
         case 'rest':
             return '~'
         case 'sequence':
-            return value.items.map(toMiniNotation).join(' ')
+            return value.items.map((item) => serialize(item, 'slice')).join(' ')
         case 'stack':
-            return value.items.map(toMiniNotation).join(', ')
+            return value.items.map((item) => serialize(item, 'lane')).join(', ')
         case 'choice':
-            return value.items.map(toMiniNotation).join(' | ')
+            return value.items.map((item) => serialize(item, 'lane')).join(' | ')
         case 'subcycle':
-            return `[${toMiniNotation(value.value)}]`
+            return `[${serialize(value.value, 'root')}]`
         case 'polymeter':
-            return `{${value.items.map(toMiniNotation).join(', ')}}`
+            return `{${value.items.map((item) => serialize(item, 'lane')).join(', ')}}`
         case 'repeat':
-            return `${toMiniNotation(value.value)}*${value.times}`
+            return `${serialize(value.value, 'operand')}*${value.times}`
         case 'speed':
-            return `${toMiniNotation(value.value)}${value.direction === 'fast' ? '*' : '/'}${value.factor}`
+            return `${serialize(value.value, 'operand')}${value.direction === 'fast' ? '*' : '/'}${value.factor}`
         case 'weight':
-            return `${toMiniNotation(value.value)}@${value.amount}`
+            return `${serialize(value.value, 'operand')}@${value.amount}`
         case 'degrade':
-            return `${toMiniNotation(value.value)}${value.probability === undefined ? '?' : `?${value.probability}`}`
+            return `${serialize(value.value, 'operand')}${value.probability === undefined ? '?' : `?${value.probability}`}`
     }
 }
+
+/**
+ * Converts a typed AST into Mini-Notation, preserving nested timing and scope.
+ *
+ * @example
+ * ```ts
+ * toMiniNotation(fast(sequence(sample('bd'), sample('sd')), 2))
+ * // '[bd sd]*2'
+ * ```
+ */
+export const toMiniNotation = (value: MiniNode): string => serialize(value, 'root')

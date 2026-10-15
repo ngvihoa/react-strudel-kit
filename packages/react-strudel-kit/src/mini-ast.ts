@@ -108,7 +108,7 @@ export const number = (value: number): MiniNode => {
 /** Creates a rest represented by `~`. */
 export const rest = (): MiniNode => node({ kind: 'rest' })
 
-/** Adds an intentional raw Mini-Notation token to the AST. */
+/** Adds an opaque Mini-Notation fragment, grouped when nested in another node. */
 export const raw = (value: string): MiniNode => node({ kind: 'raw', value })
 
 /** Creates a whitespace-separated Mini-Notation sequence. */

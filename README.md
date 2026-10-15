@@ -74,6 +74,26 @@ Domain names such as `sample`, `layer`, and `lowPass` are mapped to Strudel
 runtime names by the shared registry. Invalid function names and argument
 shapes are rejected by TypeScript.
 
+## Nested Mini-Notation
+
+AST nodes preserve their nesting when serialized:
+
+```ts
+import { fast, sample, sequence, toMiniNotation } from 'react-strudel-kit'
+
+toMiniNotation(fast(sequence(sample('bd'), sample('sd')), 2))
+// '[bd sd]*2': both notes play twice per cycle.
+
+toMiniNotation(sequence(sample('bd'), sequence(sample('sd'), sample('hh'))))
+// 'bd [sd hh]': sd and hh share the second step.
+```
+
+Nested parallel patterns, choices, and modifier operands are grouped as well.
+Sequence lanes inside a stack, choice, or polymeter keep their full step counts.
+`raw(...)` is an opaque escape hatch: root fragments remain verbatim, while
+nested fragments are enclosed in brackets. Use typed `sequence(...)` nodes
+when individual steps must be exposed to a polymeter lane.
+
 ## Development
 
 ```bash
