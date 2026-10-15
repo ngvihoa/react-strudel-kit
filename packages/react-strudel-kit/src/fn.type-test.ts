@@ -1,6 +1,4 @@
-import { fn } from './fn'
-import { mini } from './mini'
-import { pitch, sequence } from './mini-ast'
+import { fn, mini, pitch, sequence } from './index'
 
 fn('sample', mini('bd'))
 fn('note', sequence(pitch('c3'), pitch('eb3')))

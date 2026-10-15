@@ -3,6 +3,37 @@
 This repository contains a typed Strudel domain model, the `react-strudel-kit`
 package, and a Vite playground.
 
+The package implementation lives in `packages/react-strudel-kit/src`; the
+playground consumes its built entrypoints. Editor state and localStorage remain
+in the playground.
+
+## React playback API
+
+Import React integration separately from pattern helpers:
+
+```tsx
+import { fn, mini } from 'react-strudel-kit'
+import { useStrudel } from 'react-strudel-kit/react'
+
+function Player() {
+  const { play, stop, status, error } = useStrudel()
+
+  return (
+    <>
+      <button onClick={() => play(fn('sample', mini('bd')))}>Play</button>
+      <button onClick={stop}>Stop</button>
+      <output>{status}</output>
+      {error && <p role="alert">{error.message}</p>}
+    </>
+  )
+}
+```
+
+`play(input)` accepts Strudel code, a typed `PatternExpression`, or a native
+pattern with a `play()` method. The hook owns transport state; consumers own
+their editor content and persistence. Lifecycle hardening (shared engine,
+initialization errors, concurrent playback, and Strict Mode) is still pending.
+
 ## Typed function API
 
 Use one registry function instead of importing one helper per Strudel function:
@@ -26,10 +57,18 @@ shapes are rejected by TypeScript.
 ## Development
 
 ```bash
+npm install
+npm run dev
 npm run build
 npm test -- --run
 npm run lint
 ```
+
+`dev`, `build`, and `test` build the workspace package first. After editing
+package source during a dev or test watch session, run `npm run build:package`
+again. `build` also checks app, package, and type-test files. Unit tests live
+beside the package implementation; playground integration tests import the
+built package through its public exports and mock the audio engine.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

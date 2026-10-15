@@ -1,5 +1,6 @@
 import './App.css'
-import { useStrudel } from './hooks/useStrudel'
+import { useStrudel } from 'react-strudel-kit/react'
+import { usePlaygroundCode } from './hooks/usePlaygroundCode'
 
 const STORAGE_KEY = 'trudel-playground-code'
 const DEFAULT_CODE = `setcpm(110)
@@ -11,7 +12,13 @@ stack(
 
 
 function App() {
-  const { code, setCode, status, error, play, stop, reset } = useStrudel({ key: STORAGE_KEY, code: DEFAULT_CODE })
+  const { code, setCode, reset: resetCode } = usePlaygroundCode({ key: STORAGE_KEY, code: DEFAULT_CODE })
+  const { status, error, play, stop } = useStrudel()
+
+  const reset = () => {
+    stop()
+    resetCode()
+  }
 
   return (
     <main className="app-shell">
@@ -64,7 +71,7 @@ function App() {
 
         <div className="controls-row">
           <div className="button-group">
-            <button className="play-button" type="button" onClick={play}>
+            <button className="play-button" type="button" onClick={() => play(code)}>
               <span className="play-icon">▶</span> Play pattern
             </button>
             <button className="stop-button" type="button" onClick={stop}>Stop</button>
@@ -73,7 +80,7 @@ function App() {
           <p className="shortcut"><kbd>⌘</kbd><kbd>↵</kbd> to play</p>
         </div>
 
-        {error && <div className="error-box" role="alert">{error}</div>}
+        {error && <div className="error-box" role="alert">{error.message}</div>}
       </section>
 
       <section className="quick-start">
