@@ -7,11 +7,23 @@ declare module '@strudel/web' {
 
     export function hush(): void
 
+    export type StrudelRepl = {
+        evaluate: (code: string, autoplay?: boolean) => Promise<unknown>
+        setPattern: (pattern: Pattern, autoplay?: boolean) => Promise<unknown>
+        start: () => Promise<void>
+        stop: () => void
+        state: { evalError?: unknown }
+    }
+
+    export function getAudioContext(): AudioContext
+
+    export function initAudio(): Promise<void>
+
     export function initStrudel(options?: {
         miniAllStrings?: boolean
         prebake?: () => unknown | Promise<unknown>
         [key: string]: unknown
-    }): Promise<unknown>
+    }): Promise<StrudelRepl>
 }
 
 declare module '@strudel/mini/krill-parser.js' {

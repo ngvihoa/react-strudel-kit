@@ -3,11 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { evaluate, hush } from '@strudel/web'
 import App from './App'
 
-vi.mock('@strudel/web', () => ({
-    evaluate: vi.fn(),
-    hush: vi.fn(),
-    initStrudel: vi.fn(),
-}))
+vi.mock('@strudel/web', async () => {
+    const { createMockWeb } = await import('../packages/react-strudel-kit/test/mockWeb')
+    return createMockWeb()
+})
 
 describe('playground using the built React package', () => {
     beforeEach(() => {
@@ -24,8 +23,9 @@ describe('playground using the built React package', () => {
         fireEvent.click(screen.getByRole('button', { name: /Play pattern/ }))
 
         await waitFor(() => expect(screen.getByText('live session')).toBeInTheDocument())
-        expect(evaluate).toHaveBeenCalledWith('note("c3")')
+        expect(evaluate).toHaveBeenCalledWith('note("c3")', false)
 
+        vi.mocked(hush).mockClear()
         fireEvent.click(screen.getByRole('button', { name: 'Stop' }))
         expect(hush).toHaveBeenCalledOnce()
         expect(screen.getByText('ready to play')).toBeInTheDocument()

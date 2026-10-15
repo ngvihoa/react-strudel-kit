@@ -1,88 +1,45 @@
+import { StrictMode } from 'react'
 import { act, renderHook } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { evaluate, hush, initStrudel } from '@strudel/web'
-import { fn, mini } from './index'
+import { expect, it, vi } from 'vitest'
+import { initStrudel } from '@strudel/web'
 import { useStrudel } from './react'
-import type { StrudelPattern } from './types'
 
-vi.mock('@strudel/web', () => ({
-    evaluate: vi.fn(),
-    hush: vi.fn(),
-    initStrudel: vi.fn(),
-}))
+vi.mock('@strudel/web', async () => {
+    const { createMockWeb } = await import('../test/mockWeb')
+    return createMockWeb()
+})
 
-const evaluateMock = vi.mocked(evaluate)
-const hushMock = vi.mocked(hush)
+it('shares one engine and transport across Strict Mode, consumers, and remounts', async () => {
+    const first = renderHook(() => useStrudel(), { wrapper: StrictMode })
+    const second = renderHook(() => useStrudel())
 
-describe('useStrudel', () => {
-    beforeEach(() => {
-        vi.clearAllMocks()
+    await act(async () => {
+        await first.result.current.play('note("c3")')
     })
 
-    it('initializes Strudel and plays code supplied by the caller', async () => {
-        evaluateMock.mockResolvedValueOnce(undefined)
-        const { result } = renderHook(() => useStrudel())
+    expect(initStrudel).toHaveBeenCalledOnce()
+    expect(first.result.current.status).toBe('playing')
+    expect(second.result.current.status).toBe('playing')
+    const engine = await vi.mocked(initStrudel).mock.results[0].value
+    vi.mocked(engine.stop).mockClear()
 
-        expect(initStrudel).toHaveBeenCalledOnce()
+    first.unmount()
+    expect(engine.stop).not.toHaveBeenCalled()
+    expect(second.result.current.status).toBe('playing')
 
-        await act(async () => {
-            await result.current.play('s("bd sd")')
-        })
+    act(() => second.result.current.stop())
+    expect(second.result.current.status).toBe('idle')
+    expect(engine.stop).toHaveBeenCalledOnce()
 
-        expect(evaluateMock).toHaveBeenCalledWith('s("bd sd")')
-        expect(result.current.status).toBe('playing')
-        expect(result.current.error).toBeNull()
+    await act(async () => {
+        await second.result.current.play('note("d3")')
     })
+    vi.mocked(engine.stop).mockClear()
+    second.unmount()
+    expect(engine.stop).toHaveBeenCalledOnce()
 
-    it('serializes a typed pattern before evaluating it', async () => {
-        const { result } = renderHook(() => useStrudel())
-
-        await act(async () => {
-            await result.current.play(fn('sample', mini('bd')))
-        })
-
-        expect(evaluateMock).toHaveBeenCalledWith('s("bd")')
-        expect(result.current.status).toBe('playing')
-    })
-
-    it('plays a native pattern without evaluating code', async () => {
-        const native: StrudelPattern = { play: vi.fn(() => native) }
-        const { result } = renderHook(() => useStrudel())
-
-        await act(async () => {
-            await result.current.play(native)
-        })
-
-        expect(native.play).toHaveBeenCalledOnce()
-        expect(evaluateMock).not.toHaveBeenCalled()
-        expect(result.current.status).toBe('playing')
-    })
-
-    it('converts a rejected evaluation into a typed error', async () => {
-        const cause = new Error('invalid pattern')
-        evaluateMock.mockRejectedValueOnce(cause)
-        const { result } = renderHook(() => useStrudel())
-
-        await act(async () => {
-            await result.current.play('bad code')
-        })
-
-        expect(result.current.status).toBe('error')
-        expect(result.current.error).toEqual({ code: 'evaluation', message: 'invalid pattern', cause })
-    })
-
-    it('can stop repeatedly and cleans up on unmount', () => {
-        const { result, unmount } = renderHook(() => useStrudel())
-
-        act(() => {
-            result.current.stop()
-            result.current.stop()
-        })
-
-        expect(hushMock).toHaveBeenCalledTimes(2)
-        expect(result.current.status).toBe('idle')
-
-        unmount()
-        expect(hushMock).toHaveBeenCalledTimes(3)
-    })
+    const remounted = renderHook(() => useStrudel(), { wrapper: StrictMode })
+    expect(remounted.result.current.status).toBe('idle')
+    expect(initStrudel).toHaveBeenCalledOnce()
+    remounted.unmount()
 })

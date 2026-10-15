@@ -30,9 +30,29 @@ function Player() {
 ```
 
 `play(input)` accepts Strudel code, a typed `PatternExpression`, or a native
-pattern with a `play()` method. The hook owns transport state; consumers own
-their editor content and persistence. Lifecycle hardening (shared engine,
-initialization errors, concurrent playback, and Strict Mode) is still pending.
+native Strudel pattern with a `play()` method. The hook owns transport state;
+consumers own their editor content and persistence.
+
+All mounted hooks share one engine and observe the same `status` and `error`.
+The engine initializes once, including under React Strict Mode. Play waits for
+initialization and resumes browser audio from the calling event handler; invoke
+it from a click or keyboard gesture. Initialization failures can be retried with
+Play. Errors carry an `initialization`, `evaluation`, or `transport` code.
+
+Playback requests are serialized, and only the latest request starts playback.
+Stop cancels pending requests and clears the current error. Unmounting one
+consumer leaves others playing; unmounting the last consumer stops playback
+and invalidates pending work. A scheduler start already in progress is stopped
+again when it settles after cancellation. The engine and Strudel-owned audio
+context are retained for remounts; this hook does not close that shared context.
+
+The adapter targets `@strudel/web` **1.3.0** (pinned). It prepares patterns without
+autoplay, checks evaluation errors in the returned engine state, and awaits
+explicit scheduler start. Native patterns use `setPattern` rather than their
+fire-and-forget `.play()` method. Automated lifecycle tests mock the Strudel
+and Web Audio boundaries. A Chrome smoke check also covers synth playback
+state, Stop, syntax errors, recovery, rapid Play/Stop, and persistence on reload.
+Audible output and browser/device compatibility still need manual validation.
 
 ## Typed function API
 
