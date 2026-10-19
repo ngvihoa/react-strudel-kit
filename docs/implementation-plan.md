@@ -1,6 +1,111 @@
 # Implementation Plan
 
-> **Tài liệu thiết kế ban đầu, giữ để tham khảo.** Các đề xuất dưới đây không phản ánh đầy đủ trạng thái triển khai hiện tại. Xem [usage guide](usage.md) và [README](../README.md) để dùng API đang được hỗ trợ.
+> **Kế hoạch tiếp theo được ghi ở phần cập nhật bên dưới.** Các mục từ “Tên tạm” trở đi là tài liệu thiết kế ban đầu, giữ để tham khảo và không phản ánh đầy đủ trạng thái triển khai hiện tại. Xem [usage guide](usage.md) và [README](../README.md) để dùng API đang được hỗ trợ.
+
+## Cập nhật 2026-10-20: Trang hướng dẫn, examples và Sound Cookbook
+
+### Mục tiêu và phạm vi
+
+Phát triển reference app thành nơi học cách sử dụng **react-strudel-kit**:
+đọc giải thích, nghe kết quả, thay đổi thông số và hiểu cách tự xây dựng bản nhạc.
+Giữ lại mixer và code editor hiện tại. Tận dụng Vite app đang có trước khi
+cân nhắc framework tài liệu hoặc tách app riêng.
+
+Đây là kế hoạch chưa triển khai. Chưa có template UI hoàn chỉnh; cần thiết kế
+template và thực hiện một bài mẫu trước khi mở rộng nội dung.
+
+### Cấu trúc điều hướng
+
+| Phần | Nội dung và vai trò |
+| --- | --- |
+| Hướng dẫn | Bài học theo trình tự: phát âm thanh, tạo nhịp, thêm bass, ghép các phần và điều khiển bằng React |
+| Sound Cookbook | Phân loại âm thanh, giải thích cách tạo và các cách triển khai bằng kit |
+| Examples | Mỗi ví dụ có trang riêng, mục tiêu học, code, giải thích và player tương tác |
+| Playground | Giữ mixer và editor để thử nghiệm tự do |
+| API Reference | Tra cứu helper, tham số, kiểu dữ liệu, hành vi và giới hạn được hỗ trợ |
+
+### Hướng template UI
+
+- Sidebar trái cho điều hướng bài học và nhóm âm thanh.
+- Nội dung giữa cho giải thích, code và các bước thực hành.
+- Player cạnh nội dung trên desktop; đặt trong luồng bài học trên mobile.
+- Trang hướng dẫn ưu tiên cách đọc và làm theo; trang example ưu tiên player,
+  mixer và code. Dùng chung màu sắc, typography và component.
+- Player có Play/Stop, trạng thái phát, lỗi và các thông số phù hợp với bài học.
+- Giữ nguyên nguyên tắc audio hiện tại: chỉ phát sau thao tác người dùng,
+  chỉnh thông số khi đang dừng không autoplay, dùng `update` cho thay đổi khi
+  đang phát. Chuyển bài hoặc trang phải xử lý dừng và cleanup rõ ràng.
+
+### Lộ trình examples từ đơn giản đến phức tạp
+
+| Mức | Ví dụ dự kiến | Nội dung học |
+| --- | --- | --- |
+| Cơ bản | Một âm, bốn nốt, nốt dài và khoảng nghỉ | `pitch`, `sequence`, `weight`, `rest` |
+| Nhịp điệu | Kick đều, snare backbeat, hi-hat có accent | `sample`, `repeat`, pattern điều khiển và phối hợp nhịp |
+| Hòa âm | Bassline, chord và arpeggio | Cao độ, hợp âm và nhiều ô nhịp |
+| Phối khí | Drum groove + bass + melody | `cat`, `stack` và cân bằng âm lượng |
+| React | Player, mute/solo, đổi âm và tempo | `play`, `update` và React state |
+| Tổng hợp | Dance Monkey và các đoạn nhạc tự sáng tác thuộc nhiều phong cách | Kết hợp các kỹ thuật đã học |
+
+Mỗi ví dụ có một mục tiêu học rõ ràng. Đa dạng cả kỹ thuật, nhịp và phong cách,
+không chỉ tăng độ dài code hoặc tập trung vào các bản phối hoàn chỉnh.
+Dance Monkey là bài tổng hợp, đặt sau các ví dụ nhỏ về từng thành phần.
+
+### Sound Cookbook: Phân loại âm thanh và cách triển khai
+
+Nhóm nội dung dự kiến: **percussion** (kick, snare, hi-hat…), **bass**,
+**lead**, **keys** và **pad**. Tách rõ ba việc: tạo chất âm, viết nhịp và
+đưa âm đó vào bản phối.
+
+Mỗi trang âm thanh có:
+
+1. Nghe thử âm riêng lẻ.
+2. Code tối thiểu, dùng các helper của kit một cách tường minh.
+3. Giải thích từng thành phần tạo âm và đơn vị của thông số.
+4. Các điều khiển tương tác để nghe sự khác biệt khi chỉnh thông số.
+5. Một đoạn nhịp hoặc bản phối nhỏ sử dụng âm đó, liên kết đến example liên quan.
+
+Các bài đầu tiên:
+
+- **Kick:** sine wave, pitch sweep và amplitude decay; phân biệt envelope
+  cao độ với envelope biên độ.
+- **Snare:** white noise, filter và envelope để tạo tiếng đánh ngắn.
+- **Hi-hat:** cùng nguồn white noise nhưng filter và decay khác snare;
+  giải thích accent và pattern gain.
+- **Bass và keys:** giải thích lựa chọn oscillator, cao độ, envelope và
+  vai trò trong bản phối, sau các bài percussion đầu tiên.
+
+Có thể bổ sung nhiều cách triển khai cùng một loại âm, như tổng hợp âm và
+dùng sample khi API hỗ trợ. Ghi rõ cách dùng sample, yêu cầu tải dữ liệu và
+giới hạn thực tế; không trình bày tính năng dự kiến như tính năng đã có.
+
+### Nguyên tắc nội dung và code
+
+- Code hiển thị phải lấy từ chính ví dụ đang chạy, tránh duy trì hai bản riêng
+  cho tài liệu và playback. Chọn cơ chế chia sẻ source khi triển khai bài mẫu.
+- Dạy bằng `pitch`, `rest`, `sequence`, `weight`, `repeat`, `sample`, `number`
+  trước; giới thiệu `mini(...)` như lựa chọn bổ sung sau khi hiểu cấu trúc.
+- Viết để người đọc hiểu: từng nốt, khoảng nghỉ, ô nhịp và bước chỉnh âm có
+  giải thích. Không nén ví dụ bằng chuỗi ký hiệu hoặc abstraction khó theo dõi.
+- Phân biệt `repeat` với `weight`, thời lượng tương đối với đơn vị tuyệt đối,
+  và nhịp của pattern âm thanh với nhịp của pattern điều khiển.
+- README và quickstart cần dùng cùng cách tiếp cận với bài học đầu tiên.
+- Chỉ dùng API thực tế được hỗ trợ; API Reference dẫn đến example có thể chạy.
+
+### Thứ tự implementation và tiêu chí hoàn thành
+
+- [ ] Thiết kế template UI cho trang hướng dẫn, trang example và Sound Cookbook;
+  kiểm tra bố cục desktop/mobile trước khi nhân rộng.
+- [ ] Dựng khung điều hướng trong app hiện tại, tích hợp lại playground.
+- [ ] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
+  code hiển thị và playback dùng cùng source.
+- [ ] Thêm các example cơ bản theo lộ trình và ba bài Cookbook đầu tiên:
+  kick, snare, hi-hat; có liên kết qua lại giữa bài học và ví dụ.
+- [ ] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung
+  API Reference và đồng bộ README/quickstart theo API hiện hành.
+- [ ] Kiểm tra điều hướng, responsive, keyboard và audio lifecycle;
+  xác minh code mẫu chạy được, thông số thay đổi đúng như giải thích và
+  playground hiện tại vẫn hoạt động.
 
 ## Tên tạm
 
