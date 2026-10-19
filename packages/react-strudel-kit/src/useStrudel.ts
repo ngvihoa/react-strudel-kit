@@ -8,5 +8,5 @@ const transport = createTransport({ createEngine, unlockAudio })
 /** Controls Strudel playback; editor state and persistence belong to the app. */
 export const useStrudel = (): UseStrudelResult => {
     const snapshot = useSyncExternalStore(transport.subscribe, transport.getSnapshot, transport.getServerSnapshot)
-    return { ...snapshot, play: transport.play, stop: transport.stop }
+    return { ...snapshot, play: transport.play, update: transport.update, stop: transport.stop }
 }

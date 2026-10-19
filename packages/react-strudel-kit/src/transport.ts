@@ -114,6 +114,31 @@ export const createTransport = (dependencies: Dependencies) => {
         await operation
     }
 
+    // Replace a running pattern without stopping or restarting the scheduler.
+    // Updates share the Play queue and revision, so Stop/unmount still win.
+    const update = async (input: StrudelInput) => {
+        if (snapshot.status !== 'playing' || !engine || !listeners.size) return
+        const activeEngine = engine
+        const request = ++revision
+        cancelReadiness()
+        const current = () => revision === request && listeners.size > 0
+        const operation = queue.then(async () => {
+            if (!current()) return
+            try {
+                await activeEngine.prepare(input)
+                if (current()) publish({ status: 'playing', error: null })
+            } catch (cause) {
+                if (!current()) return
+                const code = input !== null && typeof input === 'object' && 'play' in input
+                    ? 'transport' : 'evaluation'
+                const cleanupError = stopEngine()
+                publish({ status: 'error', error: cleanupError ?? toError(code, cause) })
+            }
+        })
+        queue = operation
+        await operation
+    }
+
     const subscribe = (listener: () => void) => {
         listeners.add(listener)
         const request = revision
@@ -134,6 +159,7 @@ export const createTransport = (dependencies: Dependencies) => {
         getSnapshot: () => snapshot,
         getServerSnapshot: () => idle,
         play,
+        update,
         stop,
     }
 }

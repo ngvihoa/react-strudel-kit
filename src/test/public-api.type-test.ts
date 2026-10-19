@@ -14,6 +14,13 @@ export const soundName: 'sound' = fn('sound', mini('bd')).root.name
 export const layerName: 'stack' = fn('layer', fn('silence')).root.name
 export const sequenceName: 'seq' = fn('sequence', fn('silence')).root.name
 export const cutoffName: 'lpf' = fn('lowPass', 900).name
+export const instrumentName: 's' = fn('instrument', mini('sine')).name
+export const tempoName: 'cpm' = fn('cpm', 24.5).name
+export const synth: PatternExpression = chain(
+    fn('note', mini('c3')), fn('instrument', mini('triangle')),
+    fn('attack', 0.01), fn('decay', 0.1), fn('sustain', 0.4), fn('release', 0.05),
+    fn('pitchEnvelope', 12), fn('pitchDecay', 0.04), fn('postGain', 0.8), fn('cpm', 30),
+)
 export const gain: GainModifier = fn('gain', 0.8)
 export const gainArguments: readonly [number | MiniPattern] = fn('gain', 0.8).args
 export const reverseArguments: readonly [] = fn('rev').args
@@ -40,9 +47,11 @@ export type AllRegistryEntriesHaveArguments = Assert<[MissingArguments] extends 
 
 declare const player: UseStrudelResult
 player.play(complete)
+player.update(complete)
 player.play('note("c3")')
 export const native: StrudelPattern = { play: () => native }
 player.play(native)
+player.update(native)
 
 // @ts-expect-error Unknown functions are not part of the registry.
 fn('unknown', 1)
@@ -50,6 +59,12 @@ fn('unknown', 1)
 fn('sample', 'bd sd')
 // @ts-expect-error Numeric controls reject arbitrary strings.
 fn('gain', 'loud')
+// @ts-expect-error Instrument names use validated Mini-Notation or typed ASTs.
+fn('instrument', 'sine')
+// @ts-expect-error Envelope times require numeric patterns.
+fn('attack', 'short')
+// @ts-expect-error Absolute cycles-per-minute tempo is a fixed number.
+fn('cpm', mini('30 60'))
 // @ts-expect-error Strict mode rejects null numeric arguments.
 fn('gain', null)
 // @ts-expect-error Strict mode rejects undefined factory inputs.

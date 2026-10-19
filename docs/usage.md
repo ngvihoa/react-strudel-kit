@@ -14,6 +14,11 @@ The core entrypoint can build/serialize patterns without initializing audio.
 The React entrypoint uses the Strudel browser bundle and is not an SSR entrypoint.
 No provider is required: hooks share a module-level transport.
 
+The playground defaults to an interactive **Mixer**, with Dance Monkey loaded.
+React state controls tempo, master volume, per-part volume, mute/solo and the
+pitched parts' waveform. It builds typed patterns and passes them to `play` or
+`update`. The optional **Code editor** keeps an independent saved draft.
+
 ## Playback contract
 
 ```ts
@@ -25,6 +30,7 @@ import type { StrudelInput, UseStrudelResult } from 'react-strudel-kit'
 | Member | Contract |
 | --- | --- |
 | `play(input: StrudelInput): Promise<void>` | Queue the latest pattern and wait for its operation to settle |
+| `update(input: StrudelInput): Promise<void>` | Replace the running pattern without restarting the scheduler; no-op while stopped |
 | `stop(): void` | Stop playback, invalidate pending Play requests, and clear the current error |
 | `status` | `idle`, `playing`, or `error` |
 | `error` | `StrudelError` or `null` |
@@ -42,6 +48,18 @@ only the current request may start playback. Stop also cancels a pending audio
 resume, allowing a fresh gesture to try again. Evaluation already in progress
 must settle before another evaluation can use the same engine. A scheduler start
 that settles after cancellation is stopped again.
+
+Live updates share that queue and cancellation revision. They prepare a new
+pattern without stopping, starting, or unlocking audio again. Status remains
+`playing` during an update. Stop/unmount cancels pending updates; changing
+controls after Stop never starts playback. A failed update stops playback and
+reports its error; an explicit Play can retry.
+
+The mixer uses `update` after playback starts, and replaces a pending initial
+Play if controls change during startup. Updates take effect in the scheduler's
+next scheduling window; they are not quantized to a beat/bar boundary. Changing
+`cpm` rescales a pattern against the running clock, so tempo changes can move
+the phrase position even though the scheduler is not restarted.
 
 All mounted consumers observe the same status/error. Removing one consumer
 leaves the others playing; removing the last consumer stops playback and
@@ -89,6 +107,9 @@ Mini-Notation AST. These modifier groups are currently supported:
 
 | Arguments | Modifier names accepted by `fn` |
 | --- | --- |
+| One Mini-Notation pattern | `instrument` (sets the sound on an existing note pattern) |
+| One fixed number | `cpm` (absolute cycles per minute; BPM / 4 for a 4/4 bar per cycle) |
+| One numeric pattern | `attack`, `decay`, `sustain`, `release`, `pitchEnvelope`, `pitchDecay`, `postGain` |
 | One numeric pattern | `gain`, `velocity`, `pan`, `orbit`, `lowPass`, `highPass`, `room`, `size`, `fast`, `slow`, `clip`, `early`, `late`, `swing` |
 | Two numeric patterns | `compress`, `swingBy` |
 | None | `rev`, `degrade`, `undegrade` |
@@ -101,6 +122,22 @@ Mini-Notation AST. These modifier groups are currently supported:
 objects, built with `patternCallback(...modifiers)`, rather than JavaScript
 functions. `FunctionArguments<'compress'>` and `FunctionResult<'lowPass'>`
 provide the corresponding public types.
+
+`instrument` maps to `.s(...)`, `pitchEnvelope` to `.penv(...)`, `pitchDecay`
+to `.pdecay(...)`, and `postGain` to `.postgain(...)`. Envelope times are in
+seconds; pitch-envelope depth is in semitones. `sustain` is a level, and
+`postGain` adjusts output while retaining each part's `gain`. `fn('sound', ...)`
+is a factory; `fn('instrument', ...)` is the modifier used inside `chain(...)`.
+
+```ts
+const bass = chain(
+  fn('note', mini('<c2 a1 f2 g2>')),
+  fn('instrument', mini('sine')),
+  fn('decay', 0.1), fn('sustain', 0.3), fn('release', 0.04),
+  fn('gain', 0.4), fn('cpm', 30),
+)
+// In a React user-gesture handler: await play(bass)
+```
 
 ## Composition and Mini-Notation
 
@@ -154,7 +191,9 @@ completed cross-version or cross-device test matrix.
 - **Nothing plays:** click Play directly or use the keyboard shortcut, check
   browser/site audio permissions, output volume, and the selected output device.
   Try the built-in Melody example to avoid sample-loading dependencies.
-- **Code edited but sound unchanged:** press Play again. Editing does not live-evaluate.
+- **Mixer controls:** changes apply live after Play. Mute, solo, zero part levels
+  or zero master volume can intentionally silence a mix. Reset mix restores it.
+- **Code editor changed but sound unchanged:** press Play again. Editing does not live-evaluate.
 - **Sample names produce no sound:** `@strudel/web` does not preload external
   sample banks by default. Follow the [sample-loading instructions](https://strudel.cc/learn/samples/#loading-custom-samples).
 - **Session only:** storage was blocked or a write failed. Editing and playback

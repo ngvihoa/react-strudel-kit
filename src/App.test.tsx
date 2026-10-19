@@ -1,120 +1,204 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { evaluate, hush } from '@strudel/web'
+import type { PatternExpression } from 'react-strudel-kit'
 import App from './App'
-import { DEFAULT_CODE, PLAYGROUND_EXAMPLES } from './examples'
+import { DEFAULT_CODE } from './examples'
 
-vi.mock('@strudel/web', async () => {
-    const { createMockWeb } = await import('../packages/react-strudel-kit/test/mockWeb')
-    return createMockWeb()
+const { observePlay, observeUpdate } = vi.hoisted(() => ({ observePlay: vi.fn(), observeUpdate: vi.fn() }))
+
+vi.mock('react-strudel-kit/react', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('react-strudel-kit/react')>()
+  return {
+    ...actual,
+    useStrudel: () => {
+      const transport = actual.useStrudel()
+      return {
+        ...transport,
+        play: (...args: Parameters<typeof transport.play>) => { observePlay(...args); return transport.play(...args) },
+        update: (...args: Parameters<typeof transport.update>) => { observeUpdate(...args); return transport.update(...args) },
+      }
+    },
+  }
 })
 
-describe('playground using the built React package', () => {
-    beforeEach(() => {
-        vi.clearAllMocks()
-        window.localStorage.clear()
-    })
+vi.mock('@strudel/web', async () => {
+  const { createMockWeb } = await import('../packages/react-strudel-kit/test/mockWeb')
+  return createMockWeb()
+})
 
-    afterEach(() => vi.restoreAllMocks())
+const slider = (name: string, value: number) => fireEvent.change(screen.getByRole('slider', { name }), { target: { value } })
+const playMix = async () => {
+  fireEvent.click(screen.getByRole('button', { name: 'Play mix' }))
+  await waitFor(() => expect(screen.getByText('Playing')).toBeInTheDocument())
+}
+const renderEditor = () => {
+  render(<App />)
+  fireEvent.click(screen.getByRole('button', { name: 'Code editor' }))
+}
 
-    it('plays edited code, stops, and restores the default pattern', async () => {
-        render(<App />)
-        const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
-        const defaultCode = (editor as HTMLTextAreaElement).value
+describe('interactive React music playground', () => {
+  beforeEach(() => { vi.clearAllMocks(); window.localStorage.clear() })
+  afterEach(() => vi.restoreAllMocks())
 
-        fireEvent.change(editor, { target: { value: 'note("c3")' } })
-        fireEvent.click(screen.getByRole('button', { name: /Play pattern/ }))
+  it('opens Dance Monkey with working controls and waits for an explicit Play', async () => {
+    render(<App />)
+    expect(screen.getByRole('heading', { name: 'Dance Monkey' })).toBeInTheDocument()
+    expect(screen.getByRole('slider', { name: /Tempo/ })).toHaveValue('98')
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+    slider('Tempo', 110)
+    slider('Master volume', 60)
+    slider('Bass volume', 40)
+    fireEvent.click(screen.getByRole('button', { name: 'Mute Melody' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Bass sound' }), { target: { value: 'square' } })
+    expect(observePlay).not.toHaveBeenCalled()
+    expect(observeUpdate).not.toHaveBeenCalled()
+    await playMix()
+    const input = observePlay.mock.calls[0][0] as PatternExpression
+    expect(typeof input).toBe('object')
+    expect(input.root.name).toBe('stack')
+    expect(input.root.args).toHaveLength(5)
+    expect(evaluate).toHaveBeenCalledWith(expect.stringContaining('.cpm(27.5)'), false)
+    expect(evaluate).toHaveBeenCalledWith(expect.stringContaining('.velocity(0.4).s("square")'), false)
+    expect(evaluate).toHaveBeenCalledWith(expect.stringContaining('.postgain(0.6)'), false)
+  })
 
-        await waitFor(() => expect(screen.getByText('live session')).toBeInTheDocument())
-        expect(evaluate).toHaveBeenCalledWith('note("c3")', false)
+  it('updates tempo, level and sound live without restarting playback', async () => {
+    render(<App />)
+    await playMix()
+    vi.mocked(hush).mockClear()
+    slider('Tempo', 122)
+    slider('Melody volume', 30)
+    fireEvent.change(screen.getByRole('combobox', { name: 'Melody sound' }), { target: { value: 'sine' } })
+    await waitFor(() => expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('.cpm(30.5)'), false))
+    expect(observePlay).toHaveBeenCalledOnce()
+    expect(observeUpdate).toHaveBeenCalledTimes(3)
+    expect(hush).not.toHaveBeenCalled()
+    expect(screen.getByText('Playing')).toBeInTheDocument()
+  })
 
-        vi.mocked(hush).mockClear()
-        fireEvent.click(screen.getByRole('button', { name: 'Stop' }))
-        expect(hush).toHaveBeenCalledOnce()
-        expect(screen.getByText('ready to play')).toBeInTheDocument()
+  it('supports multiple solo parts and makes a newly soloed part audible', () => {
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Solo Melody' }))
+    expect(screen.getByText('1 of 6 parts on')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Mute Bass' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Solo Bass' }))
+    expect(screen.getByRole('button', { name: 'Mute Bass' })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByText('2 of 6 parts on')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Mute Melody' }))
+    expect(screen.getByRole('button', { name: 'Solo Melody' })).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.getByText('1 of 6 parts on')).toBeInTheDocument()
+  })
 
-        fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-        expect(editor).toHaveValue(defaultCode)
-        expect(window.localStorage.getItem('trudel-playground-code')).toBe(defaultCode)
-    })
+  it('resets the current mix while preserving running playback', async () => {
+    render(<App />)
+    await playMix()
+    slider('Tempo', 75)
+    slider('Master volume', 0)
+    slider('Bass volume', 15)
+    fireEvent.click(screen.getByRole('button', { name: 'Solo Bass' }))
+    vi.mocked(hush).mockClear()
+    fireEvent.click(screen.getByRole('button', { name: 'Reset mix' }))
+    expect(screen.getByRole('slider', { name: 'Tempo' })).toHaveValue('98')
+    expect(screen.getByRole('slider', { name: 'Master volume' })).toHaveValue('80')
+    expect(screen.getByRole('slider', { name: 'Bass volume' })).toHaveValue('100')
+    expect(screen.getByText('6 of 6 parts on')).toBeInTheDocument()
+    await waitFor(() => expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('.cpm(24.5)'), false))
+    expect(observePlay).toHaveBeenCalledOnce()
+    expect(hush).not.toHaveBeenCalled()
+  })
 
-    it('renders a package error and clears it when resetting', async () => {
-        vi.mocked(evaluate).mockRejectedValueOnce(new Error('invalid pattern'))
-        render(<App />)
+  it('keeps Stop effective when sliders change during pending Play', async () => {
+    let finish!: () => void
+    vi.mocked(evaluate).mockImplementationOnce(() => new Promise((resolve) => { finish = () => resolve({}) }))
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Play mix' }))
+    await waitFor(() => expect(evaluate).toHaveBeenCalledOnce())
+    slider('Tempo', 120)
+    fireEvent.click(screen.getByRole('button', { name: 'Stop' }))
+    expect(screen.getByText('Ready')).toBeInTheDocument()
+    await act(async () => finish())
+    expect(screen.getByText('Ready')).toBeInTheDocument()
+    slider('Bass volume', 20)
+    expect(observePlay).toHaveBeenCalledTimes(2)
+    expect(observeUpdate).not.toHaveBeenCalled()
+  })
 
-        fireEvent.click(screen.getByRole('button', { name: /Play pattern/ }))
-        expect(await screen.findByRole('alert')).toHaveTextContent('invalid pattern')
+  it('switches arrangements without autoplay and resets that arrangement only', async () => {
+    render(<App />)
+    await playMix()
+    fireEvent.change(screen.getByRole('combobox', { name: 'Arrangement' }), { target: { value: 'bass' } })
+    expect(screen.getByText('Ready')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Bass line' })).toBeInTheDocument()
+    expect(screen.getByText('1 of 1 parts on')).toBeInTheDocument()
+    expect(observePlay).toHaveBeenCalledOnce()
+    slider('Tempo', 90)
+    fireEvent.click(screen.getByRole('button', { name: 'Reset mix' }))
+    expect(screen.getByRole('slider', { name: 'Tempo' })).toHaveValue('120')
+    expect(screen.getByRole('heading', { name: 'Bass line' })).toBeInTheDocument()
+  })
 
-        fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
-        expect(screen.getByText('ready to play')).toBeInTheDocument()
-    })
+  it('explains a quiet mix and allows restoring all parts', () => {
+    render(<App />)
+    for (const name of ['Melody', 'Bass', 'Keys', 'Kick', 'Snare', 'Hi-hat']) {
+      fireEvent.click(screen.getByRole('button', { name: `Mute ${name}` }))
+    }
+    expect(screen.getByText(/No parts are audible/)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Reset mix' }))
+    expect(screen.getByText('6 of 6 parts on')).toBeInTheDocument()
+    slider('Master volume', 0)
+    expect(screen.getByText(/Master volume is at 0%/)).toBeInTheDocument()
+  })
 
-    it.each(['ctrlKey', 'metaKey'])('plays current edits with %s + Enter', async (modifier) => {
-        render(<App />)
-        const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
-        fireEvent.change(editor, { target: { value: 'note("g3")' } })
-        fireEvent.keyDown(editor, { key: 'Enter', [modifier]: true })
-        await waitFor(() => expect(screen.getByText('live session')).toBeInTheDocument())
-        expect(evaluate).toHaveBeenCalledWith('note("g3")', false)
-    })
+  it('reports playback errors and retries with a new Play', async () => {
+    vi.mocked(evaluate).mockRejectedValueOnce(new Error('audio failed'))
+    render(<App />)
+    fireEvent.click(screen.getByRole('button', { name: 'Play mix' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('audio failed')
+    expect(screen.getByText('Needs attention')).toBeInTheDocument()
+    await playMix()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
 
-    it('allows Escape to stop while Play is pending and clears starting feedback', async () => {
-        let finish!: () => void
-        vi.mocked(evaluate).mockImplementationOnce(() => new Promise((resolve) => {
-            finish = () => resolve({})
-        }))
-        render(<App />)
-        const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
-        fireEvent.click(screen.getByRole('button', { name: 'Play pattern' }))
-        expect(screen.getByText('starting audio…')).toBeInTheDocument()
-        await waitFor(() => expect(evaluate).toHaveBeenCalledOnce())
+  it.each(['ctrlKey', 'metaKey'])('plays the mix with %s + Enter and stops with Escape', async (modifier) => {
+    render(<App />)
+    const tempo = screen.getByRole('slider', { name: 'Tempo' })
+    fireEvent.keyDown(tempo, { key: 'Enter', [modifier]: true })
+    await waitFor(() => expect(screen.getByText('Playing')).toBeInTheDocument())
+    fireEvent.keyDown(tempo, { key: 'Escape' })
+    expect(screen.getByText('Ready')).toBeInTheDocument()
+  })
 
-        fireEvent.keyDown(editor, { key: 'Escape' })
-        expect(screen.getByText('ready to play')).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: 'Play pattern' })).toHaveAttribute('aria-busy', 'false')
-        await act(async () => finish())
-        expect(screen.getByText('ready to play')).toBeInTheDocument()
-    })
+  it('preserves independent editor drafts and mixer settings when changing modes', async () => {
+    renderEditor()
+    const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
+    fireEvent.change(editor, { target: { value: 'note("g4")' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Play pattern' }))
+    await waitFor(() => expect(screen.getByText('Playing')).toBeInTheDocument())
+    fireEvent.click(screen.getByRole('button', { name: 'Mixer' }))
+    expect(screen.getByText('Ready')).toBeInTheDocument()
+    slider('Tempo', 105)
+    fireEvent.click(screen.getByRole('button', { name: 'Code editor' }))
+    expect(screen.getByRole('textbox')).toHaveValue('note("g4")')
+    expect(window.localStorage.getItem('trudel-playground-code')).toBe('note("g4")')
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
+    expect(screen.getByRole('textbox')).toHaveValue(DEFAULT_CODE)
+    fireEvent.click(screen.getByRole('button', { name: 'Mixer' }))
+    expect(screen.getByRole('slider', { name: 'Tempo' })).toHaveValue('105')
+  })
 
-    it('loads an example, stops playback, saves it, and restores editor focus', async () => {
-        render(<App />)
-        fireEvent.click(screen.getByRole('button', { name: 'Play pattern' }))
-        await waitFor(() => expect(screen.getByText('live session')).toBeInTheDocument())
-        vi.mocked(evaluate).mockClear()
-        vi.mocked(hush).mockClear()
-
-        const loadBass = screen.getByRole('button', { name: 'Load bass example' })
-        fireEvent.click(loadBass)
-        const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
-        expect(editor).toHaveValue(PLAYGROUND_EXAMPLES[1].code)
-        expect(editor).toHaveFocus()
-        expect(loadBass).toHaveAttribute('aria-pressed', 'true')
-        expect(hush).toHaveBeenCalledOnce()
-        expect(evaluate).not.toHaveBeenCalled()
-        expect(window.localStorage.getItem('trudel-playground-code')).toBe(PLAYGROUND_EXAMPLES[1].code)
-        expect(screen.getByText('Saved on this device')).toBeInTheDocument()
-
-        fireEvent.click(screen.getByRole('button', { name: 'Reset' }))
-        expect(editor).toHaveValue(DEFAULT_CODE)
-    })
-
-    it('does not play an empty pattern from the button or a shortcut', () => {
-        render(<App />)
-        const editor = screen.getByRole('textbox', { name: 'Strudel pattern code' })
-        fireEvent.change(editor, { target: { value: '  \n' } })
-        expect(screen.getByRole('button', { name: 'Play pattern' })).toBeDisabled()
-        fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true })
-        expect(evaluate).not.toHaveBeenCalled()
-    })
-
-    it('reports failed storage writes without blocking editing or playback', async () => {
-        vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota') })
-        render(<App />)
-        fireEvent.change(screen.getByRole('textbox', { name: 'Strudel pattern code' }), { target: { value: 'note("c3")' } })
-        expect(screen.getByText('Session only')).toBeInTheDocument()
-        expect(screen.queryByText('Saved on this device')).not.toBeInTheDocument()
-        fireEvent.click(screen.getByRole('button', { name: 'Play pattern' }))
-        await waitFor(() => expect(screen.getByText('live session')).toBeInTheDocument())
-    })
+  it('does not play an empty editor draft and tolerates failed storage', async () => {
+    vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('quota') })
+    renderEditor()
+    const editor = screen.getByRole('textbox')
+    fireEvent.change(editor, { target: { value: '  \n' } })
+    expect(screen.getByRole('button', { name: 'Play pattern' })).toBeDisabled()
+    fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true })
+    expect(observePlay).not.toHaveBeenCalled()
+    expect(screen.getByText('Session only')).toBeInTheDocument()
+    fireEvent.change(editor, { target: { value: 'note("c3")' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Play pattern' }))
+    await waitFor(() => expect(screen.getByText('Playing')).toBeInTheDocument())
+    expect(evaluate).toHaveBeenLastCalledWith('note("c3")', false)
+  })
 })

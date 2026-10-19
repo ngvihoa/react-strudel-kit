@@ -15,17 +15,25 @@ npm install
 npm run dev
 ```
 
-Open the localhost URL printed by Vite. Press **Play pattern** to start the
-built-in melody. Begin with your output volume low.
+Open the localhost URL printed by Vite. The **Mixer** opens with **Dance Monkey**,
+an eight-bar instrumental chorus. Start with your device volume low and press Play.
 
-- Edit the code, then press **Ctrl+Enter** or **⌘+Enter** to apply it.
-- **Escape** or **Stop** stops playback, including pending requests.
-- **Reset** stops playback and restores the default melody.
-- Load **Melody**, **Bass**, or **Layers** to replace the editor content without
-  automatically playing it. All three use built-in synths, with no sample downloads.
-- Edits, loaded examples, and resets are saved on this device when localStorage
-  works. **Session only** means persistence failed; copy your code before leaving.
-  An untouched default is labeled **New draft**. Reload never starts playback.
+- Change **tempo** and **master volume** while the music runs.
+- **Mute** individual parts, or **Solo** one or several parts together.
+- Adjust each part's level. Change the melody, bass or keys between triangle,
+  sine, square and sawtooth synths.
+- **Reset mix** restores the current arrangement's settings, including its tempo,
+  while keeping playback running. Controls changed while stopped never autoplay.
+- Choose a simpler arrangement from the dropdown to experiment with one or two parts.
+  Changing arrangements stops playback and starts with a fresh mix.
+- **Ctrl/⌘+Enter** plays; **Escape** or **Stop** stops, including pending work.
+- **Code editor** keeps an independent, editable Strudel draft. Switching modes
+  stops playback and retains mixer settings and the editor draft. Only the draft
+  is saved locally; mixer settings reset on reload. **Session only** means draft
+  storage failed. Copy that draft before leaving. Reload never starts playback.
+
+All arrangements use built-in synths without sample downloads. See
+[Dance Monkey notes and controls](docs/dance-monkey.md).
 
 ## React playback
 
@@ -57,8 +65,12 @@ export function Player() {
 
 `play(input)` accepts code, a typed `PatternExpression`, or a native Strudel
 pattern. Call it from a click or keyboard gesture so the browser can enable audio.
+`update(input)` replaces a running pattern without stopping or restarting the
+scheduler. It does nothing while stopped; use it for live React controls after Play.
 All mounted hooks share one transport. Unmounting the last consumer stops
 playback; the Strudel-owned engine/context remain available for remounts.
+The mixer builds typed patterns from React state and passes them to `play` or
+`update`. Serialization is an internal engine-adapter step.
 
 See [the usage guide](docs/usage.md) for lifecycle, error handling, supported
 functions, Mini-Notation, compatibility, and troubleshooting.

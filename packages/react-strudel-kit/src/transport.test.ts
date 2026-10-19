@@ -201,6 +201,71 @@ describe('shared transport lifecycle', () => {
         expect(transport.getSnapshot().status).toBe('idle')
     })
 
+    it('updates running playback without restarting or unlocking audio again', async () => {
+        transport.subscribe(vi.fn())
+        await transport.play('initial')
+        vi.mocked(engine.stop).mockClear()
+        await transport.update('new mix')
+        expect(engine.prepare).toHaveBeenLastCalledWith('new mix')
+        expect(engine.stop).not.toHaveBeenCalled()
+        expect(engine.start).toHaveBeenCalledOnce()
+        expect(unlockAudio).toHaveBeenCalledOnce()
+        expect(transport.getSnapshot()).toEqual({ status: 'playing', error: null })
+    })
+
+    it('does not start playback when controls change while stopped', async () => {
+        transport.subscribe(vi.fn())
+        await transport.update('before Play')
+        expect(engine.prepare).not.toHaveBeenCalled()
+        await transport.play('initial')
+        transport.stop()
+        vi.mocked(engine.prepare).mockClear()
+        await transport.update('after Stop')
+        expect(engine.prepare).not.toHaveBeenCalled()
+        expect(transport.getSnapshot().status).toBe('idle')
+    })
+
+    it('keeps only the latest queued update and preserves the running clock', async () => {
+        transport.subscribe(vi.fn())
+        await transport.play('initial')
+        const pending = deferred<void>()
+        vi.mocked(engine.prepare).mockReturnValueOnce(pending.promise)
+        vi.mocked(engine.stop).mockClear()
+        const first = transport.update('first slider move')
+        await vi.waitFor(() => expect(engine.prepare).toHaveBeenCalledWith('first slider move'))
+        const second = transport.update('intermediate')
+        const latest = transport.update('latest')
+        pending.resolve()
+        await Promise.all([first, second, latest])
+        expect(vi.mocked(engine.prepare).mock.calls.map(([input]) => input)).toEqual(['initial', 'first slider move', 'latest'])
+        expect(engine.start).toHaveBeenCalledOnce()
+        expect(engine.stop).not.toHaveBeenCalled()
+    })
+
+    it('keeps Stop effective when a pending update settles', async () => {
+        transport.subscribe(vi.fn())
+        await transport.play('initial')
+        const pending = deferred<void>()
+        vi.mocked(engine.prepare).mockReturnValueOnce(pending.promise)
+        const updating = transport.update('new mix')
+        await vi.waitFor(() => expect(engine.prepare).toHaveBeenCalledWith('new mix'))
+        transport.stop()
+        pending.resolve()
+        await updating
+        expect(engine.start).toHaveBeenCalledOnce()
+        expect(transport.getSnapshot().status).toBe('idle')
+    })
+
+    it('reports update failures and allows a new explicit Play', async () => {
+        transport.subscribe(vi.fn())
+        await transport.play('initial')
+        vi.mocked(engine.prepare).mockRejectedValueOnce(new Error('bad update'))
+        await transport.update('bad mix')
+        expect(transport.getSnapshot()).toMatchObject({ status: 'error', error: { code: 'evaluation' } })
+        await transport.play('retry')
+        expect(transport.getSnapshot().status).toBe('playing')
+    })
+
     it('turns Stop failures into state errors without throwing', async () => {
         transport.subscribe(vi.fn())
         await transport.play('pattern')

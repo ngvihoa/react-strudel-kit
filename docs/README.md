@@ -1,6 +1,7 @@
 # Documentation
 
 - [Current usage guide](usage.md): implemented API, lifecycle, examples, compatibility, and troubleshooting.
+- [Dance Monkey example](dance-monkey.md): play and edit the short instrumental arrangement.
 - [Repository README](../README.md): local setup, playground controls, development commands, and release status.
 
 ## Historical design notes

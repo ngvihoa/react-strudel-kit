@@ -538,6 +538,20 @@ export type OffModifier = {
     readonly args: readonly [NumericPattern, PatternCallback]
 }
 
+/** Synth controls: envelope times in seconds, pitch depth in semitones, and gain/level values. */
+export type SynthNumericModifier = {
+    [Name in 'attack' | 'decay' | 'sustain' | 'release' | 'penv' | 'pdecay' | 'postgain']: {
+        readonly name: Name
+        readonly args: readonly [NumericPattern]
+    }
+}['attack' | 'decay' | 'sustain' | 'release' | 'penv' | 'pdecay' | 'postgain']
+
+/** Absolute pattern tempo in cycles per minute, independent of the shared clock. */
+export type TempoModifier = {
+    readonly name: 'cpm'
+    readonly args: readonly [number]
+}
+
 /**
  * A typed chainable modifier call.
  *
@@ -548,6 +562,9 @@ export type OffModifier = {
  * ```
  */
 export type PatternModifierCall =
+    | SoundCall
+    | SynthNumericModifier
+    | TempoModifier
     | GainModifier
     | VelocityModifier
     | PanModifier
@@ -700,5 +717,7 @@ export type UseStrudelResult = {
     readonly status: TransportStatus
     readonly error: StrudelError | null
     readonly play: (input: StrudelInput) => Promise<void>
+    /** Replace the running pattern without restarting. Does nothing while stopped. */
+    readonly update: (input: StrudelInput) => Promise<void>
     readonly stop: () => void
 }
