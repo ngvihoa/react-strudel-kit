@@ -18,9 +18,11 @@
     "build:package": "tsc -p packages/react-strudel-kit/tsconfig.build.json && vite build --config packages/react-strudel-kit/vite.config.ts"
   },
   "dependencies": {
-    "react-strudel-kit": "*",
+    "@fontsource/be-vietnam-pro": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8"
+    "react-dom": "^19.2.8",
+    "react-strudel-kit": "*"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

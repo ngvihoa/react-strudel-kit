@@ -1,18 +1,50 @@
 :root {
-  font-family: 'Space Grotesk', 'Avenir Next', system-ui, sans-serif;
-  color: #18251f;
-  background: #f4f1e8;
+  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--bg);
   color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --ink: #18251f;
-  --muted: #536458;
-  --accent: #ee6a4c;
-  --green: #316b58;
-  --paper: #fffdf7;
-  --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* Brand, from the RSK logo. Lavender is decorative only: 2.2:1 on white. */
+  --brand: #472dd7;
+  --brand-strong: #3620b0;
+  --brand-soft: #b3a6f9;
+  --brand-tint: #eeebfe;
+
+  /* Neutrals, tinted toward the brand hue. */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --panel: #f5f5f8;
+  --panel-2: #fafafc;
+  --line: #ebeaf1;
+  --line-strong: #d6d4e1;
+  --ink: #17152b;
+  --ink-2: #34304f;
+  --muted: #5b5876;
+  --faint: #8c89a6;
+
+  /* Status stays separate from brand so "playing" never reads as "selected". */
+  --ok: #1f8a5b;
+  --warn: #c27a12;
+  --warn-tint: #fff1dc;
+  --danger: #b3261e;
+  --danger-tint: #fbe3e0;
+  --danger-ink: #7d1f19;
+
+  --code-bg: #16132e;
+  --code-bar: #221d45;
+  --code-active: #322b63;
+  --code-text: #e6e3fa;
+  --code-muted: #a9a3d6;
+  --code-gutter: #7f78b8;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --header: 60px;
+  --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -23,9 +55,11 @@ button:disabled { cursor: not-allowed; }
 a { color: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible {
-  outline: 3px solid var(--green);
+  outline: 3px solid var(--brand);
   outline-offset: 4px;
 }
 button { touch-action: manipulation; }
 #root { min-height: 100svh; }
 h1, h2, p { margin-top: 0; }
+/* Show code exactly as typed: no `=>` → ⇒ ligatures for learners copying examples. */
+code, pre, kbd, textarea, output { font-variant-ligatures: none; }

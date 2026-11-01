@@ -97,16 +97,14 @@ function App() {
   const statusLabel = starting ? 'Starting audio…' : status === 'playing' ? 'Playing' : status === 'error' ? 'Needs attention' : 'Ready'
 
   return (
-    <main className="app-shell" onKeyDown={handleKeyDown}>
-      <header className="topbar">
-        <a className="wordmark" href="/" aria-label="Strudel playground home"><span className="wordmark-mark" aria-hidden="true">/</span>trudel <span className="wordmark-caption">music playground</span></a>
-        <div className="topbar-note" role="status"><span className={`status-dot status-${starting ? 'starting' : status}`} aria-hidden="true" />{statusLabel}</div>
-      </header>
-
+    <div className="app-shell" onKeyDown={handleKeyDown}>
       <section className="studio" aria-label="Music playground">
-        <div className="mode-switch" role="group" aria-label="Playground mode">
-          <button type="button" aria-pressed={mode === 'mixer'} onClick={() => changeMode('mixer')}>Mixer</button>
-          <button type="button" aria-pressed={mode === 'editor'} onClick={() => changeMode('editor')}>Code editor</button>
+        <div className="studio-bar">
+          <div className="mode-switch" role="group" aria-label="Playground mode">
+            <button type="button" aria-pressed={mode === 'mixer'} onClick={() => changeMode('mixer')}>Mixer</button>
+            <button type="button" aria-pressed={mode === 'editor'} onClick={() => changeMode('editor')}>Code editor</button>
+          </div>
+          <div className="topbar-note" role="status"><span className={`status-dot status-${starting ? 'starting' : status}`} aria-hidden="true" />{statusLabel}</div>
         </div>
 
         <div className="studio-heading">
@@ -175,8 +173,7 @@ function App() {
         </>}
         {error && <div className="error-box" id="pattern-error" role="alert"><p>{error.message}</p><p>Press Play to try again. Check your code or browser audio permissions if it still fails.</p></div>}
       </section>
-      <footer><span>Made to be played with.</span><span>Audio stays in your browser.</span></footer>
-    </main>
+    </div>
   )
 }
 

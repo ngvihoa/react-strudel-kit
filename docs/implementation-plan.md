@@ -96,6 +96,10 @@ giới hạn thực tế; không trình bày tính năng dự kiến như tính 
 
 - [ ] Thiết kế template UI cho trang hướng dẫn, trang example và Sound Cookbook;
   kiểm tra bố cục desktop/mobile trước khi nhân rộng.
+  *Bản nháp đầu đã có ở `src/site/`, chờ review:* hash route `#/learn/first-song`,
+  `#/cookbook/kick`, `#/examples/dance-monkey`, `#/playground` (mặc định). Code hiển thị
+  lấy từ `src/content/*.ts?raw` theo `// #region`; tab “Strudel output” lấy từ
+  `toStrudelCode` của pattern đang phát. Trang chưa có hiện là “Planned”, không có link.
 - [ ] Dựng khung điều hướng trong app hiện tại, tích hợp lại playground.
 - [ ] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
   code hiển thị và playback dùng cùng source.
