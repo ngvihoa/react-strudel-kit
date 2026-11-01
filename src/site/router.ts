@@ -2,9 +2,15 @@ import { useSyncExternalStore } from 'react'
 
 // Hash routes keep the reference app a static Vite build without a router dependency.
 export const ROUTES = {
-  lesson: '/learn/first-song',
-  cookbook: '/cookbook/kick',
-  example: '/examples/dance-monkey',
+  firstSong: '/learn/first-song',
+  kick: '/cookbook/kick',
+  snare: '/cookbook/snare',
+  hiHat: '/cookbook/hi-hat',
+  simpleMelody: '/examples/simple-melody',
+  fourOnTheFloor: '/examples/four-on-the-floor',
+  backbeat: '/examples/backbeat',
+  hiHatAccents: '/examples/hi-hat-accents',
+  danceMonkey: '/examples/dance-monkey',
   playground: '/playground',
 } as const
 

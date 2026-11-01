@@ -41,7 +41,7 @@ const SECTIONS: readonly { id: string, title: string, solo: { title: string, pat
   </> },
   { id: 'drums', title: 'Drums', solo: { title: 'Drums alone', pattern: chain(fn('stack', kick, snare, hats), TEMPO) }, body: <>
     <p>No samples are downloaded: the kick is a falling sine tone, and the snare and hi-hats are filtered white noise.
-      The <a href={href(ROUTES.cookbook)}>Kick</a> page in the Sound Cookbook takes the kick apart.</p>
+      The <a href={href(ROUTES.kick)}>Kick</a> page in the Sound Cookbook takes the kick apart.</p>
     <CodeBlock source={code('drums')} maxLines={20} />
   </> },
   { id: 'mix', title: 'Put it together', solo: { title: 'Full song', pattern: DANCE_MONKEY_PATTERN }, body: <>
@@ -55,7 +55,7 @@ const SECTIONS: readonly { id: string, title: string, solo: { title: string, pat
 
 const TOC = [{ id: 'try-it', label: 'Try the mix' }, ...SECTIONS.map(({ id, title }) => ({ id, label: title })), { id: 'source', label: 'Full source' }]
 
-export function ExamplePage() {
+export function DanceMonkeyPage() {
   const [mix, setMix] = useState(() => createMixSettings(DANCE_MONKEY))
   const pattern = useMemo(() => buildMix(DANCE_MONKEY, mix), [mix])
   const audible = audibleParts(DANCE_MONKEY, mix)
@@ -65,7 +65,7 @@ export function ExamplePage() {
 
   return (
     <DocsLayout variant="example"
-      nav={<SectionNav groups={EXAMPLES_NAV} current={ROUTES.example} label="Examples" />}
+      nav={<SectionNav groups={EXAMPLES_NAV} current={ROUTES.danceMonkey} label="Examples" />}
       header={<PageHeader crumbs={['Examples', 'Full songs']} title="Dance Monkey"
         intro="An eight-bar instrumental chorus in six parts. Mix it first, then read how each part is written."
         meta={['Advanced', DANCE_MONKEY.key, `${DANCE_MONKEY_BPM} BPM`, `${DANCE_MONKEY.bars} bars`]} />}
@@ -73,7 +73,7 @@ export function ExamplePage() {
       aside={<div className="facts">
         <Toc items={TOC} />
         <div><p>Techniques</p><ul><li><code>sequence</code> and <code>weight</code> for rhythm</li><li><code>repeat</code> for quick figures</li><li><code>cat</code> for one bar per cycle</li><li><code>stack</code> for layering</li><li><code>update</code> for live mixing</li></ul></div>
-        <div><p>Learn first</p><ul><li><a href={href(ROUTES.lesson)}>Your first song</a></li><li><a href={href(ROUTES.cookbook)}>Kick</a></li></ul></div>
+        <div><p>Learn first</p><ul><li><a href={href(ROUTES.simpleMelody)}>A simple melody</a></li><li><a href={href(ROUTES.backbeat)}>Backbeat</a></li><li><a href={href(ROUTES.hiHatAccents)}>Hi-hat accents</a></li></ul></div>
       </div>}>
       <section id="try-it" aria-label="Try the mix">
         <Player id="example-dance-monkey" title="Dance Monkey" pattern={pattern}
@@ -103,7 +103,7 @@ export function ExamplePage() {
           <CodeBlock source={stripRegions(source)} label="src/songs/danceMonkey.ts" maxLines={28} />
         </details>
       </section>
-      <Pager previous={{ label: 'Kick', path: ROUTES.cookbook }} />
+      <Pager previous={{ label: 'Hi-hat accents', path: ROUTES.hiHatAccents }} />
     </DocsLayout>
   )
 }

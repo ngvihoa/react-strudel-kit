@@ -99,7 +99,7 @@ function MakeItYours() {
 export function LessonPage() {
   return (
     <DocsLayout variant="lesson"
-      nav={<SectionNav groups={LEARN_NAV} current={ROUTES.lesson} label="Lessons" />}
+      nav={<SectionNav groups={LEARN_NAV} current={ROUTES.firstSong} label="Lessons" />}
       header={<PageHeader crumbs={['Learn', 'Getting started']} title="Your first song"
         intro="Play a note, line up a few more, shape their rhythm and set the tempo. Every example on this page is the code that plays."
         meta={['Lesson 1', '10 minutes']}
@@ -130,7 +130,9 @@ export function LessonPage() {
           <li><code>rest</code> is a silent share. <code>repeat</code> fits more strikes into one share.</li>
           <li><code>cpm</code> sets how many cycles play per minute: BPM ÷ 4 for four beats per bar.</li>
         </ul>
-        <p>Ready to hear it all together? The <a href={href(ROUTES.example)}>Dance Monkey example</a> uses exactly these pieces across six parts.</p>
+        <p>Practise with <a href={href(ROUTES.simpleMelody)}>A simple melody</a>, which adds <code>cat</code> to play several bars in a row.
+          When you’re ready for drums, start with the <a href={href(ROUTES.kick)}>Kick</a> in the Sound Cookbook and
+          the <a href={href(ROUTES.fourOnTheFloor)}>Four on the floor</a> example. <a href={href(ROUTES.danceMonkey)}>Dance Monkey</a> puts all of it together.</p>
       </section>
       <Pager next={{ label: 'Make a beat' }} />
     </DocsLayout>

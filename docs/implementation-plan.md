@@ -115,8 +115,13 @@ lựa chọn **tiếng Việt**:
   code hiển thị và playback dùng cùng source: trang import module và bản `?raw`
   của nó, cắt theo `// #region`; tab “Strudel output” lấy từ `toStrudelCode`
   của pattern đang phát. *Cần nghe thử trên thiết bị thật.*
-- [ ] Thêm các example cơ bản theo lộ trình và ba bài Cookbook đầu tiên:
+- [x] Thêm các example cơ bản theo lộ trình và ba bài Cookbook đầu tiên:
   kick, snare, hi-hat; có liên kết qua lại giữa bài học và ví dụ.
+  Âm thanh (`src/content/drums.ts`) là danh sách modifier, tách khỏi nhịp; example
+  import âm và tự viết nhịp. Examples: A simple melody, Four on the floor, Backbeat,
+  Hi-hat accents. Trang dùng chung template `SoundArticle` / `ExampleArticle`
+  (`src/site/templates.tsx`). Các nhận định về nhịp trên trang được kiểm tra bằng
+  engine Strudel thật (`src/content/content.test.ts`). *Cần nghe thử trên thiết bị thật.*
 - [ ] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung
   API Reference và đồng bộ README/quickstart theo API hiện hành.
 - [ ] Kiểm tra điều hướng, responsive, keyboard và audio lifecycle;

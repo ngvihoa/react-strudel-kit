@@ -4,24 +4,32 @@ import { useStrudel } from 'react-strudel-kit/react'
 import App from '../App'
 import logo from '../assets/rsk-logo.png'
 import { PlaybackProvider } from './PlaybackProvider'
-import { CookbookPage } from './pages/CookbookPage'
-import { ExamplePage } from './pages/ExamplePage'
+import { HiHatPage, KickPage, SnarePage } from './pages/cookbook'
+import { DanceMonkeyPage } from './pages/DanceMonkeyPage'
+import { BackbeatPage, FourOnTheFloorPage, HiHatAccentsPage, SimpleMelodyPage } from './pages/examples'
 import { LessonPage } from './pages/LessonPage'
 import { ROUTES, href, useRoute } from './router'
 import type { RoutePath } from './router'
 import './site.css'
 
-const SECTIONS: readonly { label: string, path: RoutePath }[] = [
-  { label: 'Learn', path: ROUTES.lesson },
-  { label: 'Sound Cookbook', path: ROUTES.cookbook },
-  { label: 'Examples', path: ROUTES.example },
-  { label: 'Playground', path: ROUTES.playground },
+// Each header link opens the first page of its section and stays current on every page in it.
+const SECTIONS: readonly { label: string, path: RoutePath, prefix: string }[] = [
+  { label: 'Learn', path: ROUTES.firstSong, prefix: '/learn/' },
+  { label: 'Sound Cookbook', path: ROUTES.kick, prefix: '/cookbook/' },
+  { label: 'Examples', path: ROUTES.simpleMelody, prefix: '/examples/' },
+  { label: 'Playground', path: ROUTES.playground, prefix: '/playground' },
 ]
 
 const PAGES = {
-  [ROUTES.lesson]: LessonPage,
-  [ROUTES.cookbook]: CookbookPage,
-  [ROUTES.example]: ExamplePage,
+  [ROUTES.firstSong]: LessonPage,
+  [ROUTES.kick]: KickPage,
+  [ROUTES.snare]: SnarePage,
+  [ROUTES.hiHat]: HiHatPage,
+  [ROUTES.simpleMelody]: SimpleMelodyPage,
+  [ROUTES.fourOnTheFloor]: FourOnTheFloorPage,
+  [ROUTES.backbeat]: BackbeatPage,
+  [ROUTES.hiHatAccents]: HiHatAccentsPage,
+  [ROUTES.danceMonkey]: DanceMonkeyPage,
   [ROUTES.playground]: App,
 } satisfies Record<RoutePath, ComponentType>
 
@@ -67,9 +75,9 @@ export function Site() {
       <div className="site">
         <a className="skip-link" href="#content">Skip to content</a>
         <header className="site-header">
-          <a className="brand-logo" href={href(ROUTES.lesson)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
+          <a className="brand-logo" href={href(ROUTES.firstSong)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
           <nav className="site-nav" aria-label="Sections" ref={nav}>
-            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-current={route === section.path ? 'page' : undefined}>{section.label}</a>)}
+            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-current={route.startsWith(section.prefix) ? 'page' : undefined}>{section.label}</a>)}
             {bar && <span className="site-nav-bar" aria-hidden="true" style={{ transform: `translateX(${bar.left}px)`, width: bar.width }} />}
           </nav>
         </header>

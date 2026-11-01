@@ -71,7 +71,7 @@ describe('learning site template', () => {
     go('/cookbook/kick')
     render(<Site />)
     fireEvent.change(screen.getByRole('slider', { name: /Pitch drop/ }), { target: { value: 36 } })
-    const code = screen.getAllByRole('figure')[0]
+    const code = screen.getByText(/export const kickAlone/).closest('figure') as HTMLElement
     fireEvent.click(within(code).getByRole('button', { name: 'Strudel output' }))
     expect(within(code).getByText(/penv\(36\)/)).toBeInTheDocument()
   })
@@ -95,6 +95,45 @@ describe('lesson and example content', () => {
     render(<Site />)
     for (const name of ['Melody', 'Bass', 'Keys', 'Drums', 'Put it together']) expect(screen.getByRole('heading', { level: 2, name })).toBeInTheDocument()
     for (const title of ['Melody alone', 'Bass alone', 'Keys alone', 'Drums alone', 'Full song']) expect(player(title)).toBeInTheDocument()
+  })
+})
+
+describe('Cookbook and examples', () => {
+  beforeEach(() => { window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+
+  it.each([
+    ['/cookbook/kick', 'Kick', 'Sound Cookbook'],
+    ['/cookbook/snare', 'Snare', 'Sound Cookbook'],
+    ['/cookbook/hi-hat', 'Hi-hat', 'Sound Cookbook'],
+    ['/examples/simple-melody', 'A simple melody', 'Examples'],
+    ['/examples/four-on-the-floor', 'Four on the floor', 'Examples'],
+    ['/examples/backbeat', 'Backbeat', 'Examples'],
+    ['/examples/hi-hat-accents', 'Hi-hat accents', 'Examples'],
+  ])('%s renders with its section current and every code block cut from source', (path, title, section) => {
+    go(path)
+    render(<Site />)
+    expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument()
+    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: section })).toHaveAttribute('aria-current', 'page')
+    for (const pre of document.querySelectorAll('pre')) expect(pre.textContent).not.toMatch(/#(region|endregion)/)
+    expect(screen.getAllByRole('region', { name: / player$/ }).length).toBeGreaterThan(1)
+  })
+
+  it('links a Cookbook sound to the examples that use it, and back', () => {
+    go('/cookbook/snare')
+    render(<Site />)
+    expect(screen.getByText(/^Used in:/)).toContainElement(screen.getByRole('link', { name: 'Backbeat' }))
+    go('/examples/backbeat')
+    const sounds = screen.getByText('Sounds used').parentElement as HTMLElement
+    expect(within(sounds).getByRole('link', { name: 'Snare' })).toHaveAttribute('href', '#/cookbook/snare')
+  })
+
+  it('updates a sound live from its sliders', () => {
+    go('/cookbook/hi-hat')
+    render(<Site />)
+    fireEvent.change(screen.getByRole('slider', { name: /Off-beat level/ }), { target: { value: 0.2 } })
+    const code = screen.getByText(/export const hiHatAlone/).closest('figure') as HTMLElement
+    fireEvent.click(within(code).getByRole('button', { name: 'Strudel output' }))
+    expect(within(code).getByText(/velocity\("\[1 0\.2\]\*4"\)/)).toBeInTheDocument()
   })
 })
 

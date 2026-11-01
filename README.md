@@ -21,12 +21,13 @@ plays until you press Play. The header links four sections:
 | Section | Route | What it is |
 | --- | --- | --- |
 | Learn | `#/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
-| Sound Cookbook | `#/cookbook/kick` | How a synthesized kick is built, with live sliders |
-| Examples | `#/examples/dance-monkey` | Dance Monkey part by part, with a mixer and a player per part |
+| Sound Cookbook | `#/cookbook/kick`, `/snare`, `/hi-hat` | How each synthesized drum is built, with live sliders |
+| Examples | `#/examples/simple-melody`, `/four-on-the-floor`, `/backbeat`, `/hi-hat-accents`, `/dance-monkey` | One goal per page, built up section by section |
 | Playground | `#/playground` (default) | The free-form mixer and code editor described below |
 
 Code shown on these pages is cut from the module that plays (`src/content/`,
-`src/songs/`), so the text and the sound cannot drift apart. Leaving a page stops
+`src/songs/`), so the text and the sound cannot drift apart. Timing claims made
+in the text are checked against Strudel's real pattern engine in tests. Leaving a page stops
 its music, and only one player plays at a time.
 
 In the **Playground**, the **Mixer** opens with **Dance Monkey**, an eight-bar
