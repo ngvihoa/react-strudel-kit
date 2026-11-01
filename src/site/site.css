@@ -176,6 +176,7 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
   .brand-logo { height: 36px; }
   .site-nav { flex-basis: calc(100% + 18px); margin: 0 -9px; }
   .site-nav a { min-height: 44px; padding: 0 9px; font-size: .8125rem; }
+  .nav-long { display: none; }
   .site-footer { flex-direction: column; gap: 6px; padding: 20px 16px 24px; }
   .docs { display: block; }
   .docs-nav { position: static; height: auto; padding: 16px 16px 0; border-right: 0; }
@@ -227,3 +228,23 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
 .facts .toc { padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 @media (max-width: 1240px) { .facts .toc { display: none; } }
 .docs-body .code-block + p, .docs-body .player + p, .docs-body .code-block + ul { margin-top: 20px; }
+
+/* API reference */
+.api-table td:nth-child(3) { color: var(--muted); white-space: nowrap; }
+.api-table td:last-child { font-size: .8125rem; }
+.api-table tr:target { background: var(--brand-tint); }
+.api-unused { color: var(--faint); }
+.docs-body section ul { margin-top: 8px; }
+
+/* The React example renders a user's component as written, with light framing only. */
+.react-mixer-frame { padding: 20px; border: 1px dashed var(--line-strong); border-radius: var(--radius); }
+.react-mixer { display: grid; gap: 16px; }
+.react-mixer-buttons { display: flex; align-items: center; gap: 8px; }
+.react-mixer-buttons output { margin-left: 8px; color: var(--muted); font: .8125rem var(--mono); }
+.react-mixer label { display: grid; gap: 6px; font-size: .875rem; color: var(--ink-2); }
+.react-mixer-parts { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.react-mixer-parts label { display: flex; align-items: center; gap: 8px; min-height: 32px; }
+.react-mixer-parts input { width: 18px; height: 18px; accent-color: var(--brand); }
+.docs-reference .docs-main { grid-template-columns: minmax(0, 960px); }
+.api-table td:nth-child(4) { min-width: 220px; }
+@media (max-width: 1240px) { .docs-reference .docs-main { grid-template-columns: minmax(0, 1fr); } }

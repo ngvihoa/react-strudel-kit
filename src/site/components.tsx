@@ -163,7 +163,7 @@ type DocsLayoutProps = {
   aside?: ReactNode
   asideLabel?: string
   children: ReactNode
-  variant: 'lesson' | 'example' | 'cookbook'
+  variant: 'lesson' | 'example' | 'cookbook' | 'reference'
 }
 
 /** Sidebar | content · aside. On narrow screens the aside follows the header (lesson: hidden; example: after the body). */

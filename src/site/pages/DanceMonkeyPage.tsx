@@ -103,7 +103,7 @@ export function DanceMonkeyPage() {
           <CodeBlock source={stripRegions(source)} label="src/songs/danceMonkey.ts" maxLines={28} />
         </details>
       </section>
-      <Pager previous={{ label: 'Hi-hat accents', path: ROUTES.hiHatAccents }} />
+      <Pager previous={{ label: 'House loop', path: ROUTES.house }} />
     </DocsLayout>
   )
 }

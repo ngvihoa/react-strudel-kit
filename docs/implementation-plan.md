@@ -122,8 +122,13 @@ lựa chọn **tiếng Việt**:
   Hi-hat accents. Trang dùng chung template `SoundArticle` / `ExampleArticle`
   (`src/site/templates.tsx`). Các nhận định về nhịp trên trang được kiểm tra bằng
   engine Strudel thật (`src/content/content.test.ts`). *Cần nghe thử trên thiết bị thật.*
-- [ ] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung
+- [x] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung
   API Reference và đồng bộ README/quickstart theo API hiện hành.
+  Cookbook tonal ở `src/content/tonal.ts`; examples: Bass line, Chords and arpeggios,
+  Layer a song, Control it with React (component chạy thật trên trang), Lo-fi loop,
+  House loop. Trang `#/api` sinh bảng hàm từ `functionRegistry` (thiếu mô tả là lỗi
+  biên dịch) và cột “Used in” quét source các trang. Nhạc lý (hợp âm, quãng năm,
+  swing, off-beat) được kiểm tra bằng engine Strudel thật. *Cần nghe thử trên thiết bị thật.*
 - [ ] Kiểm tra điều hướng, responsive, keyboard và audio lifecycle;
   xác minh code mẫu chạy được, thông số thay đổi đúng như giải thích và
   playground hiện tại vẫn hoạt động.

@@ -7,6 +7,11 @@ import { busierKick, kickOneThree, snareTwoFour } from './examples/backbeat'
 import { offBeatHats, offBeatHatsRepeat } from './examples/fourOnTheFloor'
 import { accentedHats, swellingHats } from './examples/hiHatAccents'
 import { twinkle, twinkleDetached } from './examples/simpleMelody'
+import { walkingRoots } from './examples/bassLine'
+import { jazzyChords, swungHats } from './examples/lofi'
+import { offBeatBass } from './examples/house'
+import { CHORDS } from './tonal'
+import { toMiniNotation } from 'react-strudel-kit'
 
 // Page text makes timing claims; check them with Strudel's real pattern engine (no audio).
 const mini = (pattern: PatternExpression, call: string) => {
@@ -68,5 +73,47 @@ describe('timing claims made on the learning pages', () => {
     // Bar 2's G: held for two beats, or one beat followed by a rest.
     expect(held.find((event) => event.value === 'g4' && event.start >= 1)).toMatchObject({ start: 1.5, end: 2 })
     expect(detached.find((event) => event.value === 'g4' && event.start >= 1)).toMatchObject({ start: 1.5, end: 1.75 })
+  })
+
+  it('swings the lo-fi hi-hats: every second eighth lands two thirds into its beat', () => {
+    const swung = (m(mini(swungHats, 's')) as unknown as { swingBy: (x: number, n: number) => ReturnType<typeof m> }).swingBy(1 / 3, 4)
+    const starts = (swung.queryArc(0, 1) as Hap[]).filter((hap) => hap.hasOnset()).map((hap) => Number(hap.whole.begin)).sort((a, b) => a - b)
+    expect(starts.map((start) => Math.round(start * 24))).toEqual([0, 4, 6, 10, 12, 16, 18, 22]) // 24ths of a bar.
+  })
+
+  it('keeps the house bass off the beat', () => {
+    const bar = timeline(`<${[...toStrudelCode(offBeatBass).matchAll(/note\("([^"]*)"\)/g)].map((match) => `[${match[1]}]`).join(' ')}>`)
+    expect(bar.map((event) => event.start)).toEqual([0.125, 0.375, 0.625, 0.875])
+  })
+})
+
+// Text on the harmony pages names chords and intervals; check the notes match.
+const SEMITONES: Record<string, number> = { c: 0, d: 2, e: 4, f: 5, g: 7, a: 9, b: 11 }
+const midi = (name: string) => {
+  const [, letter, accidental, octave] = name.match(/^([a-g])(#|b)?(-?\d)$/)!
+  return 12 * (Number(octave) + 1) + SEMITONES[letter] + (accidental === '#' ? 1 : accidental === 'b' ? -1 : 0)
+}
+const pitchClasses = (notation: string) => new Set(notation.split(/[\s,[\]]+/).filter(Boolean).map((name) => name[0]))
+
+describe('harmony claims made on the learning pages', () => {
+  it('voices each chord with exactly its chord tones', () => {
+    const expected = { C: 'ceg', Am: 'ace', F: 'fac', G: 'gbd' }
+    for (const [name, chord] of Object.entries(CHORDS)) {
+      expect(pitchClasses(toMiniNotation(chord))).toEqual(new Set(expected[name as keyof typeof expected]))
+    }
+  })
+
+  it('uses four-note seventh chords Dm7, G7, Cmaj7 and Am7 in the lo-fi loop', () => {
+    const chords = [...toStrudelCode(jazzyChords).matchAll(/note\("([^"]*)"\)/g)].map((match) => pitchClasses(match[1]))
+    expect(chords).toEqual([new Set('dfac'), new Set('gbdf'), new Set('cegb'), new Set('aceg')])
+  })
+
+  it('pairs every bass root with the note seven semitones above it', () => {
+    for (const [, bar] of toStrudelCode(walkingRoots).matchAll(/note\("([^"]*)"\)/g)) {
+      const notes = bar.split(' ').filter((token) => token !== '~')
+      const [root] = notes
+      const fifth = notes.find((note) => note !== root)!
+      expect(midi(fifth) - midi(root)).toBe(7)
+    }
   })
 })

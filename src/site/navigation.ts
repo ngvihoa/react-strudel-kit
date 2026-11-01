@@ -20,7 +20,12 @@ export const COOKBOOK_NAV: readonly NavGroup[] = [
     { label: 'Snare', path: ROUTES.snare },
     { label: 'Hi-hat', path: ROUTES.hiHat },
   ] },
-  { title: 'Tonal', items: [{ label: 'Bass' }, { label: 'Keys' }, { label: 'Lead' }, { label: 'Pad' }] },
+  { title: 'Tonal', items: [
+    { label: 'Bass', path: ROUTES.bass },
+    { label: 'Keys', path: ROUTES.keys },
+    { label: 'Lead', path: ROUTES.lead },
+    { label: 'Pad', path: ROUTES.pad },
+  ] },
 ]
 
 export const EXAMPLES_NAV: readonly NavGroup[] = [
@@ -30,6 +35,15 @@ export const EXAMPLES_NAV: readonly NavGroup[] = [
     { label: 'Backbeat', path: ROUTES.backbeat },
     { label: 'Hi-hat accents', path: ROUTES.hiHatAccents },
   ] },
-  { title: 'Harmony', items: [{ label: 'Bass line' }, { label: 'Chords and arpeggios' }] },
-  { title: 'Full songs', items: [{ label: 'Dance Monkey', path: ROUTES.danceMonkey, meta: 'Advanced' }] },
+  { title: 'Harmony', items: [
+    { label: 'Bass line', path: ROUTES.bassLine },
+    { label: 'Chords and arpeggios', path: ROUTES.chords },
+  ] },
+  { title: 'Arrangement', items: [{ label: 'Layer a song', path: ROUTES.layerASong }] },
+  { title: 'React', items: [{ label: 'Control it with React', path: ROUTES.reactMixer }] },
+  { title: 'Styles', items: [
+    { label: 'Lo-fi loop', path: ROUTES.lofi },
+    { label: 'House loop', path: ROUTES.house },
+    { label: 'Dance Monkey', path: ROUTES.danceMonkey, meta: 'Advanced' },
+  ] },
 ]

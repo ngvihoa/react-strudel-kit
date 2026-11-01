@@ -3,16 +3,29 @@ import backbeatSource from '../../content/examples/backbeat.ts?raw'
 import fourOnTheFloorSource from '../../content/examples/fourOnTheFloor.ts?raw'
 import hiHatAccentsSource from '../../content/examples/hiHatAccents.ts?raw'
 import simpleMelodySource from '../../content/examples/simpleMelody.ts?raw'
+import bassLineSource from '../../content/examples/bassLine.ts?raw'
+import chordsSource from '../../content/examples/chords.ts?raw'
+import layerASongSource from '../../content/examples/layerASong.ts?raw'
+import lofiSource from '../../content/examples/lofi.ts?raw'
+import houseSource from '../../content/examples/house.ts?raw'
+import { BASS_LINE } from '../../content/examples/bassLine'
+import { CHORD_EXAMPLES } from '../../content/examples/chords'
+import { LAYER_A_SONG } from '../../content/examples/layerASong'
+import { LOFI } from '../../content/examples/lofi'
+import { HOUSE } from '../../content/examples/house'
 import { BACKBEAT } from '../../content/examples/backbeat'
 import { FOUR_ON_THE_FLOOR, offBeatHats, offBeatHatsRepeat } from '../../content/examples/fourOnTheFloor'
 import { HI_HAT_ACCENTS } from '../../content/examples/hiHatAccents'
 import { twinkle, twinkleDetached } from '../../content/examples/simpleMelody'
 import { EXAMPLES_NAV } from '../navigation'
 import { ROUTES } from '../router'
+import { CodeBlock } from '../components'
+import { sourceRegion } from '../../content/source'
 import { ExampleArticle } from '../templates'
 import type { ExampleArticleConfig } from '../templates'
 
 const shared = { nav: EXAMPLES_NAV } as const
+const TONAL = { bass: { label: 'Bass', path: ROUTES.bass }, keys: { label: 'Keys', path: ROUTES.keys }, lead: { label: 'Lead', path: ROUTES.lead }, pad: { label: 'Pad', path: ROUTES.pad } } as const
 const DRUM_SOUNDS = [{ label: 'Kick', path: ROUTES.kick }, { label: 'Snare', path: ROUTES.snare }, { label: 'Hi-hat', path: ROUTES.hiHat }] as const
 
 // Mini-Notation for the `sample` argument only, to compare two ways of writing the same hi-hats.
@@ -133,6 +146,160 @@ const HI_HAT_ACCENTS_PAGE: ExampleArticleConfig = {
     </> },
   ],
   previous: { label: 'Backbeat', path: ROUTES.backbeat },
+  next: { label: 'Bass line', path: ROUTES.bassLine },
+}
+
+const BASS_LINE_PAGE: ExampleArticleConfig = {
+  ...shared,
+  path: ROUTES.bassLine,
+  crumbs: ['Examples', 'Harmony'],
+  title: 'Bass line',
+  intro: 'A bass line follows the chords from underneath. Start with one note per chord, give it a rhythm, then lock it to the drums.',
+  meta: ['Beginner', 'C major', '100 BPM', '4 bars'],
+  source: bassLineSource,
+  goal: <>Follow a chord progression with roots and fifths, and reuse a rhythm with a small function</>,
+  techniques: [<>Roots and fifths</>, <>A TypeScript function per bar</>, <><code>cat</code> for the progression</>],
+  learnFirst: [{ label: 'Backbeat', path: ROUTES.backbeat }],
+  sounds: [TONAL.bass, DRUM_SOUNDS[0], DRUM_SOUNDS[1]],
+  sections: [
+    { id: 'roots', title: 'One note per chord', region: 'roots', player: { title: 'Roots', pattern: BASS_LINE.roots }, body: <>
+      <p>The progression is C – Am – F – G, one chord per bar. The simplest bass line plays each chord’s root — the note it is
+        named after — once per bar, well below the chords.</p>
+    </> },
+    { id: 'bar', title: 'Write the rhythm once', region: 'bar', player: { title: 'Roots and fifths', pattern: BASS_LINE.rhythm }, body: <>
+      <p>Every bar uses the same rhythm with different notes, so write it as a function. The fifth of a chord sits seven
+        semitones above its root and almost always sounds right underneath it.</p>
+    </>, after: <CodeBlock source={sourceRegion(bassLineSource, 'rhythm')} pattern={BASS_LINE.rhythm} /> },
+    { id: 'with-drums', title: 'Lock it to the drums', region: 'with-drums', player: { title: 'Bass and drums', pattern: BASS_LINE.withDrums }, body: <>
+      <p>The kick and snare come straight from the Backbeat example. Importing a part is how a song grows without copying code.</p>
+    </> },
+  ],
+  previous: { label: 'Hi-hat accents', path: ROUTES.hiHatAccents },
+  next: { label: 'Chords and arpeggios', path: ROUTES.chords },
+}
+
+const CHORDS_PAGE: ExampleArticleConfig = {
+  ...shared,
+  path: ROUTES.chords,
+  crumbs: ['Examples', 'Harmony'],
+  title: 'Chords and arpeggios',
+  intro: 'The same four chords played two ways: all notes at once, or one note at a time. Then pad, arpeggio and bass together.',
+  meta: ['Beginner', 'C major', '100 BPM', '4 bars'],
+  source: chordsSource,
+  goal: <>Tell <code>stack</code> (at the same time) from <code>sequence</code> (one after another), using the same notes</>,
+  techniques: [<>Mini-Notation <code>stack</code> for chords</>, <><code>sequence</code> + <code>repeat</code> for arpeggios</>, <>Layering three parts</>],
+  learnFirst: [{ label: 'Bass line', path: ROUTES.bassLine }],
+  sounds: [TONAL.keys, TONAL.pad, TONAL.bass],
+  sections: [
+    { id: 'block', title: 'Block chords', region: 'block', player: { title: 'Block chords', pattern: CHORD_EXAMPLES.block }, body: <>
+      <p><code>CHORDS</code> comes from the Sound Cookbook: each chord is three pitches in a Mini-Notation <code>stack</code>,
+        which plays them together. One chord per bar with <code>cat</code>.</p>
+    </> },
+    { id: 'arpeggio', title: 'Arpeggios', region: 'arpeggio', player: { title: 'Arpeggios', pattern: CHORD_EXAMPLES.arpeggio }, body: <>
+      <p>Swap <code>stack</code> for <code>sequence</code> and the same notes play one after another. <code>repeat(…, 2)</code> fits
+        the four-note figure into the bar twice.</p>
+    </> },
+    { id: 'together', title: 'Pad, arpeggio and bass', region: 'together', player: { title: 'Harmony', pattern: CHORD_EXAMPLES.together }, body: <>
+      <p>Three parts, one progression: a slow pad holds each chord, the arpeggio moves on top, and the roots from the Bass line
+        example sit underneath.</p>
+    </> },
+  ],
+  previous: { label: 'Bass line', path: ROUTES.bassLine },
+  next: { label: 'Layer a song', path: ROUTES.layerASong },
+}
+
+const LAYER_PAGE: ExampleArticleConfig = {
+  ...shared,
+  path: ROUTES.layerASong,
+  crumbs: ['Examples', 'Arrangement'],
+  title: 'Layer a song',
+  intro: 'Drums, bass, chords and a melody — each written on its own page — stacked into one song and balanced so every part can be heard.',
+  meta: ['Intermediate', 'C major', '100 BPM', '4 bars'],
+  source: layerASongSource,
+  goal: <>Combine finished parts with <code>stack</code> and balance them with <code>velocity</code> and <code>postGain</code></>,
+  techniques: [<>Importing parts</>, <><code>stack</code></>, <><code>velocity</code> for balance</>, <><code>postGain</code> for headroom</>],
+  learnFirst: [{ label: 'Chords and arpeggios', path: ROUTES.chords }],
+  sounds: [...DRUM_SOUNDS, TONAL.bass, TONAL.keys, TONAL.lead],
+  sections: [
+    { id: 'drums', title: 'Drums', region: 'drums', player: { title: 'Drums', pattern: LAYER_A_SONG.drums }, body: <>
+      <p>The kick, snare and hi-hats from the Backbeat example, stacked into one part.</p>
+    </> },
+    { id: 'melody', title: 'Melody', region: 'melody', player: { title: 'Melody', pattern: LAYER_A_SONG.melody }, body: <>
+      <p>A new four-bar tune for the lead sound. Bass and chords are imported from the Harmony examples.</p>
+    </> },
+    { id: 'together', title: 'Stack and balance', region: 'together', player: { title: 'The song', pattern: LAYER_A_SONG.song }, body: <>
+      <p>Stacking parts adds their volumes together. <code>velocity</code> scales each part as a whole, so the arpeggio can sit
+        behind the melody without editing its sound. <code>postGain</code> then turns the finished mix down so it doesn’t distort.</p>
+    </> },
+  ],
+  previous: { label: 'Chords and arpeggios', path: ROUTES.chords },
+  next: { label: 'Control it with React', path: ROUTES.reactMixer },
+}
+
+const LOFI_PAGE: ExampleArticleConfig = {
+  ...shared,
+  path: ROUTES.lofi,
+  crumbs: ['Examples', 'Styles'],
+  title: 'Lo-fi loop',
+  intro: 'Slow, swung and soft: the same Cookbook sounds with darker settings, seventh chords and a shuffle on the hi-hats.',
+  meta: ['Intermediate', 'C major', '80 BPM', '4 bars'],
+  source: lofiSource,
+  goal: <>Change a style by changing settings and timing, not by writing new sounds</>,
+  techniques: [<><code>swingBy</code> for a shuffle</>, <>Overriding sound settings</>, <>Seventh chords</>],
+  learnFirst: [{ label: 'Layer a song', path: ROUTES.layerASong }],
+  sounds: [...DRUM_SOUNDS, TONAL.keys, TONAL.bass],
+  sections: [
+    { id: 'swing', title: 'Swing the hi-hats', region: 'swing', player: { title: 'Swung hi-hats', pattern: LOFI.swing }, body: <>
+      <p>Straight eighth notes sit exactly halfway through each beat. Swing pushes every second one later, which is most of
+        what makes lo-fi feel relaxed.</p>
+    </> },
+    { id: 'drums', title: 'Softer drums', region: 'drums', player: { title: 'Lazy drums', pattern: LOFI.drums }, body: <>
+      <p>The sounds are the Cookbook’s, with a few settings overridden: <code>{'{ ...KICK_DEFAULTS, pitchDrop: 12 }'}</code> keeps
+        everything else and changes only what you name.</p>
+    </> },
+    { id: 'chords', title: 'Seventh chords', region: 'chords', player: { title: 'Jazzy chords', pattern: LOFI.chords }, body: <>
+      <p>A seventh chord adds a fourth note to the triad. Dark, roomy keys with a long decay let each chord ring through the bar.</p>
+    </> },
+    { id: 'together', title: 'The loop', region: 'together', player: { title: 'Lo-fi loop', pattern: LOFI.together }, body: <>
+      <p>Drums, chords and a round, low bass at 80 BPM.</p>
+    </>, after: <CodeBlock source={sourceRegion(lofiSource, 'bass')} label="The bass" /> },
+  ],
+  previous: { label: 'Control it with React', path: ROUTES.reactMixer },
+  next: { label: 'House loop', path: ROUTES.house },
+}
+
+const HOUSE_PAGE: ExampleArticleConfig = {
+  ...shared,
+  path: ROUTES.house,
+  crumbs: ['Examples', 'Styles'],
+  title: 'House loop',
+  intro: 'Four-on-the-floor at 124 BPM: off-beat bass and hi-hats, chord stabs and a short lead hook.',
+  meta: ['Intermediate', 'A minor', '124 BPM', '4 bars'],
+  source: houseSource,
+  goal: <>Build drive from the off-beats, and let parts of different lengths loop against each other</>,
+  techniques: [<>Off-beat rhythms</>, <><code>off</code> for echoes</>, <>A two-bar hook over four-bar chords</>],
+  learnFirst: [{ label: 'Four on the floor', path: ROUTES.fourOnTheFloor }],
+  sounds: [...DRUM_SOUNDS, TONAL.bass, TONAL.keys, TONAL.lead],
+  sections: [
+    { id: 'beat', title: 'The beat', region: 'beat', player: { title: 'House beat', pattern: HOUSE.beat }, body: <>
+      <p>A kick on every beat, the snare on 2 and 4, and hi-hats on the off-beats. A longer hi-hat decay turns the closed
+        tick into an open “tss”.</p>
+    </> },
+    { id: 'bass', title: 'Off-beat bass', region: 'bass', player: { title: 'Bass with kick', pattern: HOUSE.bass }, body: <>
+      <p>The bass never plays on the beat. It answers each kick half a beat later, which keeps the low end from clashing and
+        gives house its bounce.</p>
+    </> },
+    { id: 'stabs', title: 'Chord stabs', region: 'stabs', player: { title: 'Stabs', pattern: HOUSE.stabs }, body: <>
+      <p>Short, bright chords on beat 2 of each bar. <code>off(1 / 16, …)</code> adds a softer copy a quarter
+        of a beat later, a quick flam.</p>
+    </> },
+    { id: 'hook', title: 'Hook and loop', region: 'together', player: { title: 'House loop', pattern: HOUSE.together }, body: <>
+      <p>The hook is two bars long and the chords four, so the hook plays twice per chord cycle. Parts of different lengths
+        loop independently: each <code>cat</code> picks its bar from the cycle count on its own.</p>
+      <CodeBlock source={sourceRegion(houseSource, 'hook')} pattern={HOUSE.hook} label="The hook" />
+    </> },
+  ],
+  previous: { label: 'Lo-fi loop', path: ROUTES.lofi },
   next: { label: 'Dance Monkey', path: ROUTES.danceMonkey },
 }
 
@@ -140,3 +307,8 @@ export const SimpleMelodyPage = () => <ExampleArticle config={SIMPLE_MELODY} />
 export const FourOnTheFloorPage = () => <ExampleArticle config={FOUR_ON_THE_FLOOR_PAGE} />
 export const BackbeatPage = () => <ExampleArticle config={BACKBEAT_PAGE} />
 export const HiHatAccentsPage = () => <ExampleArticle config={HI_HAT_ACCENTS_PAGE} />
+export const BassLinePage = () => <ExampleArticle config={BASS_LINE_PAGE} />
+export const ChordsPage = () => <ExampleArticle config={CHORDS_PAGE} />
+export const LayerASongPage = () => <ExampleArticle config={LAYER_PAGE} />
+export const LofiPage = () => <ExampleArticle config={LOFI_PAGE} />
+export const HousePage = () => <ExampleArticle config={HOUSE_PAGE} />

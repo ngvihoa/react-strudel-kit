@@ -16,13 +16,14 @@ npm run dev
 ```
 
 Open the localhost URL printed by Vite. Start with your device volume low; nothing
-plays until you press Play. The header links four sections:
+plays until you press Play. The header links five sections:
 
 | Section | Route | What it is |
 | --- | --- | --- |
 | Learn | `#/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
-| Sound Cookbook | `#/cookbook/kick`, `/snare`, `/hi-hat` | How each synthesized drum is built, with live sliders |
-| Examples | `#/examples/simple-melody`, `/four-on-the-floor`, `/backbeat`, `/hi-hat-accents`, `/dance-monkey` | One goal per page, built up section by section |
+| Sound Cookbook | `#/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
+| Examples | `#/examples/…` (12 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
+| API | `#/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |
 | Playground | `#/playground` (default) | The free-form mixer and code editor described below |
 
 Code shown on these pages is cut from the module that plays (`src/content/`,

@@ -109,6 +109,15 @@ describe('Cookbook and examples', () => {
     ['/examples/four-on-the-floor', 'Four on the floor', 'Examples'],
     ['/examples/backbeat', 'Backbeat', 'Examples'],
     ['/examples/hi-hat-accents', 'Hi-hat accents', 'Examples'],
+    ['/cookbook/bass', 'Bass', 'Sound Cookbook'],
+    ['/cookbook/keys', 'Keys', 'Sound Cookbook'],
+    ['/cookbook/lead', 'Lead', 'Sound Cookbook'],
+    ['/cookbook/pad', 'Pad', 'Sound Cookbook'],
+    ['/examples/bass-line', 'Bass line', 'Examples'],
+    ['/examples/chords-and-arpeggios', 'Chords and arpeggios', 'Examples'],
+    ['/examples/layer-a-song', 'Layer a song', 'Examples'],
+    ['/examples/lofi-loop', 'Lo-fi loop', 'Examples'],
+    ['/examples/house-loop', 'House loop', 'Examples'],
   ])('%s renders with its section current and every code block cut from source', (path, title, section) => {
     go(path)
     render(<Site />)
@@ -134,6 +143,36 @@ describe('Cookbook and examples', () => {
     const code = screen.getByText(/export const hiHatAlone/).closest('figure') as HTMLElement
     fireEvent.click(within(code).getByRole('button', { name: 'Strudel output' }))
     expect(within(code).getByText(/velocity\("\[1 0\.2\]\*4"\)/)).toBeInTheDocument()
+  })
+})
+
+describe('React example and API reference', () => {
+  beforeEach(() => { window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+
+  it('runs the React example component as written and keeps playing while parts change', async () => {
+    go('/examples/react-mixer')
+    render(<Site />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Control it with React' })).toBeInTheDocument()
+    const demo = document.querySelector('.react-mixer') as HTMLElement
+    fireEvent.click(within(demo).getByRole('button', { name: 'Play' }))
+    await waitFor(() => expect(within(demo).getByText('playing')).toBeInTheDocument())
+    fireEvent.click(within(demo).getByRole('checkbox', { name: 'melody' }))
+    fireEvent.change(within(demo).getByRole('slider'), { target: { value: 120 } })
+    await waitFor(() => expect(within(demo).getByText('playing')).toBeInTheDocument())
+    expect(within(demo).getByRole('checkbox', { name: 'melody' })).not.toBeChecked()
+  })
+
+  it('lists every registry function, with links to the pages that use it', async () => {
+    const { functionRegistry } = await import('react-strudel-kit')
+    go('/api')
+    render(<Site />)
+    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'API' })).toHaveAttribute('aria-current', 'page')
+    for (const name of Object.keys(functionRegistry)) expect(document.getElementById(`fn-${name}`)).not.toBeNull()
+    const velocity = document.getElementById('fn-velocity') as HTMLElement
+    expect(within(velocity).getByRole('link', { name: 'Hi-hat accents' })).toHaveAttribute('href', '#/examples/hi-hat-accents')
+    const swingBy = document.getElementById('fn-swingBy') as HTMLElement
+    expect(within(swingBy).getByRole('link', { name: 'Lo-fi loop' })).toBeInTheDocument()
+    expect(screen.getByText('c4@2')).toBeInTheDocument()
   })
 })
 
