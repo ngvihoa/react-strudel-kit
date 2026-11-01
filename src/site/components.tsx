@@ -66,6 +66,25 @@ export function ParamSlider({ label, unit, value, min, max, step, hint, onChange
   )
 }
 
+type SelectProps<T extends string> = {
+  label: string
+  value: T
+  options: readonly { value: T, label: string }[]
+  onChange: (value: T) => void
+}
+
+export function ParamSelect<T extends string>({ label, value, options, onChange }: SelectProps<T>) {
+  const id = useId()
+  return (
+    <div className="param-select">
+      <label htmlFor={id}>{label}</label>
+      <select id={id} value={value} onChange={(event) => onChange(event.target.value as T)}>
+        {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+      </select>
+    </div>
+  )
+}
+
 type CodeProps = {
   source: string
   /** When given, a second tab shows the Strudel code this pattern serializes to. */

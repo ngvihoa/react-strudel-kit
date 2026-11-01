@@ -20,6 +20,7 @@ export const DANCE_MONKEY_BPM = 98
 // Melody reference: Popwise teaching score, transposed to F# minor.
 // See docs/dance-monkey.md for a walkthrough and musical references.
 export const DANCE_MONKEY_MELODY_BARS = [
+  // #region melody-bar-1
   // Bar 1: four beats, with each beat's units shown separately.
   sequence(
     // Beat 1: 2 + 1 + 1 = 4 units. Hold A, then strike A twice more.
@@ -41,6 +42,7 @@ export const DANCE_MONKEY_MELODY_BARS = [
     weight(pitch('a4'), 3),
     pitch('f#4'),
   ),
+  // #endregion
 
   // Bar 2: a long pause, followed by a pickup into the next bar.
   sequence(
@@ -130,6 +132,7 @@ export const DANCE_MONKEY_MELODY_BARS = [
   ),
 ] as const
 
+// #region melody
 // The note factory accepts these typed sequence nodes directly: no mini()
 // conversion is needed. cat gives each bar one full cycle of the melody.
 const melodySequence = fn('cat',
@@ -154,6 +157,7 @@ const melody = chain(
   fn('sustain', 0.45), // Amplitude level while the note is held.
   fn('release', 0.06), // Seconds to fade out after the note is released.
 )
+// #endregion
 
 // One cycle = one 4/4 bar. Bass and keys repeat their four-bar progression
 // twice while the melody completes its eight-bar phrase.
@@ -162,6 +166,7 @@ const melody = chain(
 // each pitch() or rest() below takes an eighth note (half a beat).
 // Silence still occupies a slot; it does not pull the next note forward.
 export const DANCE_MONKEY_BASS_BARS = [
+  // #region bass-bar-1
   // Bar 1: F# minor. F# is the root; C# is its fifth.
   sequence(
     pitch('f#2'), // Beat 1: root, then silence.
@@ -173,6 +178,7 @@ export const DANCE_MONKEY_BASS_BARS = [
     pitch('f#2'), // Beat 4: return to the root, then silence.
     rest(),
   ),
+  // #endregion
   // Bar 2: D major, with the same rhythm. Root D, fifth A.
   sequence(
     pitch('d2'),
@@ -208,6 +214,7 @@ export const DANCE_MONKEY_BASS_BARS = [
   ),
 ] as const
 
+// #region bass
 const bassSequence = fn('cat',
   fn('note', DANCE_MONKEY_BASS_BARS[0]),
   fn('note', DANCE_MONKEY_BASS_BARS[1]),
@@ -225,12 +232,14 @@ const bass = chain(
   fn('sustain', 0.3),
   fn('release', 0.04),
 )
+// #endregion
 
 // Keys outline each chord as four successive notes, rather than a chord
 // struck all at once. repeat(..., 2) plays that figure TWICE within one bar:
 // four notes x two repetitions = eight eighth notes.
 // repeat() strikes again; weight() would hold a single event longer.
 export const DANCE_MONKEY_KEYS_BARS = [
+  // #region keys-bar-1
   // Bar 1: F# minor (C#–F#–A–F#).
   repeat(sequence(
     pitch('c#4'),
@@ -238,6 +247,7 @@ export const DANCE_MONKEY_KEYS_BARS = [
     pitch('a4'),
     pitch('f#4'),
   ), 2),
+  // #endregion
   // Bar 2: D major (D–F#–A–F#).
   repeat(sequence(
     pitch('d4'),
@@ -261,6 +271,7 @@ export const DANCE_MONKEY_KEYS_BARS = [
   ), 2),
 ] as const
 
+// #region keys
 const keysSequence = fn('cat',
   fn('note', DANCE_MONKEY_KEYS_BARS[0]),
   fn('note', DANCE_MONKEY_KEYS_BARS[1]),
@@ -280,7 +291,9 @@ const keys = chain(
   fn('sustain', 0), // Fade down to silence for a plucked sound.
   fn('release', 0.06),
 )
+// #endregion
 
+// #region drums
 // Four evenly spaced C2 strikes per bar: one kick on each quarter-note beat.
 // The sine oscillator and falling pitch make a synthesized kick drum.
 const kick = chain(
@@ -328,9 +341,11 @@ const hats = chain(
   fn('sustain', 0),
   fn('release', 0.01),
 )
+// #endregion
 
 export const DANCE_MONKEY_PARTS = { melody, bass, keys, kick, snare, hats } as const
 
+// #region mix
 export const DANCE_MONKEY_MIX = chain(
   fn('stack', melody, bass, keys, kick, snare, hats),
   fn('postGain', 0.8),
@@ -342,3 +357,4 @@ export const DANCE_MONKEY_PATTERN = chain(
   DANCE_MONKEY_MIX,
   fn('cpm', DANCE_MONKEY_BPM / 4),
 )
+// #endregion

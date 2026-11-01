@@ -12,3 +12,9 @@ export const sourceRegion = (source: string, name: string) => {
   const indent = Math.min(...body.filter((line) => line.trim()).map((line) => line.match(/^ */)![0].length))
   return body.map((line) => line.slice(indent)).join('\n').trim()
 }
+
+/** The whole module without its `// #region` / `// #endregion` marker lines. */
+export const stripRegions = (source: string) => source
+  .split('\n')
+  .filter((line) => !/^\s*\/\/ #(region .+|endregion)$/.test(line))
+  .join('\n')

@@ -15,8 +15,22 @@ npm install
 npm run dev
 ```
 
-Open the localhost URL printed by Vite. The **Mixer** opens with **Dance Monkey**,
-an eight-bar instrumental chorus. Start with your device volume low and press Play.
+Open the localhost URL printed by Vite. Start with your device volume low; nothing
+plays until you press Play. The header links four sections:
+
+| Section | Route | What it is |
+| --- | --- | --- |
+| Learn | `#/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
+| Sound Cookbook | `#/cookbook/kick` | How a synthesized kick is built, with live sliders |
+| Examples | `#/examples/dance-monkey` | Dance Monkey part by part, with a mixer and a player per part |
+| Playground | `#/playground` (default) | The free-form mixer and code editor described below |
+
+Code shown on these pages is cut from the module that plays (`src/content/`,
+`src/songs/`), so the text and the sound cannot drift apart. Leaving a page stops
+its music, and only one player plays at a time.
+
+In the **Playground**, the **Mixer** opens with **Dance Monkey**, an eight-bar
+instrumental chorus:
 
 - Change **tempo** and **master volume** while the music runs.
 - **Mute** individual parts, or **Solo** one or several parts together.
@@ -41,12 +55,15 @@ Use the workspace package after it has been built. React integration is a
 separate entrypoint and must run in a browser/client component.
 
 ```tsx
-import { chain, fn, mini } from 'react-strudel-kit'
+import { chain, fn, pitch, sample, sequence } from 'react-strudel-kit'
 import { useStrudel } from 'react-strudel-kit/react'
 
+// Four notes, one bar, at 30 cycles per minute — the same pieces as Lesson 1.
 const melody = chain(
-  fn('note', mini('c4 e4 g4 b4')),
-  fn('gain', 0.25),
+  fn('note', sequence(pitch('c4'), pitch('e4'), pitch('g4'), pitch('b4'))),
+  fn('instrument', sample('triangle')),
+  fn('gain', 0.3),
+  fn('cpm', 30),
 )
 
 export function Player() {
@@ -112,7 +129,9 @@ After editing package source during a dev/test watch session, run
 
 ```text
 packages/react-strudel-kit/src/  Typed API, serializers, transport, unit tests
-src/                            Reference playground and integration tests
+src/                            Reference app: playground, mixer and integration tests
+src/site/                       Learning-site shell, page templates and shared components
+src/content/                    Lesson and Cookbook patterns shown and played on those pages
 src/test/public-api.type-test.ts  Compile-time checks against the built package
 docs/                           Usage guide and historical design notes
 ```

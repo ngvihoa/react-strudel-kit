@@ -74,7 +74,7 @@
 /* Numbered steps joined by a rail, like a checklist you work down. */
 .lesson-step { position: relative; padding-left: 52px; scroll-margin-top: calc(var(--header) + 24px); }
 .lesson-step::before { content: ""; position: absolute; left: 15px; top: 40px; bottom: -48px; width: 1px; background: var(--line); }
-.lesson-step:last-of-type::before { display: none; }
+.lesson-step:not(:has(~ .lesson-step))::before { display: none; }
 .step-number { position: absolute; left: 0; top: 2px; display: grid; place-items: center; width: 31px; height: 26px; color: var(--brand-strong); background: var(--surface); border: 1px solid var(--line-strong); border-radius: 6px; font: 600 .75rem var(--mono); }
 
 /* Player */
@@ -202,3 +202,28 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
   .pager { grid-template-columns: 1fr; }
   .pager-next { grid-column: 1; }
 }
+
+/* Lesson extras */
+.docs-body ul { margin: 0 0 16px; padding-left: 22px; }
+.docs-body li { margin: 4px 0; }
+.docs-body li::marker { color: var(--faint); }
+.compare { display: grid; gap: 24px; }
+.compare > div { min-width: 0; }
+.compare .code-block { margin-top: 0; }
+.docs-lesson .docs-body > section:not(.lesson-step) { padding-left: 52px; }
+.slot-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.param-select label { display: block; margin-bottom: 6px; color: var(--ink-2); font-size: .8125rem; }
+.param-select select { min-height: 40px; }
+.docs-body > section > .code-block:first-child, .docs-body > section > .player + .code-block { margin-top: 20px; }
+@media (max-width: 860px) {
+  .compare .code-block { margin-inline: -16px; }
+  .slot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .docs-lesson .docs-body > section:not(.lesson-step) { padding-left: 0; }
+}
+.source-details { margin-top: 16px; }
+.source-details summary { display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; color: var(--ink); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); font-size: .875rem; font-weight: 600; cursor: pointer; }
+.source-details summary:hover { border-color: var(--brand-soft); background: var(--brand-tint); }
+.source-details[open] summary { margin-bottom: 4px; }
+.facts .toc { padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+@media (max-width: 1240px) { .facts .toc { display: none; } }
+.docs-body .code-block + p, .docs-body .player + p, .docs-body .code-block + ul { margin-top: 20px; }

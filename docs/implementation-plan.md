@@ -11,8 +11,8 @@ Phát triển reference app thành nơi học cách sử dụng **react-strudel-
 Giữ lại mixer và code editor hiện tại. Tận dụng Vite app đang có trước khi
 cân nhắc framework tài liệu hoặc tách app riêng.
 
-Đây là kế hoạch chưa triển khai. Chưa có template UI hoàn chỉnh; cần thiết kế
-template và thực hiện một bài mẫu trước khi mở rộng nội dung.
+Đang triển khai: template UI, khung điều hướng, bài mẫu và trang example Dance Monkey
+đã xong (xem checklist bên dưới). Bước tiếp theo là mở rộng nội dung theo template.
 
 ### Cấu trúc điều hướng
 
@@ -92,17 +92,29 @@ giới hạn thực tế; không trình bày tính năng dự kiến như tính 
 - README và quickstart cần dùng cùng cách tiếp cận với bài học đầu tiên.
 - Chỉ dùng API thực tế được hỗ trợ; API Reference dẫn đến example có thể chạy.
 
+### Ngôn ngữ nội dung
+
+Tạm thời toàn bộ giao diện và bài học viết bằng **tiếng Anh**. Tương lai bổ sung
+lựa chọn **tiếng Việt**:
+
+- Tách chữ giao diện và nội dung bài học khỏi component (ví dụ một file nội dung
+  theo từng ngôn ngữ), giữ code mẫu dùng chung vì code không đổi theo ngôn ngữ.
+- Chọn cách đặt ngôn ngữ trong URL (ví dụ `#/vi/learn/...`) và nút chuyển ngôn ngữ ở header.
+- Font Be Vietnam Pro và JetBrains Mono đã có subset tiếng Việt.
+- Chỉ bắt đầu khi nội dung tiếng Anh của các bài đầu đã ổn định, để không phải dịch lại nhiều lần.
+
 ### Thứ tự implementation và tiêu chí hoàn thành
 
-- [ ] Thiết kế template UI cho trang hướng dẫn, trang example và Sound Cookbook;
-  kiểm tra bố cục desktop/mobile trước khi nhân rộng.
-  *Bản nháp đầu đã có ở `src/site/`, chờ review:* hash route `#/learn/first-song`,
-  `#/cookbook/kick`, `#/examples/dance-monkey`, `#/playground` (mặc định). Code hiển thị
-  lấy từ `src/content/*.ts?raw` theo `// #region`; tab “Strudel output” lấy từ
-  `toStrudelCode` của pattern đang phát. Trang chưa có hiện là “Planned”, không có link.
-- [ ] Dựng khung điều hướng trong app hiện tại, tích hợp lại playground.
-- [ ] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
-  code hiển thị và playback dùng cùng source.
+- [x] Thiết kế template UI cho trang hướng dẫn, trang example và Sound Cookbook;
+  kiểm tra bố cục desktop/mobile trước khi nhân rộng. Template ở `src/site/`,
+  tham khảo tỷ lệ của react.dev, Tailwind và Next.js docs.
+- [x] Dựng khung điều hướng trong app hiện tại, tích hợp lại playground.
+  Hash route `#/learn/first-song`, `#/cookbook/kick`, `#/examples/dance-monkey`,
+  `#/playground` (mặc định). Trang chưa có hiện là “Soon”, không có link.
+- [x] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
+  code hiển thị và playback dùng cùng source: trang import module và bản `?raw`
+  của nó, cắt theo `// #region`; tab “Strudel output” lấy từ `toStrudelCode`
+  của pattern đang phát. *Cần nghe thử trên thiết bị thật.*
 - [ ] Thêm các example cơ bản theo lộ trình và ba bài Cookbook đầu tiên:
   kick, snare, hi-hat; có liên kết qua lại giữa bài học và ví dụ.
 - [ ] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung

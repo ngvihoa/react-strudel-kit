@@ -61,5 +61,6 @@ button:focus-visible, a:focus-visible {
 button { touch-action: manipulation; }
 #root { min-height: 100svh; }
 h1, h2, p { margin-top: 0; }
-/* Show code exactly as typed: no `=>` → ⇒ ligatures for learners copying examples. */
-code, pre, kbd, textarea, output { font-variant-ligatures: none; }
+/* Show code exactly as typed: no `=>` → ⇒ ligatures for learners copying examples.
+   !important because component styles set the `font` shorthand later, which resets ligature settings. */
+code, pre, kbd, textarea, output { font-variant-ligatures: none !important; font-feature-settings: "liga" 0, "calt" 0 !important; }
