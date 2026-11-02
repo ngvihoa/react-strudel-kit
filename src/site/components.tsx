@@ -14,18 +14,20 @@ type PlayerProps = {
   pattern: PatternExpression
   caption?: ReactNode
   compact?: boolean
+  headingLevel?: 2 | 3
   children?: ReactNode
 }
 
 /** Play/Stop, status and errors for one lesson pattern; controls go in children. */
-export function Player({ id, title, pattern, caption, compact, children }: PlayerProps) {
+export function Player({ id, title, pattern, caption, compact, headingLevel = 3, children }: PlayerProps) {
   const { state, error, start, stop } = usePlayer(id, title, pattern)
   const errorId = useId()
+  const Heading = headingLevel === 2 ? 'h2' : 'h3'
   return (
     <section className={`player${compact ? ' player-compact' : ''} player-${state}`} aria-label={`${title} player`}>
       <div className="player-head">
         <div className="player-title">
-          <h3>{title}</h3>
+          <Heading>{title}</Heading>
           {caption && <p>{caption}</p>}
         </div>
         <span className="player-state" role="status"><span className="status-dot" aria-hidden="true" />{STATE_LABELS[state]}</span>

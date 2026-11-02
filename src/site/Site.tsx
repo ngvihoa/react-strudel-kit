@@ -75,6 +75,7 @@ const useNavIndicator = (route: RoutePath) => {
 }
 
 export function Site() {
+  const content = useRef<HTMLElement>(null)
   const route = useRoute()
   const { stop } = useStrudel()
   const Page = PAGES[route]
@@ -89,7 +90,12 @@ export function Site() {
   return (
     <PlaybackProvider>
       <div className="site">
-        <a className="skip-link" href="#content">Skip to content</a>
+        <a className="skip-link" href="#content" onClick={(event) => {
+          // The hash belongs to the router; move focus without navigating.
+          event.preventDefault()
+          content.current?.focus({ preventScroll: true })
+          window.scrollTo(0, 0)
+        }}>Skip to content</a>
         <header className="site-header">
           <a className="brand-logo" href={href(ROUTES.firstSong)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
           <nav className="site-nav" aria-label="Sections" ref={nav}>
@@ -97,7 +103,7 @@ export function Site() {
             {bar && <span className="site-nav-bar" aria-hidden="true" style={{ transform: `translateX(${bar.left}px)`, width: bar.width }} />}
           </nav>
         </header>
-        <main id="content" className={route === ROUTES.playground ? 'site-main site-main-playground' : 'site-main'}>
+        <main id="content" ref={content} tabIndex={-1} className={route === ROUTES.playground ? 'site-main site-main-playground' : 'site-main'}>
           <Page key={route} />
         </main>
         <footer className="site-footer"><span>Made to be played with.</span><span>Audio stays in your browser.</span></footer>

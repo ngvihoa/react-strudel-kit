@@ -24,10 +24,10 @@
   --ink: #17152b;
   --ink-2: #34304f;
   --muted: #5b5876;
-  --faint: #8c89a6;
+  --faint: #6f6b88;
 
   /* Status stays separate from brand so "playing" never reads as "selected". */
-  --ok: #1f8a5b;
+  --ok: #18794e;
   --warn: #c27a12;
   --warn-tint: #fff1dc;
   --danger: #b3261e;

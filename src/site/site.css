@@ -21,6 +21,7 @@
 @media (prefers-reduced-motion: reduce) { .site-nav a, .site-nav-bar { transition: none; } }
 
 .site-main { flex: 1; width: 100%; }
+.site-main:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; }
 .site-main-playground .app-shell { padding-top: 4px; }
 .site-footer { display: flex; justify-content: space-between; gap: 16px; padding: 20px 24px; color: var(--faint); font-size: .8125rem; border-top: 1px solid var(--line); }
 .studio-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
@@ -83,7 +84,7 @@
 .player-starting { border-color: var(--brand-soft); }
 .player-error { border-color: var(--danger); }
 .player-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-.player-title h3 { margin: 0; color: var(--ink); font-size: .9375rem; font-weight: 600; }
+.player-title h2, .player-title h3 { margin: 0; color: var(--ink); font-size: .9375rem; font-weight: 600; line-height: 1.5; letter-spacing: normal; }
 .player-title p { margin: 4px 0 0; color: var(--muted); font-size: .8125rem; line-height: 1.5; }
 .player-state { display: inline-flex; align-items: center; gap: 7px; flex-shrink: 0; color: var(--muted); font-size: .75rem; }
 .player-playing .player-state { color: var(--ok); }

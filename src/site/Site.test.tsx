@@ -38,6 +38,22 @@ describe('learning site template', () => {
     expect(within(lessons).queryAllByRole('link', { name: /Make a beat/ })).toHaveLength(0)
   })
 
+  it('skips navigation without changing the route or stopping its player', async () => {
+    go('/learn/first-song')
+    render(<Site />)
+    fireEvent.click(screen.getByRole('button', { name: 'Play One note' }))
+    await waitFor(() => expect(within(player('One note')).getByText('Playing')).toBeInTheDocument())
+    const hushes = vi.mocked(hush).mock.calls.length
+
+    fireEvent.click(screen.getByRole('link', { name: 'Skip to content' }))
+
+    expect(window.location.hash).toBe('#/learn/first-song')
+    expect(screen.getByRole('main')).toHaveFocus()
+    expect(screen.getByRole('heading', { level: 1, name: 'Your first song' })).toBeInTheDocument()
+    expect(within(player('One note')).getByText('Playing')).toBeInTheDocument()
+    expect(vi.mocked(hush).mock.calls.length).toBe(hushes)
+  })
+
   it('marks only the player that started playback as playing', async () => {
     go('/learn/first-song')
     render(<Site />)

@@ -56,7 +56,7 @@ export function SoundArticle<S extends Record<string, number>>({ config }: { con
       nav={<SectionNav groups={config.nav} current={config.path} label="Sounds" />}
       header={<PageHeader crumbs={config.crumbs} title={config.title} intro={config.intro} meta={config.meta} />}
       asideLabel="Listen"
-      aside={<Player id={`${config.path}-alone`} title={config.alone.title} pattern={alone} caption={config.alone.caption}>
+      aside={<Player id={`${config.path}-alone`} title={config.alone.title} pattern={alone} caption={config.alone.caption} headingLevel={2}>
         {config.controls.map((control) => <ParamSlider key={control.key} label={control.label} unit={control.unit}
           value={settings[control.key]} min={control.min} max={control.max} step={control.step} hint={control.hint}
           onChange={(value) => setSettings((current) => ({ ...current, [control.key]: value }))} />)}

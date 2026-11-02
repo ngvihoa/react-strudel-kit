@@ -76,7 +76,7 @@ export function DanceMonkeyPage() {
         <div><p>Learn first</p><ul><li><a href={href(ROUTES.simpleMelody)}>A simple melody</a></li><li><a href={href(ROUTES.backbeat)}>Backbeat</a></li><li><a href={href(ROUTES.hiHatAccents)}>Hi-hat accents</a></li></ul></div>
       </div>}>
       <section id="try-it" aria-label="Try the mix">
-        <Player id="example-dance-monkey" title="Dance Monkey" pattern={pattern}
+        <Player id="example-dance-monkey" title="Dance Monkey" pattern={pattern} headingLevel={2}
           caption={`${audible.length} of ${DANCE_MONKEY.parts.length} parts on · changes apply while it plays`}>
           <ParamSlider label="Tempo" unit="BPM" value={mix.bpm} min={60} max={160} step={1} hint={['Slower', 'Faster']}
             onChange={(bpm) => setMix((current) => ({ ...current, bpm }))} />
