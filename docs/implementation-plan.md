@@ -11,8 +11,9 @@ Phát triển reference app thành nơi học cách sử dụng **react-strudel-
 Giữ lại mixer và code editor hiện tại. Tận dụng Vite app đang có trước khi
 cân nhắc framework tài liệu hoặc tách app riêng.
 
-Đang triển khai: template UI, khung điều hướng, bài mẫu và trang example Dance Monkey
-đã xong (xem checklist bên dưới). Bước tiếp theo là mở rộng nội dung theo template.
+Template UI, điều hướng, Lesson 1, 7 trang Cookbook, 11 trang Examples và API
+Reference đã có (xem checklist bên dưới). Đang hoàn tất kiểm tra browser và
+audio lifecycle; bước tiếp theo là nghe thử trên thiết bị thật để chỉnh chất âm.
 
 ### Cấu trúc điều hướng
 
@@ -129,9 +130,15 @@ lựa chọn **tiếng Việt**:
   House loop. Trang `#/api` sinh bảng hàm từ `functionRegistry` (thiếu mô tả là lỗi
   biên dịch) và cột “Used in” quét source các trang. Nhạc lý (hợp âm, quãng năm,
   swing, off-beat) được kiểm tra bằng engine Strudel thật. *Cần nghe thử trên thiết bị thật.*
-- [ ] Kiểm tra điều hướng, responsive, keyboard và audio lifecycle;
-  xác minh code mẫu chạy được, thông số thay đổi đúng như giải thích và
-  playground hiện tại vẫn hoạt động.
+- [x] Kiểm tra tự động điều hướng, responsive, keyboard và audio lifecycle.
+  Playwright chạy production build: 21 route ở 375/768/1440px; axe trên mọi trang;
+  Play/Stop từng player với Strudel/Web Audio thật; ownership, keyboard, React mixer,
+  Playground và hủy Play đang chờ audio khi Stop/chuyển trang. Vitest kiểm tra
+  cancellation và nhạc lý; tab Strudel output phản ánh tham số đang chọn.
+  Chạy bằng `npm run test:e2e`; xem [ghi chú xác minh](validation.md).
+- [ ] Nghe thử trên thiết bị thật: chỉnh gain, defaults và slider ranges theo
+  chất âm thực tế, ưu tiên tonal Cookbook, Lo-fi và House. Kiểm thử tự động
+  không xác nhận được chất lượng âm, clipping hay khả năng tương thích thiết bị.
 
 ## Tên tạm
 

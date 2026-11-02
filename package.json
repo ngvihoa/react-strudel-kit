@@ -3,19 +3,22 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "workspaces": ["packages/react-strudel-kit"],
+  "workspaces": [
+    "packages/react-strudel-kit"
+  ],
   "scripts": {
     "predev": "npm run build:package",
     "dev": "vite",
     "build": "npm run typecheck && vite build",
-    "typecheck": "npm run build:package && tsc -b && tsc -p packages/react-strudel-kit/tsconfig.test.json && tsc -p src/test/tsconfig.public-api.json",
+    "typecheck": "npm run build:package && tsc -b && tsc -p packages/react-strudel-kit/tsconfig.test.json && tsc -p src/test/tsconfig.public-api.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
     "preview": "vite preview",
     "pretest": "npm run build:package",
     "test": "vitest",
     "test:ui": "npm test -- --ui",
     "coverage": "npm test -- --run --coverage",
-    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.build.json && vite build --config packages/react-strudel-kit/vite.config.ts"
+    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.build.json && vite build --config packages/react-strudel-kit/vite.config.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "^5.3.0",
@@ -25,7 +28,9 @@
     "react-strudel-kit": "*"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.64.1",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.3",
     "@types/node": "^24.13.3",

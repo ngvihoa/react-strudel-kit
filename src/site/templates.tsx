@@ -71,7 +71,7 @@ export function SoundArticle<S extends Record<string, number>>({ config }: { con
       </section>
       <section id="anatomy" aria-labelledby="anatomy-title">
         <h2 id="anatomy-title">How it is built</h2>
-        <div className="table-wrap">
+        <div className="table-wrap" tabIndex={0}>
           <table className="anatomy">
             <thead><tr><th scope="col">Part</th><th scope="col">Unit</th><th scope="col">What it does</th></tr></thead>
             <tbody>{config.anatomy.map((row) => <tr key={row.part}><th scope="row"><code>{row.part}</code></th><td>{row.unit}</td><td>{row.role}</td></tr>)}</tbody>

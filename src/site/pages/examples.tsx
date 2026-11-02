@@ -43,7 +43,7 @@ const SIMPLE_MELODY: ExampleArticleConfig = {
   techniques: [<><code>sequence</code> for each bar</>, <><code>weight</code> for held notes</>, <><code>cat</code> for one bar per cycle</>],
   learnFirst: [{ label: 'Your first song', path: ROUTES.firstSong }],
   sections: [
-    { id: 'bars', title: 'Write each bar', region: 'bars', player: { title: 'Twinkle, Twinkle', pattern: twinkle }, body: <>
+    { id: 'bars', title: 'Write each bar', region: 'bars', player: { title: 'Twinkle melody', pattern: twinkle }, body: <>
       <p>Each bar is a <code>sequence</code> of four beats. Bars 2 and 4 end on a note that lasts two beats, so it gets
         <code> weight(…, 2)</code> and the bar has three entries instead of four — still four shares in total.</p>
     </> },

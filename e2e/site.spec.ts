@@ -1,0 +1,184 @@
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { ROUTES } from '../src/site/router'
+
+const routes = Object.values(ROUTES)
+const titles: Record<string, string> = {
+  [ROUTES.firstSong]: 'Your first song',
+  [ROUTES.kick]: 'Kick', [ROUTES.snare]: 'Snare', [ROUTES.hiHat]: 'Hi-hat',
+  [ROUTES.bass]: 'Bass', [ROUTES.keys]: 'Keys', [ROUTES.lead]: 'Lead', [ROUTES.pad]: 'Pad',
+  [ROUTES.simpleMelody]: 'A simple melody', [ROUTES.fourOnTheFloor]: 'Four on the floor',
+  [ROUTES.backbeat]: 'Backbeat', [ROUTES.hiHatAccents]: 'Hi-hat accents',
+  [ROUTES.bassLine]: 'Bass line', [ROUTES.chords]: 'Chords and arpeggios',
+  [ROUTES.layerASong]: 'Layer a song', [ROUTES.reactMixer]: 'Control it with React',
+  [ROUTES.lofi]: 'Lo-fi loop', [ROUTES.house]: 'House loop',
+  [ROUTES.danceMonkey]: 'Dance Monkey', [ROUTES.api]: 'API reference', [ROUTES.playground]: 'Dance Monkey',
+}
+const runtimeErrors = new WeakMap<Page, string[]>()
+const go = async (page: Page, route: string) => {
+  await page.evaluate((path) => { window.location.hash = path }, route)
+  await expect(page.locator('h1')).toHaveText(titles[route])
+  await expect(page.getByRole('navigation', { name: 'Sections', exact: true }).locator('[aria-current="page"]')).toHaveAttribute('href',
+    `#${route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
+}
+
+test.beforeEach(async ({ page }) => {
+  const errors: string[] = []
+  runtimeErrors.set(page, errors)
+  page.on('pageerror', (error) => errors.push(error.message))
+  await page.goto(`/#${ROUTES.firstSong}`)
+  await expect(page.locator('h1')).toHaveText('Your first song')
+})
+
+// Scheduler and synthesis failures can arrive after the Play promise resolves.
+test.afterEach(async ({ page }) => { expect(runtimeErrors.get(page)).toEqual([]) })
+
+for (const width of [375, 768, 1440]) {
+  test(`all routes fit at ${width}px and link to available pages`, async ({ page }, testInfo) => {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const route of routes) {
+      await go(page, route)
+      await page.evaluate(() => document.fonts.ready)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+      const links = await page.locator('a[href^="#/"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')!.slice(1)))
+      expect(links.every((link) => routes.includes(link as typeof routes[number]))).toBe(true)
+    }
+    for (const route of [ROUTES.firstSong, ROUTES.kick]) {
+      await go(page, route)
+      await page.screenshot({ path: testInfo.outputPath(`${route.split('/').at(-1)}-${width}.png`), animations: 'disabled' })
+    }
+  })
+}
+
+test('all pages pass automated accessibility checks', async ({ page }) => {
+  for (const route of routes) {
+    await go(page, route)
+    const { violations } = await new AxeBuilder({ page }).analyze()
+    expect(violations, route).toEqual([])
+  }
+})
+
+test('skip link moves keyboard focus and preserves the lesson route', async ({ page }) => {
+  await page.keyboard.press('Tab')
+  await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(page.getByRole('main')).toBeFocused()
+  await expect(page).toHaveURL(/#\/learn\/first-song$/)
+  await expect(page.locator('h1')).toHaveText('Your first song')
+})
+
+const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer])
+for (const route of routes.filter((route) => !customPlayers.has(route))) {
+  test(`${route}: every pattern plays and stops with the real engine`, async ({ page }) => {
+    await go(page, route)
+    const players = page.getByRole('region', { name: / player$/ })
+    for (const player of await players.all()) {
+      await player.getByRole('button', { name: /^Play / }).click()
+      await expect(player.locator('.player-state')).toHaveText('Playing')
+      await expect(page.getByRole('alert')).toHaveCount(0)
+      await player.getByRole('button', { name: /^Stop / }).click()
+      await expect(player.locator('.player-state')).toHaveText('Ready')
+    }
+  })
+}
+
+test('keyboard controls update the playing sound and never autoplay while stopped', async ({ page }) => {
+  await go(page, ROUTES.kick)
+  const player = page.getByRole('region', { name: 'Kick on its own player' })
+  const slider = player.getByRole('slider', { name: /Pitch drop/ })
+  await slider.focus()
+  const initial = Number(await slider.inputValue())
+  await page.keyboard.press('ArrowRight')
+  await expect(slider).toHaveValue(String(initial + 1))
+  await expect(player.locator('.player-state')).toHaveText('Ready')
+  await expect(slider).toBeFocused()
+  expect(await slider.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe('solid')
+
+  await player.getByRole('button', { name: 'Play Kick on its own', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(player.locator('.player-state')).toHaveText('Playing')
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(player.locator('.player-state')).toHaveText('Playing')
+  await page.getByRole('button', { name: 'Strudel output', exact: true }).first().click()
+  await expect(page.locator('pre').filter({ hasText: `penv(${initial + 2})` })).toHaveCount(1)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+
+  await player.getByRole('button', { name: 'Stop Kick on its own', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await slider.focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(player.locator('.player-state')).toHaveText('Ready')
+})
+
+test('only the player that started the transport owns playback', async ({ page }) => {
+  const one = page.getByRole('region', { name: 'One note player', exact: true })
+  const four = page.getByRole('region', { name: 'Four notes player', exact: true })
+  await one.getByRole('button', { name: /^Play / }).click()
+  await expect(one.locator('.player-state')).toHaveText('Playing')
+  await four.getByRole('button', { name: /^Play / }).click()
+  await expect(four.locator('.player-state')).toHaveText('Playing')
+  await expect(one.locator('.player-state')).toHaveText('Ready')
+  await one.getByRole('button', { name: /^Stop / }).click()
+  await expect(four.locator('.player-state')).toHaveText('Playing')
+  await four.getByRole('button', { name: /^Stop / }).click()
+})
+
+test('React mixer controls and route changes share the transport with Playground', async ({ page }) => {
+  await go(page, ROUTES.reactMixer)
+  const mixer = page.locator('.react-mixer')
+  await mixer.getByRole('checkbox', { name: 'melody' }).uncheck()
+  await expect(mixer.locator('output')).toHaveText('idle')
+  await mixer.getByRole('button', { name: 'Play', exact: true }).click()
+  await expect(mixer.locator('output')).toHaveText('playing')
+  await mixer.getByRole('slider').focus()
+  await page.keyboard.press('ArrowRight')
+  await mixer.getByRole('checkbox', { name: 'bass' }).uncheck()
+  await expect(mixer.locator('output')).toHaveText('playing')
+
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Playground', exact: true }).click()
+  const status = page.locator('.topbar-note')
+  await expect(status).toHaveText('Ready')
+  await page.getByRole('button', { name: 'Play mix', exact: true }).focus()
+  await page.keyboard.press('Control+Enter')
+  await expect(status).toHaveText('Playing')
+  await page.keyboard.press('Escape')
+  await expect(status).toHaveText('Ready')
+  await page.getByRole('button', { name: 'Code editor', exact: true }).click()
+  await page.getByRole('textbox', { name: 'Strudel pattern code' }).fill('note("c4 e4").s("triangle").gain(0.2)')
+  await expect(status).toHaveText('Ready')
+  await page.keyboard.press('Control+Enter')
+  await expect(status).toHaveText('Playing')
+  await page.keyboard.press('Escape')
+  await expect(status).toHaveText('Ready')
+})
+
+for (const action of ['Stop', 'route change']) {
+  test(`${action} cancels Play while audio resume is pending`, async ({ page }) => {
+    await page.addInitScript(() => {
+      const resume = AudioContext.prototype.resume
+      let release!: () => void
+      const gate = new Promise<void>((resolve) => { release = resolve })
+      Object.assign(window, { releaseAudioResume: release })
+      AudioContext.prototype.resume = async function () {
+        await resume.call(this)
+        await gate
+      }
+    })
+    await page.reload()
+    await page.getByRole('button', { name: 'Play One note', exact: true }).click()
+    await expect(page.getByRole('region', { name: 'One note player', exact: true }).locator('.player-state')).toHaveText('Starting audio…')
+    if (action === 'Stop') await page.getByRole('button', { name: 'Stop One note', exact: true }).click()
+    else await go(page, ROUTES.playground)
+    await page.evaluate(() => (window as unknown as { releaseAudioResume: () => void }).releaseAudioResume())
+    if (action === 'Stop') {
+      await expect(page.getByRole('region', { name: 'One note player', exact: true }).locator('.player-state')).toHaveText('Ready')
+    } else await expect(page.locator('.topbar-note')).toHaveText('Ready')
+    // A fresh gesture must still work after the cancelled request drains.
+    const play = page.getByRole('button', { name: action === 'Stop' ? 'Play One note' : 'Play mix', exact: true })
+    await play.click()
+    await expect(action === 'Stop' ? page.getByRole('region', { name: 'One note player', exact: true }).locator('.player-state') : page.locator('.topbar-note')).toHaveText('Playing')
+    await page.getByRole('button', { name: action === 'Stop' ? 'Stop One note' : 'Stop', exact: true }).click()
+  })
+}

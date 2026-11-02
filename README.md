@@ -22,7 +22,7 @@ plays until you press Play. The header links five sections:
 | --- | --- | --- |
 | Learn | `#/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
 | Sound Cookbook | `#/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
-| Examples | `#/examples/…` (12 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
+| Examples | `#/examples/…` (11 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
 | API | `#/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |
 | Playground | `#/playground` (default) | The free-form mixer and code editor described below |
 
@@ -123,6 +123,7 @@ musical values, or raw JavaScript code.
 | `npm run build:package` | Emit package ESM and declarations |
 | `npm run typecheck` | Check app, package, tests, and standalone consumer declarations |
 | `npm test -- --run` | Build the package, then run the full Vitest suite |
+| `npm run test:e2e` | Build and test the production site in Chromium (Playwright + axe) |
 | `npm run lint` | Run ESLint |
 | `npm run preview` | Serve a previously built playground |
 
@@ -144,8 +145,14 @@ tests. Consumer type-tests use `skipLibCheck: false` without the app's ambient s
 
 Tests cover parser/serializer behavior, real Strudel pattern timing without
 audio, shared transport lifecycle, React Strict Mode, error/cancellation paths,
-and the playground through built package exports. Web Audio lifecycle is mocked
-in automated playback tests; audible output and device compatibility need manual checks.
+and the playground through built package exports. Unit playback tests mock Web Audio.
+Browser tests use real Strudel and Web Audio for every page player, keyboard controls,
+ownership, cancellation and route cleanup, and check accessibility and all routes at
+375, 768 and 1440px. They do not judge sound quality or device compatibility.
+
+Before the first browser test run, install Chromium with `npx playwright install chromium`.
+To use an existing Chromium binary, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
+The test server builds and serves the production app on port 4173.
 
 ## License and release status
 

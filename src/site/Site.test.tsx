@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { hush } from '@strudel/web'
+import { evaluate, getAudioContext, hush } from '@strudel/web'
 import { toStrudelCode } from 'react-strudel-kit'
 import { Site } from './Site'
 import { sourceRegion, stripRegions } from '../content/source'
@@ -81,6 +81,23 @@ describe('learning site template', () => {
     go('/examples/dance-monkey')
     expect(vi.mocked(hush).mock.calls.length).toBeGreaterThan(hushes)
     expect(within(player('Dance Monkey')).getByText('Ready')).toBeInTheDocument()
+  })
+
+  it.each(['Stop', 'route change'])('cancels pending audio initialization on %s', async (action) => {
+    let release!: () => void
+    vi.mocked(getAudioContext().resume).mockImplementationOnce(() => new Promise<void>((resolve) => { release = resolve }))
+    go('/cookbook/kick')
+    render(<Site />)
+    fireEvent.click(screen.getByRole('button', { name: 'Play Kick on its own' }))
+    expect(within(player('Kick on its own')).getByText('Starting audio…')).toBeInTheDocument()
+
+    if (action === 'Stop') fireEvent.click(screen.getByRole('button', { name: 'Stop Kick on its own' }))
+    else go('/playground')
+    await act(async () => { release() })
+
+    expect(evaluate).not.toHaveBeenCalled()
+    expect(screen.queryByText('Playing')).not.toBeInTheDocument()
+    expect(screen.queryByText('Starting audio…')).not.toBeInTheDocument()
   })
 
   it('shows the Strudel code of the values that are playing', () => {

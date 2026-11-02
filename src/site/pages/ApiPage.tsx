@@ -112,7 +112,7 @@ function UsedIn({ name }: { name: string }) {
 
 function FunctionTable({ names }: { names: readonly FunctionName[] }) {
   return (
-    <div className="table-wrap">
+    <div className="table-wrap" tabIndex={0}>
       <table className="anatomy api-table">
         <thead><tr><th scope="col">Name</th><th scope="col">Strudel</th><th scope="col">Arguments</th><th scope="col">What it does</th><th scope="col">Used in</th></tr></thead>
         <tbody>{names.map((name) => <tr key={name} id={`fn-${name}`}>
@@ -142,7 +142,7 @@ export function ApiPage() {
         intro="Every public helper, the functions fn() accepts, and how playback behaves. Tables are generated from the package, and “Used in” links to pages that call each function."
         meta={['react-strudel-kit', 'react-strudel-kit/react']} />}>
       <Section id="entrypoints" title="Entrypoints">
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Import</th><th scope="col">Contents</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>react-strudel-kit</code></th><td><code>fn</code>, <code>chain</code>, <code>pattern</code>, <code>patternCallback</code>, the registry, Mini-Notation helpers, validation, serializers and types. Builds patterns without audio.</td></tr>
@@ -151,7 +151,7 @@ export function ApiPage() {
         </table></div>
       </Section>
       <Section id="compose" title="Composing patterns">
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Helper</th><th scope="col">What it does</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>fn(name, …args)</code></th><td>Creates a factory (a new pattern) or a modifier (a setting). Names and argument types are checked against the registry below.</td></tr>
@@ -177,7 +177,7 @@ export function ApiPage() {
           The helpers here are Mini-Notation nodes. <code>fn('fast', 2)</code>, <code>fn('stack', …)</code> and <code>fn('sequence', …)</code> are
           pattern functions from the registry. They have the same names but work on different kinds of values.
         </Callout>
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Call</th><th scope="col">What it does</th><th scope="col">Produces</th></tr></thead>
           <tbody>{MINI_HELPERS.map((helper) => <tr key={helper.call}>
             <th scope="row"><code>{helper.call}</code></th><td>{helper.about}</td><td><code>{toMiniNotation(helper.node)}</code></td>
@@ -185,7 +185,7 @@ export function ApiPage() {
         </table></div>
       </Section>
       <Section id="serialize" title="Validation and output">
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Function</th><th scope="col">What it does</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>mini(code)</code></th><td>Checks Mini-Notation syntax with Strudel’s parser and returns it typed. Throws on invalid syntax.</td></tr>
@@ -198,7 +198,7 @@ export function ApiPage() {
       </Section>
       <Section id="react" title="useStrudel">
         <p><code>useStrudel()</code> takes no arguments. Every component that calls it shares one transport; no provider is needed.</p>
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Member</th><th scope="col">Behavior</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>play(input)</code></th><td>Starts playback of a code string, a pattern from this package, or a native Strudel pattern. Call it from a click or key press so the browser allows audio. A newer call replaces an older pending one.</td></tr>
@@ -211,7 +211,7 @@ export function ApiPage() {
         <p>When the last component using the hook unmounts, playback stops. <a href={href(ROUTES.reactMixer)}>Control it with React</a> shows the full pattern.</p>
       </Section>
       <Section id="errors" title="Errors">
-        <div className="table-wrap"><table className="anatomy">
+        <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">code</th><th scope="col">Meaning</th></tr></thead>
           <tbody>
             <tr><th scope="row"><code>initialization</code></th><td>Strudel could not start. Press Play again to retry.</td></tr>

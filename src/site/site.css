@@ -133,6 +133,7 @@
 
 /* Tables */
 .table-wrap { overflow-x: auto; margin: 0 0 8px; }
+.table-wrap:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; }
 .anatomy { width: 100%; border-collapse: collapse; font-size: .875rem; }
 .anatomy th, .anatomy td { padding: 12px 12px 12px 0; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); line-height: 1.6; }
 .anatomy thead th { padding-top: 0; color: var(--ink); font-size: .8125rem; font-weight: 600; border-bottom-color: var(--line-strong); }
