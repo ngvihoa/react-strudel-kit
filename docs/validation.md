@@ -25,6 +25,20 @@ The suite covers:
 Checks ran on Node 26.13.0 and Chromium. Automated tests verify application state,
 pattern evaluation and lifecycle behavior; they cannot establish audible quality.
 
+## Dependency audit
+
+`npm audit fix` updated packages within the existing semver ranges, including
+Vite 8.3.5, Vitest 5.0.5, source-map-js 1.2.2, undici 8.12.3 and zod 4.6.7.
+The audit decreased from 18 findings (14 moderate, 4 high) to 12 moderate findings,
+all tracing to the same minimatch advisory in ESLint/typescript-eslint tooling.
+Production dependencies have zero reported findings with `npm audit --omit=dev`.
+
+The remaining [minimatch advisory](https://github.com/advisories/GHSA-g3hv-75wg-m249)
+requires 11.0.1 or later, while the current upstream ESLint/config-array and
+typescript-estree releases require minimatch 10. The npm force suggestion would
+downgrade typescript-eslint to 8.14.0. No forced downgrade, major override or audit
+suppression was applied. Recheck upstream support before updating this dependency.
+
 ## Listening pass — pending owner review
 
 - Listen to each Cookbook sound alone and in its groove; compare default,
