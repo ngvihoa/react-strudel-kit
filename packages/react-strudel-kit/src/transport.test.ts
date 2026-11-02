@@ -48,12 +48,13 @@ describe('shared transport lifecycle', () => {
         expect(transport.getSnapshot().status).toBe('playing')
     })
 
-    it('reports initialization failure without requiring Play', async () => {
-        createEngine.mockRejectedValueOnce(new Error('init failed'))
+    it('does not load the audio engine before the first Play', async () => {
         transport.subscribe(vi.fn())
-        await vi.waitFor(() => expect(transport.getSnapshot().status).toBe('error'))
-        expect(transport.getSnapshot().error?.code).toBe('initialization')
+        await Promise.resolve()
+        expect(createEngine).not.toHaveBeenCalled()
+        expect(unlockAudio).not.toHaveBeenCalled()
         expect(engine.prepare).not.toHaveBeenCalled()
+        expect(transport.getSnapshot()).toEqual({ status: 'idle', error: null })
     })
 
     it('reports audio permission failure without evaluating or starting', async () => {

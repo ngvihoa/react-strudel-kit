@@ -13,11 +13,14 @@ export const createMockWeb = () => {
     const hush = vi.fn()
     const repl = { evaluate, setPattern, start, stop: hush, state }
     const audioContext = { state: 'running', resume: vi.fn(async () => {}) }
+    // The lazy adapter resumes a native context before its runtime import settles.
+    vi.stubGlobal('AudioContext', vi.fn(function () { return audioContext }))
     return {
         evaluate,
         hush,
         initStrudel: vi.fn(async () => repl),
         initAudio: vi.fn(async () => {}),
         getAudioContext: vi.fn(() => audioContext),
+        setAudioContext: vi.fn((context: AudioContext) => context),
     }
 }

@@ -17,6 +17,8 @@ declare module '@strudel/web' {
 
     export function getAudioContext(): AudioContext
 
+    export function setAudioContext(context: AudioContext): AudioContext
+
     export function initAudio(): Promise<void>
 
     export function initStrudel(options?: {

@@ -86,8 +86,10 @@ export function Player() {
 pattern. Call it from a click or keyboard gesture so the browser can enable audio.
 `update(input)` replaces a running pattern without stopping or restarting the
 scheduler. It does nothing while stopped; use it for live React controls after Play.
-All mounted hooks share one transport. Unmounting the last consumer stops
-playback; the Strudel-owned engine/context remain available for remounts.
+All mounted hooks share one transport. The Strudel runtime loads on the first Play;
+audio resumes in that gesture even if its chunk is still downloading.
+Unmounting the last consumer stops playback; the shared engine/context remain
+available for remounts.
 The mixer builds typed patterns from React state and passes them to `play` or
 `update`. Serialization is an internal engine-adapter step.
 

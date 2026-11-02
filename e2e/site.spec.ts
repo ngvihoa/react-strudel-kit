@@ -51,12 +51,33 @@ for (const width of [375, 768, 1440]) {
   })
 }
 
-test('all pages pass automated accessibility checks', async ({ page }) => {
-  for (const route of routes) {
-    await go(page, route)
-    const { violations } = await new AxeBuilder({ page }).analyze()
-    expect(violations, route).toEqual([])
-  }
+for (const width of [375, 1440]) {
+  test(`all pages pass automated accessibility checks at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    for (const route of routes) {
+      await go(page, route)
+      const { violations } = await new AxeBuilder({ page }).analyze()
+      expect(violations, route).toEqual([])
+    }
+  })
+}
+
+test('mobile navigation disclosures work by keyboard', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 })
+  const menu = page.locator('.section-nav-narrow')
+  await menu.locator('summary').focus()
+  await page.keyboard.press('Enter')
+  await expect(menu).toHaveAttribute('open', '')
+  await expect(menu.getByRole('link')).toHaveCount(1)
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('h1')).toHaveText('Kick')
+  await menu.locator('summary').focus()
+  await page.keyboard.press('Enter')
+  await menu.getByRole('link', { name: 'Snare', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page.locator('h1')).toHaveText('Snare')
+  await expect(page.locator('.player-playing')).toHaveCount(0)
 })
 
 test('skip link moves keyboard focus and preserves the lesson route', async ({ page }) => {
@@ -152,6 +173,49 @@ test('React mixer controls and route changes share the transport with Playground
   await expect(status).toHaveText('Playing')
   await page.keyboard.press('Escape')
   await expect(status).toHaveText('Ready')
+})
+
+test('first Play resumes audio before a slow runtime download and reuses it afterwards', async ({ page }) => {
+  await page.addInitScript(() => {
+    const resume = AudioContext.prototype.resume
+    Object.assign(window, { audioResumes: 0 })
+    AudioContext.prototype.resume = function () {
+      const state = window as unknown as { audioResumes: number }
+      state.audioResumes++
+      return resume.call(this)
+    }
+  })
+  await page.reload()
+  const runtimeLoaded = () => page.evaluate(() => 'initStrudel' in window)
+  expect(await runtimeLoaded()).toBe(false)
+
+  let release!: () => void
+  let downloads = 0
+  const downloading = new Promise<void>((resolve) => { release = resolve })
+  await page.route('**/assets/*.js', async (route) => {
+    downloads++
+    await downloading
+    await route.continue()
+  })
+  const player = page.getByRole('region', { name: 'One note player', exact: true })
+  try {
+    await player.getByRole('button', { name: 'Play One note', exact: true }).click()
+    await expect(player.locator('.player-state')).toHaveText('Starting audio…')
+    await expect.poll(() => downloads).toBeGreaterThan(0)
+    expect(await page.evaluate(() => (window as unknown as { audioResumes: number }).audioResumes)).toBe(1)
+    expect(await runtimeLoaded()).toBe(false)
+  } finally {
+    release()
+  }
+
+  await expect(player.locator('.player-state')).toHaveText('Playing')
+  expect(await runtimeLoaded()).toBe(true)
+  const completedDownloads = downloads
+  await player.getByRole('button', { name: 'Stop One note', exact: true }).click()
+  await player.getByRole('button', { name: 'Play One note', exact: true }).click()
+  await expect(player.locator('.player-state')).toHaveText('Playing')
+  expect(downloads).toBe(completedDownloads)
+  await player.getByRole('button', { name: 'Stop One note', exact: true }).click()
 })
 
 for (const action of ['Stop', 'route change']) {

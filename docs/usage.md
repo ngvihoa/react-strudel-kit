@@ -39,9 +39,14 @@ Input can be a raw Strudel code string, a `PatternExpression` built with this
 package, or a native Strudel pattern. A native pattern is prepared through the
 engine's `setPattern` API; its fire-and-forget `.play()` method is not invoked.
 
-Initialization is shared, including under React Strict Mode. A failed
-initialization can be retried with Play. Browser audio is resumed from the Play
-handler before awaiting initialization. Invoke Play from a user gesture.
+The Strudel browser runtime is imported and initialized on the first Play,
+not when a component mounts. Initialization is shared, including under React
+Strict Mode. A failed initialization can be retried with Play. Browser audio is
+resumed from the Play handler before awaiting initialization. Invoke Play from a
+user gesture.
+If the runtime is still downloading, the adapter creates and resumes a native
+AudioContext immediately, then gives that same context to Strudel through its
+`setAudioContext` API before constructing the scheduler. Later plays reuse it.
 
 Requests are serialized. A newer request supersedes older pending requests;
 only the current request may start playback. Stop also cancels a pending audio
@@ -63,7 +68,7 @@ the phrase position even though the scheduler is not restarted.
 
 All mounted consumers observe the same status/error. Removing one consumer
 leaves the others playing; removing the last consumer stops playback and
-invalidates pending work. The shared engine and Strudel-owned AudioContext are
+invalidates pending work. The shared engine and AudioContext used by Strudel are
 retained for remounts, not closed by the hook.
 
 `idle` also covers preparation before playback. The reference app tracks its

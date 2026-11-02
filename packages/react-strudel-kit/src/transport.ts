@@ -141,12 +141,6 @@ export const createTransport = (dependencies: Dependencies) => {
 
     const subscribe = (listener: () => void) => {
         listeners.add(listener)
-        const request = revision
-        void ensureEngine().catch((cause) => {
-            if (listeners.size && revision === request) {
-                publish({ status: 'error', error: toError('initialization', cause) })
-            }
-        })
         return () => {
             listeners.delete(listener)
             // Strict Mode can unsubscribe/re-subscribe; initialization is retained.

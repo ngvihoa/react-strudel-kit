@@ -12,8 +12,14 @@ Giữ lại mixer và code editor hiện tại. Tận dụng Vite app đang có 
 cân nhắc framework tài liệu hoặc tách app riêng.
 
 Template UI, điều hướng, Lesson 1, 7 trang Cookbook, 11 trang Examples và API
-Reference đã có (xem checklist bên dưới). Đang hoàn tất kiểm tra browser và
-audio lifecycle; bước tiếp theo là nghe thử trên thiết bị thật để chỉnh chất âm.
+Reference đã có (xem checklist bên dưới). Kiểm tra browser và audio lifecycle
+tự động đã hoàn tất; bước tiếp theo là nghe thử trên thiết bị thật để chỉnh chất âm.
+
+Xác minh 2026-11-02: đã sửa skip link và accessibility, thêm browser tests,
+vá dependency trong range hiện hành và tách Strudel thành chunk tải ở lần Play
+đầu tiên. Audit còn 12 moderate từ minimatch của tooling, không còn high;
+production 0. Chi tiết, kích thước bundle và phần nghe thử còn lại ở
+[ghi chú xác minh](validation.md).
 
 ### Cấu trúc điều hướng
 

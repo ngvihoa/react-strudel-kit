@@ -12,8 +12,9 @@ The suite covers:
 - All 21 routes at 375, 768 and 1440px, with no page-level horizontal overflow
   or links to unknown routes. Desktop and mobile Learn/Cookbook screenshots are
   saved under the ignored `test-results/` directory for visual review.
-- Automated axe accessibility checks on every route, plus the playing state of
-  the Kick player. Skip navigation moves keyboard focus without changing the hash.
+- Automated axe accessibility checks on every route at 375 and 1440px, plus the
+  playing state of the Kick player. Skip navigation moves keyboard focus without
+  changing the hash; mobile navigation disclosures work by keyboard.
 - Play/Stop for every site player against real Strudel and Web Audio, player
   ownership, keyboard sliders, live changes, and no autoplay while stopped.
 - The real React mixer and Playground, including the code editor, Play/Stop
@@ -21,9 +22,33 @@ The suite covers:
 - Cancellation while audio resume is pending, followed by a working fresh Play.
   These tests delay the native resume promise; they do not replace the engine.
   Unit integration tests separately assert that cancelled requests never evaluate.
+- A deliberately delayed runtime download: no Strudel runtime before Play,
+  synchronous audio resume in the first gesture, successful playback after the
+  download finishes, and no second runtime download on a later Play.
 
 Checks ran on Node 26.13.0 and Chromium. Automated tests verify application state,
 pattern evaluation and lifecycle behavior; they cannot establish audible quality.
+Final results: 19 Vitest files / 164 tests and 31 Playwright tests passed, with
+lint, typecheck and production build passing. Learn/Cookbook screenshots were
+also visually reviewed at 375, 768 and 1440px.
+
+## Initial JavaScript load
+
+Strudel is now dynamically imported on the first Play. Merely mounting the hook
+does not import or initialize the runtime. The adapter resumes an AudioContext
+synchronously in the gesture and hands that same context to Strudel before
+initializing its scheduler, including when the runtime is still downloading.
+
+Production build sizes with Vite 8.3.5:
+
+| JavaScript | Before | After |
+| --- | --- | --- |
+| Initial entry | 1,043.64 kB (330.59 kB gzip) | 408.93 kB (122.32 kB gzip) |
+| Runtime loaded on first Play | Included in entry | 650.28 kB (215.28 kB gzip) |
+
+Initial JS decreases by about 61% (63% for gzip). This defers the runtime;
+it does not reduce total JS downloaded after Play. Vite's 500 kB warning remains
+for the deferred Strudel chunk. The warning threshold was not raised.
 
 ## Dependency audit
 
