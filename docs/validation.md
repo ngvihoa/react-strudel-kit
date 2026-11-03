@@ -111,3 +111,8 @@ all shown snippets from those running modules. Timing and velocity claims are
 checked against the real pattern engine. Validation: 47 content/site tests,
 7 browser checks (responsive, axe, playback, live controls and reload), lint,
 typecheck and production build passed. Desktop/mobile screenshots were reviewed.
+
+Add a bass line is available at `/learn/add-a-bass-line`: four-bar root notes,
+the reusable root/fifth rhythm, drums and a bass-level/tempo practice player.
+Validation: 49 content/site tests, focused browser checks for layout/axe at three
+widths, every player and live controls, plus lint, typecheck and production build.

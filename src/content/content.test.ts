@@ -7,7 +7,7 @@ import { busierKick, kickOneThree, snareTwoFour } from './examples/backbeat'
 import { offBeatHats, offBeatHatsRepeat } from './examples/fourOnTheFloor'
 import { accentedHats, swellingHats } from './examples/hiHatAccents'
 import { twinkle, twinkleDetached } from './examples/simpleMelody'
-import { walkingRoots } from './examples/bassLine'
+import { roots, walkingRoots } from './examples/bassLine'
 import { jazzyChords, swungHats } from './examples/lofi'
 import { offBeatBass } from './examples/house'
 import { CHORDS } from './tonal'
@@ -32,6 +32,13 @@ const catOfNotes = (pattern: PatternExpression) =>
 const onsets = (code: string, cycles = 1) => timeline(code, cycles).map((event) => event.start)
 
 describe('timing claims made on the learning pages', () => {
+  it('gives each bass root one full bar in the four-bar Learn progression', () => {
+    expect(timeline(catOfNotes(roots), 4)).toEqual([
+      { value: 'c2', start: 0, end: 1 }, { value: 'a1', start: 1, end: 2 },
+      { value: 'f2', start: 2, end: 3 }, { value: 'g2', start: 3, end: 4 },
+    ])
+    expect(onsets(catOfNotes(walkingRoots), 1)[0]).toBe(0)
+  })
   it('alternates beat and off-beat hi-hat levels in the beat lesson', () => {
     const levels = timeline(mini(makeBeat(100, 0.25), 'velocity'))
     expect(levels.map((event) => Number(event.value))).toEqual([1, 0.25, 1, 0.25, 1, 0.25, 1, 0.25])

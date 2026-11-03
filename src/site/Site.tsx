@@ -13,6 +13,7 @@ import {
 import { ReactMixerPage } from './pages/ReactMixerPage'
 import { LessonPage } from './pages/LessonPage'
 import { MakeBeatPage } from './pages/MakeBeatPage'
+import { AddBassPage } from './pages/AddBassPage'
 import { ROUTES, followSiteLink, href, useRoute } from './router'
 import type { RoutePath } from './router'
 import './site.css'
@@ -29,6 +30,7 @@ const SECTIONS: readonly { label: string, path: RoutePath, prefix: string }[] = 
 const PAGES = {
   [ROUTES.firstSong]: LessonPage,
   [ROUTES.makeBeat]: MakeBeatPage,
+  [ROUTES.addBass]: AddBassPage,
   [ROUTES.kick]: KickPage,
   [ROUTES.snare]: SnarePage,
   [ROUTES.hiHat]: HiHatPage,

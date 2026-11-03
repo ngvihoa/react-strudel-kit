@@ -149,7 +149,7 @@ lựa chọn **tiếng Việt**:
 ### Chuỗi Learn tiếp theo — 2026-11-03
 
 - [x] Make a beat: kick/snare, hi-hat, variation và player chỉnh accent/tempo.
-- [ ] Add a bass line.
+- [x] Add a bass line: roots, root/fifth, ghép drums và chỉnh bass level/tempo.
 - [ ] Layer the parts.
 - [ ] Control it with React.
 

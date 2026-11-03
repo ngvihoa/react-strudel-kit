@@ -7,6 +7,7 @@ const routes = Object.values(ROUTES)
 const titles: Record<string, string> = {
   [ROUTES.firstSong]: 'Your first song',
   [ROUTES.makeBeat]: 'Make a beat',
+  [ROUTES.addBass]: 'Add a bass line',
   [ROUTES.kick]: 'Kick', [ROUTES.snare]: 'Snare', [ROUTES.hiHat]: 'Hi-hat',
   [ROUTES.bass]: 'Bass', [ROUTES.keys]: 'Keys', [ROUTES.lead]: 'Lead', [ROUTES.pad]: 'Pad',
   [ROUTES.simpleMelody]: 'A simple melody', [ROUTES.fourOnTheFloor]: 'Four on the floor',
@@ -104,7 +105,7 @@ test('mobile navigation disclosures work by keyboard', async ({ page }) => {
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await expect(menu).toHaveAttribute('open', '')
-  await expect(menu.getByRole('link')).toHaveCount(2)
+  await expect(menu.getByRole('link')).toHaveCount(3)
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('h1')).toHaveText('Kick')
@@ -126,7 +127,17 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
 })
 
 const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer])
-for (const route of [ROUTES.makeBeat]) {
+for (const route of [ROUTES.makeBeat, ROUTES.addBass]) {
+  test(`${route}: lesson layout and accessibility`, async ({ page }, testInfo) => {
+    await go(page, route)
+    for (const width of [375, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 })
+      await page.evaluate(() => document.fonts.ready)
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+      expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+      await page.screenshot({ path: testInfo.outputPath(`lesson-${width}.png`), animations: 'disabled' })
+    }
+  })
   test(`${route}: practice controls update live and reload resets them`, async ({ page }) => {
     await go(page, route)
     const practice = page.locator('.player').last()
@@ -137,11 +148,15 @@ for (const route of [ROUTES.makeBeat]) {
     await expect(practice.locator('.player-state')).toHaveText('Ready')
     await practice.getByRole('button', { name: /^Play / }).click()
     await expect(practice.locator('.player-state')).toHaveText('Playing')
-    await practice.getByRole('slider').last().focus()
-    await page.keyboard.press('ArrowRight')
+    const level = practice.getByRole('slider').last()
+    const nextLevel = Number((Number(await level.inputValue()) - Number(await level.getAttribute('step'))).toFixed(2))
+    await level.focus()
+    await page.keyboard.press('ArrowLeft')
+    await expect(level).toHaveValue(String(nextLevel))
     await expect(practice.locator('.player-state')).toHaveText('Playing')
     await page.getByRole('button', { name: 'Strudel output', exact: true }).last().click()
     await expect(page.locator('pre').last()).toContainText('cpm(25.25)')
+    await expect(page.locator('pre').last()).toContainText(route === ROUTES.makeBeat ? `velocity("[1 ${nextLevel}]*4")` : `velocity(${nextLevel})`)
     await practice.getByRole('button', { name: 'Reset controls', exact: true }).click()
     await expect(tempo).toHaveValue('100')
     await expect(practice.locator('.player-state')).toHaveText('Playing')

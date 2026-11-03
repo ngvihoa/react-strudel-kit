@@ -37,5 +37,5 @@ export function MakeBeatPage() {
       <p>Explore the <a href={href(ROUTES.kick)}>Kick</a>, <a href={href(ROUTES.snare)}>Snare</a> and <a href={href(ROUTES.hiHat)}>Hi-hat</a> sounds,
         or compare <a href={href(ROUTES.hiHatAccents)}>Hi-hat accents</a>.</p>
     </>}
-    previous={{ label: 'Your first song', path: ROUTES.firstSong }} next={{ label: 'Add a bass line' }} />
+    previous={{ label: 'Your first song', path: ROUTES.firstSong }} next={{ label: 'Add a bass line', path: ROUTES.addBass }} />
 }

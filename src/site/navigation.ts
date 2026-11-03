@@ -6,7 +6,7 @@ export const LEARN_NAV: readonly NavGroup[] = [
   { title: 'Getting started', items: [
     { label: 'Your first song', path: ROUTES.firstSong, meta: '10 min' },
     { label: 'Make a beat', path: ROUTES.makeBeat },
-    { label: 'Add a bass line' },
+    { label: 'Add a bass line', path: ROUTES.addBass },
   ] },
   { title: 'Putting it together', items: [
     { label: 'Layer the parts' },
