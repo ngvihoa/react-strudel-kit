@@ -5,7 +5,7 @@ import type { NavGroup } from './components'
 export const LEARN_NAV: readonly NavGroup[] = [
   { title: 'Getting started', items: [
     { label: 'Your first song', path: ROUTES.firstSong, meta: '10 min' },
-    { label: 'Make a beat' },
+    { label: 'Make a beat', path: ROUTES.makeBeat },
     { label: 'Add a bass line' },
   ] },
   { title: 'Putting it together', items: [

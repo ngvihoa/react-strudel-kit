@@ -134,7 +134,7 @@ export function LessonPage() {
           When you’re ready for drums, start with the <a href={href(ROUTES.kick)}>Kick</a> in the Sound Cookbook and
           the <a href={href(ROUTES.fourOnTheFloor)}>Four on the floor</a> example. <a href={href(ROUTES.danceMonkey)}>Dance Monkey</a> puts all of it together.</p>
       </section>
-      <Pager next={{ label: 'Make a beat' }} />
+      <Pager next={{ label: 'Make a beat', path: ROUTES.makeBeat }} />
     </DocsLayout>
   )
 }

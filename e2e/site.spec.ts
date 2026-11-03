@@ -6,6 +6,7 @@ import { ROUTES } from '../src/site/router'
 const routes = Object.values(ROUTES)
 const titles: Record<string, string> = {
   [ROUTES.firstSong]: 'Your first song',
+  [ROUTES.makeBeat]: 'Make a beat',
   [ROUTES.kick]: 'Kick', [ROUTES.snare]: 'Snare', [ROUTES.hiHat]: 'Hi-hat',
   [ROUTES.bass]: 'Bass', [ROUTES.keys]: 'Keys', [ROUTES.lead]: 'Lead', [ROUTES.pad]: 'Pad',
   [ROUTES.simpleMelody]: 'A simple melody', [ROUTES.fourOnTheFloor]: 'Four on the floor',
@@ -20,7 +21,7 @@ const go = async (page: Page, route: string) => {
   await page.evaluate((path) => { window.history.pushState(null, '', path); window.dispatchEvent(new PopStateEvent('popstate')) }, route)
   await expect(page.locator('h1')).toHaveText(titles[route])
   await expect(page.getByRole('navigation', { name: 'Sections', exact: true }).locator('[aria-current="page"]')).toHaveAttribute('href',
-    `${route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
+    `${route.startsWith('/learn/') ? ROUTES.firstSong : route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
 }
 
 test.beforeEach(async ({ page }) => {
@@ -79,7 +80,7 @@ for (const width of [375, 768, 1440]) {
       const links = await page.locator('a[href^="/"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')!))
       expect(links.every((link) => routes.includes(link as typeof routes[number]))).toBe(true)
     }
-    for (const route of [ROUTES.firstSong, ROUTES.kick]) {
+    for (const route of [...routes.filter((path) => path.startsWith('/learn/')), ROUTES.kick]) {
       await go(page, route)
       await page.screenshot({ path: testInfo.outputPath(`${route.split('/').at(-1)}-${width}.png`), animations: 'disabled' })
     }
@@ -103,7 +104,7 @@ test('mobile navigation disclosures work by keyboard', async ({ page }) => {
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await expect(menu).toHaveAttribute('open', '')
-  await expect(menu.getByRole('link')).toHaveCount(1)
+  await expect(menu.getByRole('link')).toHaveCount(2)
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('h1')).toHaveText('Kick')
@@ -125,6 +126,30 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
 })
 
 const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer])
+for (const route of [ROUTES.makeBeat]) {
+  test(`${route}: practice controls update live and reload resets them`, async ({ page }) => {
+    await go(page, route)
+    const practice = page.locator('.player').last()
+    const tempo = practice.getByRole('slider', { name: /Tempo/ })
+    await tempo.focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(tempo).toHaveValue('101')
+    await expect(practice.locator('.player-state')).toHaveText('Ready')
+    await practice.getByRole('button', { name: /^Play / }).click()
+    await expect(practice.locator('.player-state')).toHaveText('Playing')
+    await practice.getByRole('slider').last().focus()
+    await page.keyboard.press('ArrowRight')
+    await expect(practice.locator('.player-state')).toHaveText('Playing')
+    await page.getByRole('button', { name: 'Strudel output', exact: true }).last().click()
+    await expect(page.locator('pre').last()).toContainText('cpm(25.25)')
+    await practice.getByRole('button', { name: 'Reset controls', exact: true }).click()
+    await expect(tempo).toHaveValue('100')
+    await expect(practice.locator('.player-state')).toHaveText('Playing')
+    await page.reload()
+    await expect(page.locator('.player').last().getByRole('slider', { name: /Tempo/ })).toHaveValue('100')
+    await expect(page.locator('.player-playing')).toHaveCount(0)
+  })
+}
 for (const route of routes.filter((route) => !customPlayers.has(route))) {
   test(`${route}: every pattern plays and stops with the real engine`, async ({ page }) => {
     await go(page, route)

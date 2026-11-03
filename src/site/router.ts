@@ -4,6 +4,7 @@ import type { MouseEvent } from 'react'
 // History routes use the host's SPA fallback for direct visits and reloads.
 export const ROUTES = {
   firstSong: '/learn/first-song',
+  makeBeat: '/learn/make-a-beat',
   kick: '/cookbook/kick',
   snare: '/cookbook/snare',
   hiHat: '/cookbook/hi-hat',

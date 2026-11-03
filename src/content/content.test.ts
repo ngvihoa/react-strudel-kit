@@ -12,6 +12,7 @@ import { jazzyChords, swungHats } from './examples/lofi'
 import { offBeatBass } from './examples/house'
 import { CHORDS } from './tonal'
 import { toMiniNotation } from 'react-strudel-kit'
+import { makeBeat } from './lessons/makeBeat'
 
 // Page text makes timing claims; check them with Strudel's real pattern engine (no audio).
 const mini = (pattern: PatternExpression, call: string) => {
@@ -31,6 +32,11 @@ const catOfNotes = (pattern: PatternExpression) =>
 const onsets = (code: string, cycles = 1) => timeline(code, cycles).map((event) => event.start)
 
 describe('timing claims made on the learning pages', () => {
+  it('alternates beat and off-beat hi-hat levels in the beat lesson', () => {
+    const levels = timeline(mini(makeBeat(100, 0.25), 'velocity'))
+    expect(levels.map((event) => Number(event.value))).toEqual([1, 0.25, 1, 0.25, 1, 0.25, 1, 0.25])
+    expect(levels.map((event) => event.start)).toEqual([0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875])
+  })
   it('weight holds one C for half the bar; repeat strikes two Cs in the same half', () => {
     expect(timeline(mini(FIRST_SONG_STEPS.held, 'note'))[0]).toEqual({ value: 'c4', start: 0, end: 0.5 })
     expect(timeline(mini(FIRST_SONG_STEPS.repeated, 'note')).slice(0, 2)).toEqual([

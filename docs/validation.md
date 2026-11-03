@@ -102,3 +102,12 @@ and production build. Reload tests request a fresh HTML document for each route.
 Vite dev/preview provide the SPA fallback for reloads. Static hosting must serve
 `index.html` for non-file paths; `public/_redirects` provides the rule for hosts
 that support Netlify/Cloudflare-style redirects. See README for other hosts.
+
+## Learn expansion — 2026-11-03
+
+Make a beat is available at `/learn/make-a-beat`. It reuses the existing Backbeat
+patterns and Cookbook sounds, adds an accent/tempo practice builder, and takes
+all shown snippets from those running modules. Timing and velocity claims are
+checked against the real pattern engine. Validation: 47 content/site tests,
+7 browser checks (responsive, axe, playback, live controls and reload), lint,
+typecheck and production build passed. Desktop/mobile screenshots were reviewed.

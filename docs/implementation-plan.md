@@ -146,6 +146,16 @@ lựa chọn **tiếng Việt**:
   chất âm thực tế, ưu tiên tonal Cookbook, Lo-fi và House. Kiểm thử tự động
   không xác nhận được chất lượng âm, clipping hay khả năng tương thích thiết bị.
 
+### Chuỗi Learn tiếp theo — 2026-11-03
+
+- [x] Make a beat: kick/snare, hi-hat, variation và player chỉnh accent/tempo.
+- [ ] Add a bass line.
+- [ ] Layer the parts.
+- [ ] Control it with React.
+
+Các bài dùng lại sound/pattern từ Cookbook và Examples; code hiển thị lấy từ
+chính module đang phát. Lo-fi Jazzy chords đã được người dùng nghe và chấp nhận.
+
 ## Tên tạm
 
 `react-strudel-toolkit`

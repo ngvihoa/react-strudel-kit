@@ -35,7 +35,7 @@ describe('learning site template', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Your first song' })).toBeInTheDocument()
     const lessons = screen.getAllByRole('navigation', { name: 'Lessons' })[0]
     expect(within(lessons).getAllByRole('link', { name: /Your first song/ })[0]).toHaveAttribute('aria-current', 'page')
-    expect(within(lessons).queryAllByRole('link', { name: /Make a beat/ })).toHaveLength(0)
+    expect(within(lessons).queryAllByRole('link', { name: /Add a bass line/ })).toHaveLength(0)
   })
 
   it('skips navigation without changing the route or stopping its player', async () => {
@@ -135,6 +135,7 @@ describe('Cookbook and examples', () => {
   beforeEach(() => { window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
 
   it.each([
+    ['/learn/make-a-beat', 'Make a beat', 'Learn'],
     ['/cookbook/kick', 'Kick', 'Sound Cookbook'],
     ['/cookbook/snare', 'Snare', 'Sound Cookbook'],
     ['/cookbook/hi-hat', 'Hi-hat', 'Sound Cookbook'],
