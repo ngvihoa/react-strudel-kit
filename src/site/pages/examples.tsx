@@ -258,7 +258,11 @@ const LOFI_PAGE: ExampleArticleConfig = {
         everything else and changes only what you name.</p>
     </> },
     { id: 'chords', title: 'Seventh chords', region: 'chords', player: { title: 'Jazzy chords', pattern: LOFI.chords }, body: <>
-      <p>A seventh chord adds a fourth note to the triad. Dark, roomy keys with a long decay let each chord ring through the bar.</p>
+      <p>A seventh chord adds a fourth note to the triad. These Dm7, G7, Cmaj7 and Am7 voicings spread the notes across
+        octaves. Each chord keeps a note from the previous one, and no voice moves by more than three semitones,
+        including when the loop repeats.</p>
+      <p>The Cookbook keys get a triangle-wave override, a lower filter cutoff, a gentler attack and a longer decay.
+        Reverb and a longer release leave a tail as each chord fades.</p>
     </> },
     { id: 'together', title: 'The loop', region: 'together', player: { title: 'Lo-fi loop', pattern: LOFI.together }, body: <>
       <p>Drums, chords and a round, low bass at 80 BPM.</p>

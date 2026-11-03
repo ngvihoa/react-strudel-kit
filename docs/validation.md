@@ -73,4 +73,18 @@ suppression was applied. Recheck upstream support before updating this dependenc
 - Listen through live tempo/parameter changes, mute/solo, Stop and route changes.
 - Repeat on the owner's actual desktop/mobile browsers and output devices.
 
-No gain, sound default or slider range has been tuned from listening evidence.
+### Lo-fi chord iteration — 2026-11-03
+
+The owner reported that the Jazzy chords sounded sharp and insufficiently mellow.
+The Lo-fi example now overrides the Cookbook keys with triangle rather than square,
+a 900 Hz low-pass, 35 ms attack, 1.8 s decay and 450 ms release. The four-note
+Dm7–G7–Cmaj7–Am7 progression is retained, with wider voicings, shared notes and
+smaller voice movements. The isolated player and full loop use this same pattern.
+Cookbook defaults and other examples are unchanged.
+
+Validation for this iteration: 45 content/site tests, lint, typecheck and production
+build passed. The focused Lo-fi Playwright test passed Play/Stop for all four
+players against the real engine, including Jazzy chords and the full loop.
+
+This is a candidate adjustment based on the owner's listening feedback; the revised
+sound still needs owner review. Other sounds, gains and slider ranges remain pending.

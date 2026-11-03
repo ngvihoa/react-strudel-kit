@@ -108,6 +108,25 @@ describe('harmony claims made on the learning pages', () => {
     expect(chords).toEqual([new Set('dfac'), new Set('gbdf'), new Set('cegb'), new Set('aceg')])
   })
 
+  it('keeps lo-fi chords one bar long with shared notes and small voice movements through the loop', () => {
+    const events = timeline(catOfNotes(jazzyChords), 4)
+    const chords = Array.from({ length: 4 }, (_, bar) => {
+      const notes = events.filter((event) => event.start === bar)
+      expect(notes).toHaveLength(4)
+      expect(notes.every((event) => event.end === bar + 1)).toBe(true)
+      return notes.map((event) => midi(event.value)).sort((a, b) => a - b)
+    })
+    for (let bar = 0; bar < chords.length; bar++) {
+      const chord = chords[bar]
+      const next = chords[(bar + 1) % chords.length]
+      expect(chord.filter((note) => next.includes(note)).length).toBeGreaterThanOrEqual(1)
+      expect(chord.every((note, voice) => Math.abs(note - next[voice]) <= 3)).toBe(true)
+      expect(chord.at(-1)! - chord[0]).toBeGreaterThan(12)
+      // Avoid an adjacent semitone such as the previous B3–C4 cluster.
+      expect(chord.slice(1).every((note, voice) => note - chord[voice] >= 2)).toBe(true)
+    }
+  })
+
   it('pairs every bass root with the note seven semitones above it', () => {
     for (const [, bar] of toStrudelCode(walkingRoots).matchAll(/note\("([^"]*)"\)/g)) {
       const notes = bar.split(' ').filter((token) => token !== '~')

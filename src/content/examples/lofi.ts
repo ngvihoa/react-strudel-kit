@@ -1,4 +1,4 @@
-import { chain, fn, number, pitch, repeat, rest, sequence, stack } from 'react-strudel-kit'
+import { chain, fn, number, pitch, repeat, rest, sample, sequence, stack } from 'react-strudel-kit'
 import {
   HI_HAT_DEFAULTS, KICK, KICK_DEFAULTS, NOISE, SNARE_DEFAULTS, hiHatSound, kickSound, snareSound,
 } from '../drums'
@@ -33,16 +33,19 @@ export const lazyDrums = fn('stack',
 // #endregion
 
 // #region chords
-// Seventh chords: four notes instead of three, for a softer, jazzier colour.
-// Dm7 – G7 – Cmaj7 – Am7, one per bar, through dark, roomy keys.
+// Dm7 – G7 – Cmaj7 – Am7, one per bar. Spread the notes across octaves;
+// each voice moves at most three semitones, including back to the first chord.
 export const jazzyChords = chain(
   fn('cat',
-    fn('note', stack(pitch('c4'), pitch('d4'), pitch('f4'), pitch('a4'))),
-    fn('note', stack(pitch('b3'), pitch('d4'), pitch('f4'), pitch('g4'))),
-    fn('note', stack(pitch('b3'), pitch('c4'), pitch('e4'), pitch('g4'))),
-    fn('note', stack(pitch('c4'), pitch('e4'), pitch('g4'), pitch('a4'))),
+    fn('note', stack(pitch('d3'), pitch('a3'), pitch('c4'), pitch('f4'))),
+    fn('note', stack(pitch('d3'), pitch('g3'), pitch('b3'), pitch('f4'))),
+    fn('note', stack(pitch('c3'), pitch('g3'), pitch('b3'), pitch('e4'))),
+    fn('note', stack(pitch('c3'), pitch('g3'), pitch('a3'), pitch('e4'))),
   ),
-  ...keysSound({ ...KEYS_DEFAULTS, brightness: 1200, decay: 0.9, room: 0.5 }),
+  ...keysSound({ ...KEYS_DEFAULTS, brightness: 900, decay: 1.8, room: 0.5 }),
+  fn('instrument', sample('triangle')), // Fewer upper harmonics than square.
+  fn('attack', 0.035), // Ease into the chord instead of a sharp 2 ms onset.
+  fn('release', 0.45),
 )
 // #endregion
 
