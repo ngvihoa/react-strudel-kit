@@ -44,5 +44,5 @@ export function LayerPartsPage() {
         <li>Scale levels with <code>velocity</code>, then set one shared tempo.</li></ul>
       <p>Next, put those layers behind React controls. You can also inspect the <a href={href(ROUTES.layerASong)}>Layer a song example</a>.</p>
     </>}
-    previous={{ label: 'Add a bass line', path: ROUTES.addBass }} next={{ label: 'Control it with React' }} />
+    previous={{ label: 'Add a bass line', path: ROUTES.addBass }} next={{ label: 'Control it with React', path: ROUTES.controlReact }} />
 }

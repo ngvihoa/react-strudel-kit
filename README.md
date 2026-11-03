@@ -20,7 +20,7 @@ plays until you press Play. The header links five sections:
 
 | Section | Route | What it is |
 | --- | --- | --- |
-| Learn | `/learn/…` (4 lessons) | Notes, drums, bass and layering a song, with players and practice controls |
+| Learn | `/learn/…` (5 lessons) | Notes → drums → bass → arrangement → React playback, with players and practice controls |
 | Sound Cookbook | `/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
 | Examples | `/examples/…` (11 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
 | API | `/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |

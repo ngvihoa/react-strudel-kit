@@ -1,4 +1,4 @@
-# Validation — 2026-11-02
+# Validation
 
 ## Automated checks
 
@@ -28,7 +28,7 @@ The suite covers:
 
 Checks ran on Node 26.13.0 and Chromium. Automated tests verify application state,
 pattern evaluation and lifecycle behavior; they cannot establish audible quality.
-Final results: 19 Vitest files / 164 tests and 31 Playwright tests passed, with
+The 2026-11-02 audit passed 19 Vitest files / 164 tests and 31 Playwright tests, with
 lint, typecheck and production build passing. Learn/Cookbook screenshots were
 also visually reviewed at 375, 768 and 1440px.
 
@@ -39,7 +39,7 @@ does not import or initialize the runtime. The adapter resumes an AudioContext
 synchronously in the gesture and hands that same context to Strudel before
 initializing its scheduler, including when the runtime is still downloading.
 
-Production build sizes with Vite 8.3.5:
+Production build sizes with Vite 8.3.5 on 2026-11-02, before the Learn expansion:
 
 | JavaScript | Before | After |
 | --- | --- | --- |
@@ -122,3 +122,14 @@ melody and full arrangement with a melody-level/tempo practice builder. The
 written arpeggio and melody timing have real-engine assertions. Validation:
 52 content/site tests and 3 focused browser checks passed, with layout/axe at
 375/768/1440px, playback, live controls, lint, typecheck and production build.
+
+Control it with React is available at `/learn/control-it-with-react`. It renders
+the real ReactMixer component and its source, covers state/build/play/update/stop,
+and links the complete five-lesson Pager chain. There is no additional site Player
+on this page. Browser checks include muting all parts, live changes and route cleanup.
+
+Final 2026-11-03 validation passed: 20 Vitest files / 187 tests, all 45 Playwright
+tests, lint, typecheck and production build. The 25 routes support direct visits
+and document reloads, pass axe at 375/1440px and have no horizontal page overflow at
+375/768/1440px. New lesson screenshots were visually reviewed. The owner approved
+the Lo-fi chord revision; this does not replace listening review of other sounds.

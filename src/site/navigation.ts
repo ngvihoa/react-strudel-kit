@@ -10,7 +10,7 @@ export const LEARN_NAV: readonly NavGroup[] = [
   ] },
   { title: 'Putting it together', items: [
     { label: 'Layer the parts', path: ROUTES.layerParts },
-    { label: 'Control it with React' },
+    { label: 'Control it with React', path: ROUTES.controlReact },
   ] },
 ]
 

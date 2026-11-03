@@ -18,6 +18,7 @@ const PAGES: readonly { label: string, path: RoutePath, file: string }[] = [
   { label: 'Make a beat', path: ROUTES.makeBeat, file: 'content/lessons/makeBeat.ts' },
   { label: 'Add a bass line', path: ROUTES.addBass, file: 'content/lessons/addBass.ts' },
   { label: 'Layer the parts', path: ROUTES.layerParts, file: 'content/lessons/layerParts.ts' },
+  { label: 'Learn: Control it with React', path: ROUTES.controlReact, file: 'content/examples/ReactMixer.tsx' },
   { label: 'Drums', path: ROUTES.kick, file: 'content/drums.ts' },
   { label: 'Tonal sounds', path: ROUTES.bass, file: 'content/tonal.ts' },
   { label: 'A simple melody', path: ROUTES.simpleMelody, file: 'content/examples/simpleMelody.ts' },

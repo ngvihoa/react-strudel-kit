@@ -29,13 +29,26 @@ describe('learning site template', () => {
     for (const name of ['Learn', 'Sound Cookbook', 'Examples']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
   })
 
-  it('shows planned pages without links', () => {
+  it('links all five completed lessons', () => {
     go('/learn/first-song')
     render(<Site />)
     expect(screen.getByRole('heading', { level: 1, name: 'Your first song' })).toBeInTheDocument()
     const lessons = screen.getAllByRole('navigation', { name: 'Lessons' })[0]
     expect(within(lessons).getAllByRole('link', { name: /Your first song/ })[0]).toHaveAttribute('aria-current', 'page')
-    expect(within(lessons).queryAllByRole('link', { name: /Control it with React/ })).toHaveLength(0)
+    for (const title of ['Make a beat', 'Add a bass line', 'Layer the parts', 'Control it with React']) {
+      expect(within(lessons).getAllByRole('link', { name: title }).length).toBeGreaterThan(0)
+    }
+    expect(within(lessons).queryByText('Soon')).not.toBeInTheDocument()
+  })
+
+  it('follows the lesson Pager chain through every completed lesson', () => {
+    go('/learn/first-song')
+    render(<Site />)
+    for (const title of ['Make a beat', 'Add a bass line', 'Layer the parts', 'Control it with React']) {
+      const pager = screen.getByRole('navigation', { name: 'Previous and next' })
+      fireEvent.click(within(pager).getByRole('link', { name: new RegExp(`Next.*${title}`) }))
+      expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument()
+    }
   })
 
   it('skips navigation without changing the route or stopping its player', async () => {
@@ -185,11 +198,12 @@ describe('Cookbook and examples', () => {
 describe('React example and API reference', () => {
   beforeEach(() => { window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
 
-  it('runs the React example component as written and keeps playing while parts change', async () => {
-    go('/examples/react-mixer')
+  it.each(['/examples/react-mixer', '/learn/control-it-with-react'])('%s runs the React component and keeps playing while parts change', async (path) => {
+    go(path)
     render(<Site />)
     expect(screen.getByRole('heading', { level: 1, name: 'Control it with React' })).toBeInTheDocument()
     const demo = document.querySelector('.react-mixer') as HTMLElement
+    expect(document.querySelectorAll('.player')).toHaveLength(0)
     fireEvent.click(within(demo).getByRole('button', { name: 'Play' }))
     await waitFor(() => expect(within(demo).getByText('playing')).toBeInTheDocument())
     fireEvent.click(within(demo).getByRole('checkbox', { name: 'melody' }))

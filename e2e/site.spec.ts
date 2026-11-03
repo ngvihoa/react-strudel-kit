@@ -9,6 +9,7 @@ const titles: Record<string, string> = {
   [ROUTES.makeBeat]: 'Make a beat',
   [ROUTES.addBass]: 'Add a bass line',
   [ROUTES.layerParts]: 'Layer the parts',
+  [ROUTES.controlReact]: 'Control it with React',
   [ROUTES.kick]: 'Kick', [ROUTES.snare]: 'Snare', [ROUTES.hiHat]: 'Hi-hat',
   [ROUTES.bass]: 'Bass', [ROUTES.keys]: 'Keys', [ROUTES.lead]: 'Lead', [ROUTES.pad]: 'Pad',
   [ROUTES.simpleMelody]: 'A simple melody', [ROUTES.fourOnTheFloor]: 'Four on the floor',
@@ -106,7 +107,7 @@ test('mobile navigation disclosures work by keyboard', async ({ page }) => {
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await expect(menu).toHaveAttribute('open', '')
-  await expect(menu.getByRole('link')).toHaveCount(4)
+  await expect(menu.getByRole('link')).toHaveCount(5)
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).focus()
   await page.keyboard.press('Enter')
   await expect(page.locator('h1')).toHaveText('Kick')
@@ -127,8 +128,8 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
   await expect(page.locator('h1')).toHaveText('Your first song')
 })
 
-const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer])
-for (const route of [ROUTES.makeBeat, ROUTES.addBass, ROUTES.layerParts]) {
+const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer, ROUTES.controlReact])
+for (const route of [ROUTES.makeBeat, ROUTES.addBass, ROUTES.layerParts, ROUTES.controlReact]) {
   test(`${route}: lesson layout and accessibility`, async ({ page }, testInfo) => {
     await go(page, route)
     for (const width of [375, 768, 1440]) {
@@ -139,6 +140,7 @@ for (const route of [ROUTES.makeBeat, ROUTES.addBass, ROUTES.layerParts]) {
       await page.screenshot({ path: testInfo.outputPath(`lesson-${width}.png`), animations: 'disabled' })
     }
   })
+  if (route === ROUTES.controlReact) continue
   test(`${route}: practice controls update live and reload resets them`, async ({ page }) => {
     await go(page, route)
     const practice = page.locator('.player').last()
@@ -222,9 +224,10 @@ test('only the player that started the transport owns playback', async ({ page }
   await four.getByRole('button', { name: /^Stop / }).click()
 })
 
-test('React mixer controls and route changes share the transport with Playground', async ({ page }) => {
-  await go(page, ROUTES.reactMixer)
+for (const route of [ROUTES.reactMixer, ROUTES.controlReact]) test(`${route}: React controls and route changes share the transport with Playground`, async ({ page }) => {
+  await go(page, route)
   const mixer = page.locator('.react-mixer')
+  await expect(page.locator('.player')).toHaveCount(0)
   await mixer.getByRole('checkbox', { name: 'melody' }).uncheck()
   await expect(mixer.locator('output')).toHaveText('idle')
   await mixer.getByRole('button', { name: 'Play', exact: true }).click()
@@ -233,6 +236,10 @@ test('React mixer controls and route changes share the transport with Playground
   await page.keyboard.press('ArrowRight')
   await mixer.getByRole('checkbox', { name: 'bass' }).uncheck()
   await expect(mixer.locator('output')).toHaveText('playing')
+  await mixer.getByRole('checkbox', { name: 'drums' }).uncheck()
+  await mixer.getByRole('checkbox', { name: 'chords' }).uncheck()
+  await expect(mixer.locator('output')).toHaveText('playing')
+  await expect(page.getByRole('alert')).toHaveCount(0)
 
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Playground', exact: true }).click()
   const status = page.locator('.topbar-note')

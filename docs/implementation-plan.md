@@ -11,7 +11,7 @@ Phát triển reference app thành nơi học cách sử dụng **react-strudel-
 Giữ lại mixer và code editor hiện tại. Tận dụng Vite app đang có trước khi
 cân nhắc framework tài liệu hoặc tách app riêng.
 
-Template UI, điều hướng, Lesson 1, 7 trang Cookbook, 11 trang Examples và API
+Template UI, điều hướng, 5 bài Learn, 7 trang Cookbook, 11 trang Examples và API
 Reference đã có (xem checklist bên dưới). Kiểm tra browser và audio lifecycle
 tự động đã hoàn tất; bước tiếp theo là nghe thử trên thiết bị thật để chỉnh chất âm.
 
@@ -137,7 +137,7 @@ lựa chọn **tiếng Việt**:
   biên dịch) và cột “Used in” quét source các trang. Nhạc lý (hợp âm, quãng năm,
   swing, off-beat) được kiểm tra bằng engine Strudel thật. *Cần nghe thử trên thiết bị thật.*
 - [x] Kiểm tra tự động điều hướng, responsive, keyboard và audio lifecycle.
-  Playwright chạy production build: 21 route ở 375/768/1440px; axe trên mọi trang;
+  Playwright chạy production build: 25 route ở 375/768/1440px; axe trên mọi trang;
   Play/Stop từng player với Strudel/Web Audio thật; ownership, keyboard, React mixer,
   Playground và hủy Play đang chờ audio khi Stop/chuyển trang. Vitest kiểm tra
   cancellation và nhạc lý; tab Strudel output phản ánh tham số đang chọn.
@@ -151,7 +151,7 @@ lựa chọn **tiếng Việt**:
 - [x] Make a beat: kick/snare, hi-hat, variation và player chỉnh accent/tempo.
 - [x] Add a bass line: roots, root/fifth, ghép drums và chỉnh bass level/tempo.
 - [x] Layer the parts: arpeggio, melody, mix balance và player chỉnh melody level/tempo.
-- [ ] Control it with React.
+- [x] Control it with React: state → pattern, component chạy thật, play/update/stop và cleanup.
 
 Các bài dùng lại sound/pattern từ Cookbook và Examples; code hiển thị lấy từ
 chính module đang phát. Lo-fi Jazzy chords đã được người dùng nghe và chấp nhận.
