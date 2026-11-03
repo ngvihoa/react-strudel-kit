@@ -116,3 +116,9 @@ Add a bass line is available at `/learn/add-a-bass-line`: four-bar root notes,
 the reusable root/fifth rhythm, drums and a bass-level/tempo practice player.
 Validation: 49 content/site tests, focused browser checks for layout/axe at three
 widths, every player and live controls, plus lint, typecheck and production build.
+
+Layer the parts is available at `/learn/layer-the-parts`: the existing arpeggio,
+melody and full arrangement with a melody-level/tempo practice builder. The
+written arpeggio and melody timing have real-engine assertions. Validation:
+52 content/site tests and 3 focused browser checks passed, with layout/axe at
+375/768/1440px, playback, live controls, lint, typecheck and production build.

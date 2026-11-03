@@ -13,6 +13,8 @@ import { offBeatBass } from './examples/house'
 import { CHORDS } from './tonal'
 import { toMiniNotation } from 'react-strudel-kit'
 import { makeBeat } from './lessons/makeBeat'
+import { arpeggios } from './examples/chords'
+import { melody } from './examples/layerASong'
 
 // Page text makes timing claims; check them with Strudel's real pattern engine (no audio).
 const mini = (pattern: PatternExpression, call: string) => {
@@ -32,6 +34,20 @@ const catOfNotes = (pattern: PatternExpression) =>
 const onsets = (code: string, cycles = 1) => timeline(code, cycles).map((event) => event.start)
 
 describe('timing claims made on the learning pages', () => {
+  it('repeats the four arpeggio notes twice per bar in Layer the parts', () => {
+    const events = timeline(catOfNotes(arpeggios), 4)
+    for (let bar = 0; bar < 4; bar++) {
+      const notes = events.filter((event) => event.start >= bar && event.start < bar + 1)
+      expect(notes.map((event) => event.start - bar)).toEqual([0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875])
+      expect(notes.slice(0, 4).map((event) => event.value)).toEqual(notes.slice(4).map((event) => event.value))
+    }
+  })
+
+  it('writes a two-beat held C in melody bar 1 and a three-beat D then rest in bar 4', () => {
+    const notes = timeline(catOfNotes(melody), 4)
+    expect(notes.find((event) => event.start === 0.5)).toEqual({ value: 'c5', start: 0.5, end: 1 })
+    expect(notes.filter((event) => event.start >= 3)).toEqual([{ value: 'd5', start: 3, end: 3.75 }])
+  })
   it('gives each bass root one full bar in the four-bar Learn progression', () => {
     expect(timeline(catOfNotes(roots), 4)).toEqual([
       { value: 'c2', start: 0, end: 1 }, { value: 'a1', start: 1, end: 2 },

@@ -38,5 +38,5 @@ export function AddBassPage() {
         <li>A rhythm helper lets each chord use its own root and fifth.</li><li>Use rests and level changes to leave space for the other parts.</li></ul>
       <p>Compare the <a href={href(ROUTES.bassLine)}>Bass line example</a> before adding harmony in the next lesson.</p>
     </>}
-    previous={{ label: 'Make a beat', path: ROUTES.makeBeat }} next={{ label: 'Layer the parts' }} />
+    previous={{ label: 'Make a beat', path: ROUTES.makeBeat }} next={{ label: 'Layer the parts', path: ROUTES.layerParts }} />
 }

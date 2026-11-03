@@ -14,6 +14,7 @@ import { ReactMixerPage } from './pages/ReactMixerPage'
 import { LessonPage } from './pages/LessonPage'
 import { MakeBeatPage } from './pages/MakeBeatPage'
 import { AddBassPage } from './pages/AddBassPage'
+import { LayerPartsPage } from './pages/LayerPartsPage'
 import { ROUTES, followSiteLink, href, useRoute } from './router'
 import type { RoutePath } from './router'
 import './site.css'
@@ -31,6 +32,7 @@ const PAGES = {
   [ROUTES.firstSong]: LessonPage,
   [ROUTES.makeBeat]: MakeBeatPage,
   [ROUTES.addBass]: AddBassPage,
+  [ROUTES.layerParts]: LayerPartsPage,
   [ROUTES.kick]: KickPage,
   [ROUTES.snare]: SnarePage,
   [ROUTES.hiHat]: HiHatPage,

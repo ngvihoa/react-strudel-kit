@@ -9,7 +9,7 @@ export const LEARN_NAV: readonly NavGroup[] = [
     { label: 'Add a bass line', path: ROUTES.addBass },
   ] },
   { title: 'Putting it together', items: [
-    { label: 'Layer the parts' },
+    { label: 'Layer the parts', path: ROUTES.layerParts },
     { label: 'Control it with React' },
   ] },
 ]

@@ -6,6 +6,7 @@ export const ROUTES = {
   firstSong: '/learn/first-song',
   makeBeat: '/learn/make-a-beat',
   addBass: '/learn/add-a-bass-line',
+  layerParts: '/learn/layer-the-parts',
   kick: '/cookbook/kick',
   snare: '/cookbook/snare',
   hiHat: '/cookbook/hi-hat',

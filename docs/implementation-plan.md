@@ -150,7 +150,7 @@ lựa chọn **tiếng Việt**:
 
 - [x] Make a beat: kick/snare, hi-hat, variation và player chỉnh accent/tempo.
 - [x] Add a bass line: roots, root/fifth, ghép drums và chỉnh bass level/tempo.
-- [ ] Layer the parts.
+- [x] Layer the parts: arpeggio, melody, mix balance và player chỉnh melody level/tempo.
 - [ ] Control it with React.
 
 Các bài dùng lại sound/pattern từ Cookbook và Examples; code hiển thị lấy từ
