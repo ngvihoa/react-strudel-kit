@@ -221,7 +221,7 @@ export function Toc({ items }: { items: readonly { id: string, label: string }[]
       <p>On this page</p>
       <ol>{items.map((item) => <li key={item.id}>
         <a href={`#${item.id}`} aria-current={item.id === active ? 'location' : undefined} onClick={(event) => {
-          // Section ids live inside a hash route, so scroll instead of changing the hash.
+          // Keep reading position changes out of browser history.
           event.preventDefault()
           setActive(item.id)
           document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })

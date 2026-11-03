@@ -17,22 +17,57 @@ const titles: Record<string, string> = {
 }
 const runtimeErrors = new WeakMap<Page, string[]>()
 const go = async (page: Page, route: string) => {
-  await page.evaluate((path) => { window.location.hash = path }, route)
+  await page.evaluate((path) => { window.history.pushState(null, '', path); window.dispatchEvent(new PopStateEvent('popstate')) }, route)
   await expect(page.locator('h1')).toHaveText(titles[route])
   await expect(page.getByRole('navigation', { name: 'Sections', exact: true }).locator('[aria-current="page"]')).toHaveAttribute('href',
-    `#${route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
+    `${route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
 }
 
 test.beforeEach(async ({ page }) => {
   const errors: string[] = []
   runtimeErrors.set(page, errors)
   page.on('pageerror', (error) => errors.push(error.message))
-  await page.goto(`/#${ROUTES.firstSong}`)
+  await page.goto(ROUTES.firstSong)
   await expect(page.locator('h1')).toHaveText('Your first song')
 })
 
 // Scheduler and synthesis failures can arrive after the Play promise resolves.
 test.afterEach(async ({ page }) => { expect(runtimeErrors.get(page)).toEqual([]) })
+
+test('every nested route supports a direct visit and a document reload', async ({ page }) => {
+  for (const route of routes) {
+    const visit = await page.goto(route)
+    expect(visit?.status(), route).toBe(200)
+    await expect(page.locator('h1')).toHaveText(titles[route])
+    const reload = await page.reload()
+    expect(reload?.request().resourceType()).toBe('document')
+    expect(reload?.status(), route).toBe(200)
+    await expect(page.locator('h1')).toHaveText(titles[route])
+    expect(new URL(page.url()).hash).toBe('')
+    await expect(page.locator('.player-playing')).toHaveCount(0)
+  }
+})
+
+test('old hash bookmarks become clean URLs and survive reload', async ({ page }) => {
+  await page.goto('/?source=bookmark#/examples/lofi-loop')
+  await expect(page).toHaveURL(/\/examples\/lofi-loop\?source=bookmark$/)
+  await expect(page.locator('h1')).toHaveText('Lo-fi loop')
+  await page.reload()
+  await expect(page.locator('h1')).toHaveText('Lo-fi loop')
+})
+
+test('Back and Forward retain the page and stop its playback', async ({ page }) => {
+  await page.goto(ROUTES.lofi)
+  await page.getByRole('button', { name: 'Play Jazzy chords', exact: true }).click()
+  await expect(page.locator('.player-playing')).toHaveCount(1)
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).click()
+  await expect(page.locator('h1')).toHaveText('Kick')
+  await page.goBack()
+  await expect(page.locator('h1')).toHaveText('Lo-fi loop')
+  await expect(page.locator('.player-playing')).toHaveCount(0)
+  await page.goForward()
+  await expect(page.locator('h1')).toHaveText('Kick')
+})
 
 for (const width of [375, 768, 1440]) {
   test(`all routes fit at ${width}px and link to available pages`, async ({ page }, testInfo) => {
@@ -41,7 +76,7 @@ for (const width of [375, 768, 1440]) {
       await go(page, route)
       await page.evaluate(() => document.fonts.ready)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
-      const links = await page.locator('a[href^="#/"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')!.slice(1)))
+      const links = await page.locator('a[href^="/"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')!))
       expect(links.every((link) => routes.includes(link as typeof routes[number]))).toBe(true)
     }
     for (const route of [ROUTES.firstSong, ROUTES.kick]) {
@@ -85,7 +120,7 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused()
   await page.keyboard.press('Enter')
   await expect(page.getByRole('main')).toBeFocused()
-  await expect(page).toHaveURL(/#\/learn\/first-song$/)
+  await expect(page).toHaveURL(/\/learn\/first-song$/)
   await expect(page.locator('h1')).toHaveText('Your first song')
 })
 

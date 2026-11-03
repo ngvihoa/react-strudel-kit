@@ -12,13 +12,13 @@ vi.mock('@strudel/web', async () => {
 })
 
 const go = (path: string) => act(() => {
-  window.location.hash = path
-  window.dispatchEvent(new HashChangeEvent('hashchange'))
+  window.history.pushState(null, '', path)
+  window.dispatchEvent(new PopStateEvent('popstate'))
 })
 const player = (title: string) => screen.getByRole('region', { name: `${title} player` })
 
 describe('learning site template', () => {
-  beforeEach(() => { vi.clearAllMocks(); window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+  beforeEach(() => { vi.clearAllMocks(); window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
   afterEach(() => { vi.restoreAllMocks() })
 
   it('opens the playground by default and links every section', () => {
@@ -47,7 +47,7 @@ describe('learning site template', () => {
 
     fireEvent.click(screen.getByRole('link', { name: 'Skip to content' }))
 
-    expect(window.location.hash).toBe('#/learn/first-song')
+    expect(window.location.pathname).toBe('/learn/first-song')
     expect(screen.getByRole('main')).toHaveFocus()
     expect(screen.getByRole('heading', { level: 1, name: 'Your first song' })).toBeInTheDocument()
     expect(within(player('One note')).getByText('Playing')).toBeInTheDocument()
@@ -111,7 +111,7 @@ describe('learning site template', () => {
 })
 
 describe('lesson and example content', () => {
-  beforeEach(() => { window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+  beforeEach(() => { window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
 
   it('shows the values chosen in Make it yours', () => {
     go('/learn/first-song')
@@ -132,7 +132,7 @@ describe('lesson and example content', () => {
 })
 
 describe('Cookbook and examples', () => {
-  beforeEach(() => { window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+  beforeEach(() => { window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
 
   it.each([
     ['/cookbook/kick', 'Kick', 'Sound Cookbook'],
@@ -166,7 +166,7 @@ describe('Cookbook and examples', () => {
     expect(screen.getByText(/^Used in:/)).toContainElement(screen.getByRole('link', { name: 'Backbeat' }))
     go('/examples/backbeat')
     const sounds = screen.getByText('Sounds used').parentElement as HTMLElement
-    expect(within(sounds).getByRole('link', { name: 'Snare' })).toHaveAttribute('href', '#/cookbook/snare')
+    expect(within(sounds).getByRole('link', { name: 'Snare' })).toHaveAttribute('href', '/cookbook/snare')
   })
 
   it('updates a sound live from its sliders', () => {
@@ -180,7 +180,7 @@ describe('Cookbook and examples', () => {
 })
 
 describe('React example and API reference', () => {
-  beforeEach(() => { window.location.hash = ''; vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
+  beforeEach(() => { window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
 
   it('runs the React example component as written and keeps playing while parts change', async () => {
     go('/examples/react-mixer')
@@ -202,7 +202,7 @@ describe('React example and API reference', () => {
     expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'API' })).toHaveAttribute('aria-current', 'page')
     for (const name of Object.keys(functionRegistry)) expect(document.getElementById(`fn-${name}`)).not.toBeNull()
     const velocity = document.getElementById('fn-velocity') as HTMLElement
-    expect(within(velocity).getByRole('link', { name: 'Hi-hat accents' })).toHaveAttribute('href', '#/examples/hi-hat-accents')
+    expect(within(velocity).getByRole('link', { name: 'Hi-hat accents' })).toHaveAttribute('href', '/examples/hi-hat-accents')
     const swingBy = document.getElementById('fn-swingBy') as HTMLElement
     expect(within(swingBy).getByRole('link', { name: 'Lo-fi loop' })).toBeInTheDocument()
     expect(screen.getByText('c4@2')).toBeInTheDocument()

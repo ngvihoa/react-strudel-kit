@@ -8,7 +8,9 @@ import '@fontsource/jetbrains-mono/400.css'
 import '@fontsource/jetbrains-mono/600.css'
 import './index.css'
 import { Site } from './site/Site'
+import { migrateLegacyRoute } from './site/router'
 
+migrateLegacyRoute()
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Site />

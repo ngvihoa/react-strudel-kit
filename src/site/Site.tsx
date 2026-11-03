@@ -12,7 +12,7 @@ import {
 } from './pages/examples'
 import { ReactMixerPage } from './pages/ReactMixerPage'
 import { LessonPage } from './pages/LessonPage'
-import { ROUTES, href, useRoute } from './router'
+import { ROUTES, followSiteLink, href, useRoute } from './router'
 import type { RoutePath } from './router'
 import './site.css'
 
@@ -83,15 +83,17 @@ export function Site() {
 
   // Leaving a page always stops its music; the next page waits for its own Play.
   useEffect(() => {
-    window.scrollTo(0, 0)
+    const target = document.getElementById(window.location.hash.slice(1))
+    if (target) target.scrollIntoView()
+    else window.scrollTo(0, 0)
     return () => stop()
   }, [route, stop])
 
   return (
     <PlaybackProvider>
-      <div className="site">
+      <div className="site" onClick={followSiteLink}>
         <a className="skip-link" href="#content" onClick={(event) => {
-          // The hash belongs to the router; move focus without navigating.
+          // Move focus without adding a browser-history entry.
           event.preventDefault()
           content.current?.focus({ preventScroll: true })
           window.scrollTo(0, 0)

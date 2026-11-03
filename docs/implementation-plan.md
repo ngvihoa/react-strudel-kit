@@ -106,7 +106,7 @@ lựa chọn **tiếng Việt**:
 
 - Tách chữ giao diện và nội dung bài học khỏi component (ví dụ một file nội dung
   theo từng ngôn ngữ), giữ code mẫu dùng chung vì code không đổi theo ngôn ngữ.
-- Chọn cách đặt ngôn ngữ trong URL (ví dụ `#/vi/learn/...`) và nút chuyển ngôn ngữ ở header.
+- Chọn cách đặt ngôn ngữ trong URL (ví dụ `/vi/learn/...`) và nút chuyển ngôn ngữ ở header.
 - Font Be Vietnam Pro và JetBrains Mono đã có subset tiếng Việt.
 - Chỉ bắt đầu khi nội dung tiếng Anh của các bài đầu đã ổn định, để không phải dịch lại nhiều lần.
 
@@ -116,8 +116,8 @@ lựa chọn **tiếng Việt**:
   kiểm tra bố cục desktop/mobile trước khi nhân rộng. Template ở `src/site/`,
   tham khảo tỷ lệ của react.dev, Tailwind và Next.js docs.
 - [x] Dựng khung điều hướng trong app hiện tại, tích hợp lại playground.
-  Hash route `#/learn/first-song`, `#/cookbook/kick`, `#/examples/dance-monkey`,
-  `#/playground` (mặc định). Trang chưa có hiện là “Soon”, không có link.
+  URL `/learn/first-song`, `/cookbook/kick`, `/examples/dance-monkey`,
+  `/playground` (mặc định). Trang chưa có hiện là “Soon”, không có link.
 - [x] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
   code hiển thị và playback dùng cùng source: trang import module và bản `?raw`
   của nó, cắt theo `// #region`; tab “Strudel output” lấy từ `toStrudelCode`
@@ -133,7 +133,7 @@ lựa chọn **tiếng Việt**:
   API Reference và đồng bộ README/quickstart theo API hiện hành.
   Cookbook tonal ở `src/content/tonal.ts`; examples: Bass line, Chords and arpeggios,
   Layer a song, Control it with React (component chạy thật trên trang), Lo-fi loop,
-  House loop. Trang `#/api` sinh bảng hàm từ `functionRegistry` (thiếu mô tả là lỗi
+  House loop. Trang `/api` sinh bảng hàm từ `functionRegistry` (thiếu mô tả là lỗi
   biên dịch) và cột “Used in” quét source các trang. Nhạc lý (hợp âm, quãng năm,
   swing, off-beat) được kiểm tra bằng engine Strudel thật. *Cần nghe thử trên thiết bị thật.*
 - [x] Kiểm tra tự động điều hướng, responsive, keyboard và audio lifecycle.

@@ -86,5 +86,19 @@ Validation for this iteration: 45 content/site tests, lint, typecheck and produc
 build passed. The focused Lo-fi Playwright test passed Play/Stop for all four
 players against the real engine, including Jazzy chords and the full loop.
 
-This is a candidate adjustment based on the owner's listening feedback; the revised
-sound still needs owner review. Other sounds, gains and slider ranges remain pending.
+The owner approved the revised Lo-fi chords on 2026-11-03. Other sounds, gains and
+slider ranges remain pending.
+
+## Path routing — 2026-11-03
+
+Page URLs now use paths such as `/examples/lofi-loop`. The browser suite covers
+direct visits and document reloads on every route, Back/Forward navigation and
+audio cleanup. Old `/#/…` bookmarks are replaced with clean paths while retaining
+query parameters. Internal ordinary clicks use browser history; modified clicks,
+new tabs, downloads and same-page section anchors keep browser behavior.
+Routing validation passed: 46 router/site tests, 34 browser tests, lint, typecheck
+and production build. Reload tests request a fresh HTML document for each route.
+
+Vite dev/preview provide the SPA fallback for reloads. Static hosting must serve
+`index.html` for non-file paths; `public/_redirects` provides the rule for hosts
+that support Netlify/Cloudflare-style redirects. See README for other hosts.

@@ -20,16 +20,22 @@ plays until you press Play. The header links five sections:
 
 | Section | Route | What it is |
 | --- | --- | --- |
-| Learn | `#/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
-| Sound Cookbook | `#/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
-| Examples | `#/examples/…` (11 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
-| API | `#/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |
-| Playground | `#/playground` (default) | The free-form mixer and code editor described below |
+| Learn | `/learn/first-song` | Lesson 1, *Your first song*: notes, rhythm and tempo, with a player per step |
+| Sound Cookbook | `/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
+| Examples | `/examples/…` (11 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
+| API | `/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |
+| Playground | `/playground` (default) | The free-form mixer and code editor described below |
 
 Code shown on these pages is cut from the module that plays (`src/content/`,
 `src/songs/`), so the text and the sound cannot drift apart. Timing claims made
 in the text are checked against Strudel's real pattern engine in tests. Leaving a page stops
 its music, and only one player plays at a time.
+
+Routes use normal paths, for example `/examples/lofi-loop`. Direct visits and
+reloads work in Vite dev/preview. Old `/#/…` bookmarks are replaced with the clean
+URL. For static deployment, serve `index.html` for unknown non-asset paths;
+`public/_redirects` supplies this rule for Netlify/Cloudflare Pages. Other hosts
+need the equivalent SPA fallback (for nginx: `try_files $uri $uri/ /index.html;`).
 
 In the **Playground**, the **Mixer** opens with **Dance Monkey**, an eight-bar
 instrumental chorus:
