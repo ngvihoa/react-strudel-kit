@@ -9,7 +9,7 @@ trong `implementation-plan.md` được giữ để tham khảo.
 - License: `AGPL-3.0-or-later`, theo yêu cầu chọn license phù hợp với Strudel.
   Hai dependency trực tiếp `@strudel/web@1.3.0` và `@strudel/mini@1.2.6` khai báo
   license này. Xem [hướng dẫn upstream](https://strudel.cc/technical-manual/project-start/).
-- Bản đầu đề xuất: `0.1.0` (version hiện có), ESM với hai entrypoint
+- Bản đầu: `0.1.0`, đã phát hành ngày 2026-11-04; ESM với hai entrypoint
   `react-strudel-kit` và `react-strudel-kit/react`.
 - Root workspace/reference app tiếp tục `private: true`; chỉ package được phát hành.
 - Website: `https://react-strudel-kit.vercel.app/`; npm homepage trỏ đến website,
@@ -24,7 +24,7 @@ trong `implementation-plan.md` được giữ để tham khảo.
 - [x] Hỏi và chốt tên cùng hướng license với người dùng.
 - [x] Kiểm tra registry: tên hiện trả 404 ngày 2026-11-04. Đây không phải đặt chỗ
   hay bảo đảm tên còn dùng được khi publish.
-- [x] Kiểm tra auth: `npm whoami` trả E401; cần người dùng đăng nhập lúc phát hành.
+- [x] Kiểm tra auth: ban đầu E401; người dùng đăng nhập và `npm whoami` xác nhận `ngvihoa`.
 
 ## 2. Đóng gói và tài liệu cho người cài
 
@@ -53,7 +53,7 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 ## 4. CI và chuẩn bị bản phát hành
 
 - [x] Thêm workflow CI cho lint, typecheck/build, Vitest, browser tests và tarball
-  consumer. Lần chạy thực tế trên GitHub sẽ được xác nhận sau khi push.
+  consumer. Hosted CI trên Node 24 qua tại commit `7210778`.
 - [x] Changelog `0.1.0`, README hướng dẫn cài, giới hạn browser/ESM và compatibility.
 - [x] Chạy đầy đủ kiểm tra local; kiểm tra nội dung tarball và metadata lần cuối.
   187 unit tests, 45 browser tests, lint/typecheck/build và hai tarball consumer qua.
@@ -64,18 +64,34 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 
 - [x] Người dùng đăng nhập npm bằng `npm login`; `npm whoami` xác nhận `ngvihoa`.
   Không gửi token, mật khẩu hoặc mã OTP vào chat hay commit.
-- [ ] Chốt version/dist-tag và tài khoản publish; kiểm tra tên lại ngay trước release.
+- [x] Chốt `0.1.0`, dist-tag `latest` và tài khoản `ngvihoa`; kiểm tra tên ngay trước release.
 - [x] `npm publish` dry-run với bản `0.1.0`, public access và dist-tag `latest` qua;
   không gửi bản phát hành lên registry.
-- [ ] Đối chiếu `npm publish --dry-run` với artifact đã kiểm thử, rồi publish đúng
+- [x] Đối chiếu `npm publish --dry-run` với artifact đã kiểm thử, rồi publish đúng
   tarball đó với public access. Ghi lại version, integrity và commit nguồn.
-- [ ] Cài bản từ npm vào consumer sạch; xác nhận metadata, types, build và playback.
+- [x] Cài bản từ npm vào consumer sạch; xác nhận metadata, types, build và playback.
   Chạy `npm run test:package -- --registry`: cài version từ npm và so sánh integrity
   với tarball local, rồi chạy lại các kiểm tra consumer React 18/19.
-- [ ] Tag Git đúng version và cập nhật trạng thái phát hành sau khi registry xác nhận.
+- [x] Tag Git `v0.1.0` tại commit nguồn `7210778`; cập nhật trạng thái sau khi registry xác nhận.
 
 Các lần phát hành sau có thể dùng npm trusted publishing qua GitHub Actions.
-Chưa cấu hình publish tự động khi tài khoản npm và quyền của repo chưa được chốt.
+Chưa cấu hình publish tự động; bản đầu dùng CLI và người dùng hoàn tất xác thực
+publish trong trình duyệt npm.
+
+## Kết quả bản 0.1.0 — 2026-11-04
+
+- [npm package](https://www.npmjs.com/package/react-strudel-kit) và
+  [website](https://react-strudel-kit.vercel.app/).
+- Commit nguồn: `7210778645dfebdf8c8783d9eb00f44897bb2ecc`.
+- [Hosted CI thành công](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41835342237):
+  lint, 187 unit tests, typecheck/build, tarball consumers React 18/19, 45 browser tests.
+- Registry xác nhận version `0.1.0`, `latest: 0.1.0`, metadata website/repository/issues
+  và README có logo/link. Cài từ registry qua kiểm tra types, production build và
+  Play/Update/Stop/unmount trên cả React 18.3.1 lẫn 19.3.0.
+- Tarball: 48 files, 67,936 bytes; integrity khớp bản đã kiểm thử:
+  `sha512-Uib1kPhknBZ8CwcYbQnwDPYcjZJMzEeH5I8aHB+pcPr1P+2MsE99W6Bu4AmJ/pePYs3WhPPUQ29DnI1S1cAz7Q==`.
+- Các link README đã trả HTTP 200; browser xác nhận direct visit và reload của
+  Learn/API/Cookbook/Examples/Playground trên Vercel sau khi thêm SPA rewrite.
 
 ## Quy trình tái lập
 

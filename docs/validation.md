@@ -203,15 +203,14 @@ over 500 kB remains.
 
 The GitHub Actions workflow runs those checks and the isolated consumers on
 Node 24, then uploads the tested tarball and browser diagnostics. It passed
-actionlint 1.7.12 locally. The hosted workflow has not run yet: these commits have
-not been pushed, so this is not evidence of a completed Node 24 CI run.
+actionlint 1.7.12 locally. At this preflight stage the hosted workflow had not run
+yet; the later hosted results are recorded below.
 
 Only the library package is now publishable, with public access and the public
 npm registry configured; the root remains private. A publish dry-run on the
 tested tarball passed with `--tag latest --access public --ignore-scripts`.
-No package has been published and no Git release tag has been created. The npm
-account must still authenticate before actual publication; the name/version and
-registry integrity will be checked again at that point.
+At this preflight stage no package had been published or tagged. Actual
+publication and registry checks are recorded below.
 
 ### npm presentation and deployed documentation
 
@@ -230,8 +229,39 @@ verification against the registry's integrity and installs that exact npm versio
 Live checks initially found HTTP 200 at the website root and HTTP 404 at
 `/learn/first-song`. `vercel.json` now supplies the SPA rewrite recommended in
 [Vercel's Vite documentation](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).
-The deployment and linked routes will be checked after this commit is pushed.
+After deployment, all 13 absolute README URLs returned HTTP 200, including the
+logo. A real Chromium browser verified direct visits and document reloads for
+the live Learn/API/Cookbook/Examples/Playground links without runtime/HTTP errors.
 
 The first hosted CI run on release candidate `4329165` passed on Node 24:
 [run 41834296827](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41834296827).
-The metadata/assets update will receive its own hosted run before publication.
+The final metadata/assets commit `7210778` also passed hosted CI on Node 24:
+[run 41835342237](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41835342237).
+
+## npm publication — 2026-11-04
+
+`react-strudel-kit@0.1.0` was published by `ngvihoa` with public access and the
+`latest` dist-tag, from the 48-file tarball built at commit
+`7210778645dfebdf8c8783d9eb00f44897bb2ecc`. The owner completed npm's browser
+authentication. npm initially showed its `0.0.0-stage` placeholder while
+processing the upload; the real version subsequently became available.
+
+Registry verification confirmed `0.1.0`, `latest: 0.1.0`, the Vercel homepage,
+GitHub repository/issues metadata and README containing the logo/website links.
+The registry's tarball integrity matches the tested artifact:
+
+```text
+sha512-Uib1kPhknBZ8CwcYbQnwDPYcjZJMzEeH5I8aHB+pcPr1P+2MsE99W6Bu4AmJ/pePYs3WhPPUQ29DnI1S1cAz7Q==
+```
+
+`npm run test:package -- --registry` passed for React/React DOM 18.3.1 and 19.3.0.
+Each consumer installed the version from npm, checked lockfile integrity against
+the local artifact, compiled strict declarations in bundler and NodeNext modes,
+compiled README examples and built a production Vite app. Real Chromium/Web Audio
+checks passed Play/Update/Stop/unmount with no stopped autoplay or runtime errors.
+
+The npm website returned HTTP 403 to this environment's web/curl clients, so its
+rendered UI was not visually inspected. Registry metadata and README contents
+were verified directly, and the README's image/link targets were checked live.
+The immutable published package files were not changed after release; Git tag
+`v0.1.0` points at the source commit, with this record committed separately.

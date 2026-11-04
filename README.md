@@ -8,9 +8,15 @@ audio scheduler; this package provides typed composition and React integration.
 [Learn](https://react-strudel-kit.vercel.app/learn/first-song) ·
 [API reference](https://react-strudel-kit.vercel.app/api)
 
-The workspace package is preparing its first npm release and is **not yet
-published**. See the [release plan](docs/release-plan.md) and
-[package README](packages/react-strudel-kit/README.md) for local tarball installation.
+Published on npm as [react-strudel-kit](https://www.npmjs.com/package/react-strudel-kit),
+starting with **0.1.0**. Install it in an existing React application:
+
+```bash
+npm install react-strudel-kit
+```
+
+See the [package README](packages/react-strudel-kit/README.md) for integration
+and local tarball installation, and the [release record](docs/release-plan.md).
 
 ## Run the playground
 
@@ -67,8 +73,9 @@ All arrangements use built-in synths without sample downloads. See
 
 ## React playback
 
-Use the workspace package after it has been built. React integration is a
-separate entrypoint and must run in a browser/client component.
+Install `react-strudel-kit` in your React app, or build the local workspace
+package for repository development. React integration is a separate entrypoint
+and must run in a browser/client component.
 
 ```tsx
 import { chain, fn, pitch, sample, sequence } from 'react-strudel-kit'

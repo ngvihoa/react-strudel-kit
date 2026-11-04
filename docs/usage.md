@@ -3,6 +3,19 @@
 This guide describes the implemented API. [Design notes](README.md#historical-design-notes)
 record earlier proposals and do not define the current contract.
 
+## Installation
+
+Install [react-strudel-kit](https://www.npmjs.com/package/react-strudel-kit)
+into an existing React application:
+
+```sh
+npm install react-strudel-kit
+```
+
+Version 0.1.0 is available on npm. See the
+[live lessons and examples](https://react-strudel-kit.vercel.app/) and
+[release verification](validation.md#npm-publication--2026-11-04).
+
 ## Entrypoints
 
 | Import | Contents |

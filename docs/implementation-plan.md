@@ -13,8 +13,9 @@ cân nhắc framework tài liệu hoặc tách app riêng.
 
 Template UI, điều hướng, 5 bài Learn, 7 trang Cookbook, 11 trang Examples và API
 Reference đã có (xem checklist bên dưới). Kiểm tra browser và audio lifecycle
-tự động đã hoàn tất. Người dùng đã duyệt chất âm hiện tại; bước tiếp theo là
-chuẩn bị phát hành npm theo [kế hoạch release](release-plan.md).
+tự động đã hoàn tất. Người dùng đã duyệt chất âm hiện tại;
+`react-strudel-kit@0.1.0` đã phát hành trên npm ngày 2026-11-04 và được cài thử
+từ registry trên React 18/19. Xem [ghi nhận release](release-plan.md).
 
 Xác minh 2026-11-02: đã sửa skip link và accessibility, thêm browser tests,
 vá dependency trong range hiện hành và tách Strudel thành chunk tải ở lần Play
