@@ -424,3 +424,36 @@ all five pages at 375px for overflow, activated an inline hi-hat link by keyboar
 and verified that clicking a kick reference while playing stops audio on route
 change. No browser runtime errors occurred. Make a beat renders were inspected
 at 375px and 1440px, including the new indigo, underlined links in the introduction.
+
+## Technical SEO and static documents — 2026-11-04
+
+The production build renders 28 public routes and a not-found document from the
+same React components used by the client. Each HTML response contains readable
+content, a route-specific title/description, production canonical, Open Graph,
+Twitter metadata and JSON-LD. Robots and sitemap are generated from the route
+registry. A committed 1200 × 630 PNG supplies the social card. Runtime navigation
+updates the head without duplicate tags, and the client hydrates the correct route.
+
+Vercel now serves clean static documents and a native 404 fallback instead of a
+catch-all status-200 home page. The local production preview tests mirror clean
+URL redirects and missing-page status. Unknown pages are noindex and have no
+home-page canonical. Legacy hash bookmarks retain their migration behavior.
+
+- 195 unit tests in 21 files passed, including complete/unique route metadata,
+  JSON-LD escaping, metadata replacement and missing-route resolution.
+- All 58 Chromium tests passed. Four SEO tests verify every public route with
+  JavaScript disabled, metadata on navigation/Back/reload, query-free canonicals,
+  sitemap/robots, PNG dimensions, clean URL redirects and genuine HTTP 404.
+- Existing audio, no-autoplay, pending-Play cancellation, keyboard, responsive,
+  accessibility and animation tests continue to pass after hydration.
+- Lint, typecheck and production build passed. The existing large-chunk warning
+  remains; no Core Web Vitals or ranking improvement is claimed.
+- A separate Vite SSR build under `VERCEL_ENV=preview` confirmed that all 28
+  rendered heads emit `noindex, follow`. Its temporary output was removed.
+- The generated social card was visually inspected. Its logo and fonts are the
+  existing project assets; no fabricated product statistics are included.
+
+This verification used local production artifacts, not the live Vercel deployment
+or Google's index. Search Console ownership, submission and live crawl validation
+remain post-deployment steps. See [`seo.md`](seo.md) for maintenance and deployment
+checks. No npm package runtime, version or publishing configuration changed.

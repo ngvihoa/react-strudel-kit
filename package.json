@@ -10,7 +10,7 @@
   "scripts": {
     "predev": "npm run build:package",
     "dev": "vite",
-    "build": "npm run typecheck && vite build",
+    "build": "npm run typecheck && vite build && node scripts/prerender.mjs",
     "typecheck": "npm run build:package && tsc -b && tsc -p packages/react-strudel-kit/tsconfig.test.json && tsc -p src/test/tsconfig.public-api.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
     "preview": "vite preview",

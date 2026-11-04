@@ -4,6 +4,8 @@
 
 ## Điều chỉnh theo feedback 2026-11-04
 
+- [x] Technical SEO: HTML dựng sẵn từng route, metadata/canonical/social cards,
+  JSON-LD, sitemap/robots và trang 404 đúng status. Xem [SEO guide](seo.md).
 - [x] Bổ sung Introduction ở `/docs` và Installation ở `/docs/installation`, có sidebar,
   quick access, component mẫu chạy trực tiếp và luồng sang bài Your first song.
 - [x] Dùng Anime.js: hero chậm hơn, reveal các khối phía dưới khi cuộn, hỗ trợ reduced motion.

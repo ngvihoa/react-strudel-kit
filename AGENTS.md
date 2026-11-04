@@ -198,6 +198,10 @@ gains, filter values and slider ranges were chosen on paper.
   `/docs/installation`, followed by Your first song. The Installation page runs
   and shows `src/content/GettingStarted.tsx`; use its raw source, not copied JSX.
 - Cap the site shell at 1280px; verify 375px, 768px and wide desktop layouts.
+- Read `docs/seo.md` before changing routing, document heads or static deployment.
+  Build prerenders all public routes; keep `PAGE_INFO` metadata complete and the
+  initial server/client route consistent. Preserve real 404s, clean canonicals
+  and generated sitemap/robots. Never restore a catch-all 200 home-page rewrite.
 
 ## Website priorities — owner feedback 2026-11-04
 

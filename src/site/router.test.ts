@@ -1,9 +1,15 @@
 import { act, renderHook } from '@testing-library/react'
 import type { MouseEvent } from 'react'
 import { beforeEach, expect, it, vi } from 'vitest'
-import { ROUTES, followSiteLink, href, migrateLegacyRoute, useRoute } from './router'
+import { ROUTES, followSiteLink, href, migrateLegacyRoute, resolveRoute, useRoute } from './router'
 
 beforeEach(() => window.history.replaceState(null, '', '/'))
+
+it('resolves real pages and leaves missing paths distinct from the home page', () => {
+  expect(resolveRoute('/docs/installation/')).toBe(ROUTES.installation)
+  expect(resolveRoute('/')).toBe(ROUTES.home)
+  expect(resolveRoute('/missing-page')).toBeNull()
+})
 
 const click = (attributes: Record<string, string | undefined>, modifiers = {}) => {
   const anchor = document.createElement('a')

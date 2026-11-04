@@ -46,10 +46,12 @@ export const migrateLegacyRoute = () => {
   window.history.replaceState(window.history.state, '', `${legacy.pathname}${legacy.search || window.location.search}${legacy.hash}`)
 }
 
-const readRoute = (): RoutePath => {
-  const path = window.location.pathname.replace(/\/+$/, '') || '/'
-  return KNOWN.has(path) ? path as RoutePath : ROUTES.home
+export const resolveRoute = (pathname: string): RoutePath | null => {
+  const path = pathname.replace(/\/+$/, '') || '/'
+  return KNOWN.has(path) ? path as RoutePath : null
 }
+
+const readRoute = () => resolveRoute(window.location.pathname)
 
 const subscribe = (onChange: () => void) => {
   window.addEventListener('popstate', onChange)
@@ -60,7 +62,8 @@ const subscribe = (onChange: () => void) => {
   }
 }
 
-export const useRoute = () => useSyncExternalStore(subscribe, readRoute, () => ROUTES.home)
+export const useRoute = (initialRoute: RoutePath | null = ROUTES.home) =>
+  useSyncExternalStore(subscribe, readRoute, () => initialRoute)
 
 export const href = (path: RoutePath) => path
 

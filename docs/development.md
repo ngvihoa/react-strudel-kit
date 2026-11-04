@@ -26,10 +26,11 @@ its music, and only one player plays at a time.
 
 Routes use normal paths, for example `/examples/lofi-loop`. Direct visits and
 reloads work in Vite dev/preview. Old `/#/…` bookmarks are replaced with the clean
-URL. For static deployment, serve `index.html` for unknown non-asset paths;
-`vercel.json` supplies this rule for Vercel and `public/_redirects` for
-Netlify/Cloudflare Pages. Other hosts
-need the equivalent SPA fallback (for nginx: `try_files $uri $uri/ /index.html;`).
+URL. Production builds prerender every public route into its own HTML document.
+Vercel serves clean URLs and returns `404.html` with status 404 for missing pages;
+other hosts must provide equivalent document routing rather than a catch-all 200
+SPA fallback. See [website SEO](seo.md) for output files, metadata, social images
+and deployment verification.
 
 In the **Playground**, the **Mixer** opens with **Dance Monkey**, an eight-bar
 instrumental chorus:

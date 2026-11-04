@@ -12,6 +12,8 @@ import { PlaybackProvider } from './PlaybackProvider'
 import { HomePage } from './pages/HomePage'
 import { DocsPage } from './pages/DocsPage'
 import { InstallationPage } from './pages/InstallationPage'
+import { NotFoundPage } from './pages/NotFoundPage'
+import { usePageMetadata } from './usePageMetadata'
 import { ApiPage } from './pages/ApiPage'
 import { BassPage, HiHatPage, KeysPage, KickPage, LeadPage, PadPage, SnarePage } from './pages/cookbook'
 import { DanceMonkeyPage } from './pages/DanceMonkeyPage'
@@ -66,7 +68,7 @@ const PAGES = {
 } satisfies Record<RoutePath, ComponentType>
 
 /** Slides one underline to the current section instead of jumping between links. */
-const useNavIndicator = (route: RoutePath) => {
+const useNavIndicator = (route: RoutePath | null) => {
   const nav = useRef<HTMLElement>(null)
   const [bar, setBar] = useState<{ left: number, width: number } | null>(null)
   useLayoutEffect(() => {
@@ -90,12 +92,14 @@ const useNavIndicator = (route: RoutePath) => {
   return { nav, bar }
 }
 
-export function Site() {
+export function Site({ initialRoute }: { initialRoute?: RoutePath | null }) {
   const content = useRef<HTMLElement>(null)
-  const route = useRoute()
+  const route = useRoute(initialRoute)
   const { stop } = useStrudel()
-  const Page = PAGES[route]
+  const Page = route === null ? NotFoundPage : PAGES[route]
+  const standalone = route === null || route === ROUTES.home || route === ROUTES.playground
   const { nav, bar } = useNavIndicator(route)
+  usePageMetadata(route)
 
   // Leaving a page always stops its music; the next page waits for its own Play.
   useEffect(() => {
@@ -117,7 +121,7 @@ export function Site() {
         <header className="site-header"><div className="site-header-inner">
           <a className="brand-logo" href={href(ROUTES.home)} aria-label="react-strudel-kit home"><img src={logo} alt="" width={86} height={28} /><span className="brand-name">react-strudel-kit</span></a>
           <nav className="site-nav" aria-label="Sections" ref={nav}>
-            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-label={section.label} aria-current={(section.path === ROUTES.docs ? route !== ROUTES.home && route !== ROUTES.playground : route === section.path) ? 'page' : undefined}>{section.label}</a>)}
+            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-label={section.label} aria-current={(section.path === ROUTES.docs ? !standalone : route === section.path) ? 'page' : undefined}>{section.label}</a>)}
             {bar && <span className="site-nav-bar" aria-hidden="true" style={{ transform: `translateX(${bar.left}px)`, width: bar.width }} />}
           </nav>
           <nav className="header-projects" aria-label="Package links">
@@ -126,12 +130,12 @@ export function Site() {
           </nav>
         </div></header>
         <main id="content" ref={content} tabIndex={-1} className={route === ROUTES.playground ? 'site-main site-main-playground' : 'site-main'}>
-          {route === ROUTES.home || route === ROUTES.playground ? <Page key={route} /> : <div className="docs">
-            <div className="docs-nav"><SectionNav groups={DOCS_NAV} current={route} label="Documentation" /></div>
+          {standalone ? <Page key={route} /> : <div className="docs">
+            <div className="docs-nav"><SectionNav groups={DOCS_NAV} current={route!} label="Documentation" /></div>
             <div className="docs-content"><Page key={route} /><SiteFooter /></div>
           </div>}
         </main>
-        {(route === ROUTES.home || route === ROUTES.playground) && <SiteFooter />}
+        {standalone && <SiteFooter />}
       </div>
     </PlaybackProvider>
   )

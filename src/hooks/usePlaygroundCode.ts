@@ -11,6 +11,7 @@ type Draft = {
 }
 
 const readStoredCode = (key: string, fallback: string): Draft => {
+    if (typeof window === 'undefined') return { code: fallback, saveStatus: 'unavailable' }
     try {
         const code = localStorage.getItem(key)
         return { code: code ?? fallback, saveStatus: code === null ? 'unsaved' : 'saved' }
