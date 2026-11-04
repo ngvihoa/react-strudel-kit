@@ -54,7 +54,10 @@
 .landing-questions { display: grid; grid-template-columns: .9fr 1fr; gap: 64px; padding: 40px; background: var(--brand-tint); border-radius: var(--landing-radius); }
 .landing-questions h2 { font-size: 36px; }
 .landing-questions details + details { margin-top: 12px; }
-.landing-questions summary { min-height: 48px; padding: 12px 0; font-size: 17px; font-weight: 500; cursor: pointer; }
+.landing-questions summary { display: flex; align-items: baseline; gap: 8px; min-height: 48px; padding: 12px 0; list-style: none; font-size: 17px; font-weight: 500; cursor: pointer; }
+.landing-questions summary::-webkit-details-marker { display: none; }
+.question-chevron { display: inline-flex; flex-shrink: 0; align-self: center; transform-origin: center; }
+.question-answer { display: flow-root; padding-left: 24px; }
 .landing-questions details p { margin: 8px 0 20px; font-size: 16px; line-height: 1.75; }
 .landing-questions code { font: .85em var(--mono); }
 @media (max-width: 1000px) {

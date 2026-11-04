@@ -1,4 +1,57 @@
 import { expect, test } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+
+test('questions expand smoothly, reverse repeated clicks and retain keyboard and reduced-motion access', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  const question = page.locator('.landing-questions details').nth(2)
+  const summary = question.locator('summary')
+  await summary.scrollIntoViewIfNeeded()
+  await expect(question).toHaveCSS('opacity', '1')
+  const height = () => question.evaluate((element) => element.getBoundingClientRect().height)
+  const collapsed = await height()
+  await summary.click()
+  await expect.poll(height).toBeGreaterThan(collapsed)
+  expect(await question.evaluate((element) => element.style.height)).not.toBe('')
+  await expect.poll(() => question.evaluate((element) => element.style.height)).toBe('')
+  await expect(question.getByRole('link', { name: 'API reference' })).toBeVisible()
+  await summary.click()
+  await summary.click()
+  await expect.poll(() => question.evaluate((element) => element.style.height)).toBe('')
+  await expect(question).toHaveAttribute('open', '')
+  await summary.focus()
+  await page.keyboard.press('Enter')
+  await expect(question).not.toHaveAttribute('open')
+  expect(await height()).toBe(collapsed)
+  await page.keyboard.press('Space')
+  await expect(question).toHaveAttribute('open', '')
+  await expect(summary).toBeFocused()
+  expect(await question.evaluate((element) => element.style.height)).toBe('')
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 375, height: 812 })
+  for (const item of await page.locator('.landing-questions details').all()) {
+    const trigger = item.locator('summary')
+    if (await item.getAttribute('open') !== null) await trigger.click()
+    await trigger.click()
+    await expect(item).toHaveAttribute('open', '')
+    expect(await item.evaluate((element) => element.style.height)).toBe('')
+  }
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(375)
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await summary.click()
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(question).not.toHaveAttribute('open')
+  await expect.poll(() => question.evaluate((element) => element.style.height)).toBe('')
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await summary.click()
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).click()
+  await expect(page.locator('h1')).toHaveText('Make music with code')
+  expect(errors).toEqual([])
+})
 
 test('Anime.js reveals lower sections once and responds to reduced motion without hiding content', async ({ page }) => {
   const errors: string[] = []

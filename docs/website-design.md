@@ -148,3 +148,16 @@ pointer jumps and pins the selected destination until arrival. Wheel, touch or
 navigation keys cancel the jump and restore manual scrollspy; keyboard and
 reduced-motion jumps are immediate. Active links keep the same font weight to
 avoid line-wrap changes. Footer, navigation and TOC do not receive scroll reveals.
+
+FAQ disclosures retain native `details`/`summary` semantics. Anime.js coordinates
+the answer fade, chevron rotation and a measured expansion (320ms opening,
+240ms closing, `out(3)`). This bounded accordion deliberately animates height so
+following questions move with the answer; it restores automatic height afterward
+for responsive text. Repeated clicks retarget from the current position. Keyboard
+and reduced-motion toggles are immediate; closing answers become inert until
+hidden. Timelines and preference listeners are cleaned up on unmount.
+
+FAQ validation: all three motion browser tests, the 40 site unit tests, lint,
+typecheck and production build passed. Browser coverage includes interrupted
+toggles, keyboard activation, live reduced-motion changes, route cleanup and an
+axe check with all answers open at 375px. Desktop/mobile renders were inspected.

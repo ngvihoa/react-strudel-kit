@@ -7,6 +7,7 @@ import houseSource from '../../content/examples/house?raw'
 import { sourceRegion } from '../../content/source'
 import logo from '../../assets/rsk-logo.png'
 import { CodeBlock, ParamSlider, Player } from '../components'
+import { Question } from '../Question'
 import { useLandingMotion } from '../useLandingMotion'
 import { href, ROUTES } from '../router'
 import './home.css'
@@ -87,10 +88,10 @@ export function HomePage() {
     <section className="landing-questions" aria-labelledby="questions-title">
       <h2 data-reveal id="questions-title">Before you press Play.</h2>
       <div data-reveal>
-        <details data-reveal-item><summary>How does this relate to Strudel?</summary><p><a href="https://strudel.cc">Strudel</a> supplies the pattern engine and audio scheduler. This kit adds typed composition helpers and a React playback hook. It does not replace the engine.</p></details>
-        <details data-reveal-item><summary>What do I need to use it?</summary><p>React 18 or later, an ESM-capable bundler, and a browser with Web Audio. Use <code>useStrudel</code> in a browser/client component. Audio starts when you press Play.</p></details>
-        <details data-reveal-item><summary>Can I use my own interface?</summary><p>Yes. Compose typed patterns, then connect <code>play</code>, <code>update</code> and <code>stop</code> to your own components. The <a href={href(ROUTES.api)}>API reference</a> explains the playback contract.</p></details>
-        <details data-reveal-item><summary>Is it open source?</summary><p>Yes, under AGPL-3.0-or-later. Read the <a href="https://github.com/ngvihoa/react-strudel-kit/blob/main/LICENSE">license</a> and <a href="https://strudel.cc/technical-manual/project-start/">Strudel’s integration guidance</a> for the terms.</p></details>
+        <Question title="How does this relate to Strudel?"><p><a href="https://strudel.cc">Strudel</a> supplies the pattern engine and audio scheduler. This kit adds typed composition helpers and a React playback hook. It does not replace the engine.</p></Question>
+        <Question title="What do I need to use it?"><p>React 18 or later, an ESM-capable bundler, and a browser with Web Audio. Use <code>useStrudel</code> in a browser/client component. Audio starts when you press Play.</p></Question>
+        <Question title="Can I use my own interface?"><p>Yes. Compose typed patterns, then connect <code>play</code>, <code>update</code> and <code>stop</code> to your own components. The <a href={href(ROUTES.api)}>API reference</a> explains the playback contract.</p></Question>
+        <Question title="Is it open source?"><p>Yes, under AGPL-3.0-or-later. Read the <a href="https://github.com/ngvihoa/react-strudel-kit/blob/main/LICENSE">license</a> and <a href="https://strudel.cc/technical-manual/project-start/">Strudel’s integration guidance</a> for the terms.</p></Question>
       </div>
     </section>
   </div>
