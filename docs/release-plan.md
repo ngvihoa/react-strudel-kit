@@ -78,6 +78,20 @@ Các lần phát hành sau có thể dùng npm trusted publishing qua GitHub Act
 Chưa cấu hình publish tự động; bản đầu dùng CLI và người dùng hoàn tất xác thực
 publish trong trình duyệt npm.
 
+## Bản vá README 0.1.1 — 2026-11-04
+
+- Người dùng chỉ ra hướng dẫn kiểm thử tarball nội bộ bị đưa vào README npm.
+  Đã chuyển hướng dẫn đó sang release guide này, rút gọn phần compatibility và
+  bỏ chi tiết môi trường kiểm thử khỏi README dành cho người cài package.
+- Npm yêu cầu publish version mới để cập nhật README; bản vá `0.1.1` được phát
+  hành từ commit `3f6cf8dcfd327511facb126848a1446c56ca6894`, tag `v0.1.1`.
+- [Hosted CI](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41838565274)
+  qua. Cài từ registry trên React 18/19 qua types, build và playback/cleanup.
+- Registry xác nhận `latest: 0.1.1`, integrity khớp tarball đã kiểm thử và README
+  không còn hướng dẫn release. Logo, website, GitHub và Issues giữ nguyên.
+- So sánh tarball với `0.1.0`: chỉ README, CHANGELOG và version trong package.json
+  thay đổi; runtime, production source, declarations, license và logo giống từng byte.
+
 ## Kết quả bản 0.1.0 — 2026-11-04
 
 - [npm package](https://www.npmjs.com/package/react-strudel-kit) và

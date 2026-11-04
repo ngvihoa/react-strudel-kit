@@ -265,3 +265,26 @@ rendered UI was not visually inspected. Registry metadata and README contents
 were verified directly, and the README's image/link targets were checked live.
 The immutable published package files were not changed after release; Git tag
 `v0.1.0` points at the source commit, with this record committed separately.
+
+## npm README patch — 2026-11-04
+
+Version `0.1.1` removes maintainer-only local tarball instructions from the npm
+README, moves them to the release guide and keeps the consumer requirements in a
+short Compatibility section. Detailed local test-environment notes remain in
+this validation document. The npm `description` field is unchanged; the reported
+text was part of the rendered package README.
+
+Source commit: `3f6cf8dcfd327511facb126848a1446c56ca6894`, Git tag `v0.1.1`.
+[Hosted CI passed](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41838565274).
+Both local tarball consumers and registry-installed consumers passed on React
+18.3.1 and 19.3.0, including strict declarations, README examples, production
+build and real browser playback/cleanup. Compared with 0.1.0, every runtime,
+source, declaration, license and logo file is byte-identical; only README,
+CHANGELOG and the package version differ.
+
+Registry checks confirmed `latest: 0.1.1`, the cleaned README and this integrity
+for the 48-file, 67,879-byte tarball:
+
+```text
+sha512-2CGdm9rhFkie59Ka23ELwuon1RKfGDZbPwnWb+6qwLH+x8FyQaKJibZhSQivSqR9AJ6VgH7gH8GiY1MhkRL5hQ==
+```

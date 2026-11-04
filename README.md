@@ -9,7 +9,7 @@ audio scheduler; this package provides typed composition and React integration.
 [API reference](https://react-strudel-kit.vercel.app/api)
 
 Published on npm as [react-strudel-kit](https://www.npmjs.com/package/react-strudel-kit),
-starting with **0.1.0**. Install it in an existing React application:
+currently **0.1.1**. Install it in an existing React application:
 
 ```bash
 npm install react-strudel-kit

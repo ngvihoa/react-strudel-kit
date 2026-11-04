@@ -12,7 +12,7 @@ into an existing React application:
 npm install react-strudel-kit
 ```
 
-Version 0.1.0 is available on npm. See the
+Version 0.1.1 is available on npm. See the
 [live lessons and examples](https://react-strudel-kit.vercel.app/) and
 [release verification](validation.md#npm-publication--2026-11-04).
 
