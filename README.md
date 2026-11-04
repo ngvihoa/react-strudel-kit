@@ -1,3 +1,5 @@
+<p><a href="https://react-strudel-kit.vercel.app/"><img src="./src/assets/rsk-logo.png" alt="React Strudel Kit" width="160" /></a></p>
+
 # React Strudel Kit
 
 **Write music in TypeScript. Play it with React.**
