@@ -17,14 +17,12 @@ import { BACKBEAT } from '../../content/examples/backbeat'
 import { FOUR_ON_THE_FLOOR, offBeatHats, offBeatHatsRepeat } from '../../content/examples/fourOnTheFloor'
 import { HI_HAT_ACCENTS } from '../../content/examples/hiHatAccents'
 import { twinkle, twinkleDetached } from '../../content/examples/simpleMelody'
-import { EXAMPLES_NAV } from '../navigation'
 import { ROUTES } from '../router'
 import { CodeBlock } from '../components'
 import { sourceRegion } from '../../content/source'
 import { ExampleArticle } from '../templates'
 import type { ExampleArticleConfig } from '../templates'
 
-const shared = { nav: EXAMPLES_NAV } as const
 const TONAL = { bass: { label: 'Bass', path: ROUTES.bass }, keys: { label: 'Keys', path: ROUTES.keys }, lead: { label: 'Lead', path: ROUTES.lead }, pad: { label: 'Pad', path: ROUTES.pad } } as const
 const DRUM_SOUNDS = [{ label: 'Kick', path: ROUTES.kick }, { label: 'Snare', path: ROUTES.snare }, { label: 'Hi-hat', path: ROUTES.hiHat }] as const
 
@@ -32,7 +30,6 @@ const DRUM_SOUNDS = [{ label: 'Kick', path: ROUTES.kick }, { label: 'Snare', pat
 const hatsNotation = (pattern: typeof offBeatHats) => toStrudelCode(pattern).match(/^s\("([^"]*)"\)/)?.[1] ?? ''
 
 const SIMPLE_MELODY: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.simpleMelody,
   crumbs: ['Examples', 'Basics'],
   title: 'A simple melody',
@@ -60,7 +57,6 @@ const SIMPLE_MELODY: ExampleArticleConfig = {
 }
 
 const FOUR_ON_THE_FLOOR_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.fourOnTheFloor,
   crumbs: ['Examples', 'Rhythm'],
   title: 'Four on the floor',
@@ -92,7 +88,6 @@ const FOUR_ON_THE_FLOOR_PAGE: ExampleArticleConfig = {
 }
 
 const BACKBEAT_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.backbeat,
   crumbs: ['Examples', 'Rhythm'],
   title: 'Backbeat',
@@ -120,7 +115,6 @@ const BACKBEAT_PAGE: ExampleArticleConfig = {
 }
 
 const HI_HAT_ACCENTS_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.hiHatAccents,
   crumbs: ['Examples', 'Rhythm'],
   title: 'Hi-hat accents',
@@ -150,7 +144,6 @@ const HI_HAT_ACCENTS_PAGE: ExampleArticleConfig = {
 }
 
 const BASS_LINE_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.bassLine,
   crumbs: ['Examples', 'Harmony'],
   title: 'Bass line',
@@ -179,7 +172,6 @@ const BASS_LINE_PAGE: ExampleArticleConfig = {
 }
 
 const CHORDS_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.chords,
   crumbs: ['Examples', 'Harmony'],
   title: 'Chords and arpeggios',
@@ -209,7 +201,6 @@ const CHORDS_PAGE: ExampleArticleConfig = {
 }
 
 const LAYER_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.layerASong,
   crumbs: ['Examples', 'Arrangement'],
   title: 'Layer a song',
@@ -237,7 +228,6 @@ const LAYER_PAGE: ExampleArticleConfig = {
 }
 
 const LOFI_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.lofi,
   crumbs: ['Examples', 'Styles'],
   title: 'Lo-fi loop',
@@ -273,7 +263,6 @@ const LOFI_PAGE: ExampleArticleConfig = {
 }
 
 const HOUSE_PAGE: ExampleArticleConfig = {
-  ...shared,
   path: ROUTES.house,
   crumbs: ['Examples', 'Styles'],
   title: 'House loop',

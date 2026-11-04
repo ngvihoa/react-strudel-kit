@@ -9,8 +9,7 @@ import { audibleParts, buildMix, createMixSettings } from '../../mixer'
 import type { TrackMix } from '../../mixer'
 import { sourceRegion, stripRegions } from '../../content/source'
 import { TrackControls } from '../../components/TrackControls'
-import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, SectionNav, Toc } from '../components'
-import { EXAMPLES_NAV } from '../navigation'
+import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, Toc } from '../components'
 import { ROUTES, href } from '../router'
 
 const code = (region: string) => sourceRegion(source, region)
@@ -65,7 +64,6 @@ export function DanceMonkeyPage() {
 
   return (
     <DocsLayout variant="example"
-      nav={<SectionNav groups={EXAMPLES_NAV} current={ROUTES.danceMonkey} label="Examples" />}
       header={<PageHeader crumbs={['Examples', 'Full songs']} title="Dance Monkey"
         intro="An eight-bar instrumental chorus in six parts. Mix it first, then read how each part is written."
         meta={['Advanced', DANCE_MONKEY.key, `${DANCE_MONKEY_BPM} BPM`, `${DANCE_MONKEY.bars} bars`]} />}

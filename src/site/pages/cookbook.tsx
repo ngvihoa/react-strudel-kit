@@ -10,12 +10,11 @@ import {
   bassAlone, bassGroove, keysAlone, keysGroove, leadAlone, leadGroove, padAlone, padGroove,
 } from '../../content/tonal'
 import type { BassSettings, KeysSettings, LeadSettings, PadSettings } from '../../content/tonal'
-import { COOKBOOK_NAV } from '../navigation'
 import { ROUTES, href } from '../router'
 import { SoundArticle } from '../templates'
 import type { SoundArticleConfig } from '../templates'
 
-const shared = { nav: COOKBOOK_NAV, crumbs: ['Sound Cookbook', 'Percussion'], source } as const
+const shared = { crumbs: ['Sound Cookbook', 'Percussion'], source } as const
 
 const KICK: SoundArticleConfig<KickSettings> = {
   ...shared,
@@ -106,7 +105,7 @@ const HI_HAT: SoundArticleConfig<HiHatSettings> = {
   next: { label: 'Bass', path: ROUTES.bass },
 }
 
-const tonal = { nav: COOKBOOK_NAV, crumbs: ['Sound Cookbook', 'Tonal'], source: tonalSource } as const
+const tonal = { crumbs: ['Sound Cookbook', 'Tonal'], source: tonalSource } as const
 
 const BASS: SoundArticleConfig<BassSettings> = {
   ...tonal,

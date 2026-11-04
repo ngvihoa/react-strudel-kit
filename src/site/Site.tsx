@@ -3,7 +3,11 @@ import type { ComponentType } from 'react'
 import { useStrudel } from 'react-strudel-kit/react'
 import App from '../App'
 import logo from '../assets/rsk-logo.png'
+import { DOCS_NAV } from './navigation'
+import { SectionNav } from './components'
 import { PlaybackProvider } from './PlaybackProvider'
+import { HomePage } from './pages/HomePage'
+import { DocsPage } from './pages/DocsPage'
 import { ApiPage } from './pages/ApiPage'
 import { BassPage, HiHatPage, KeysPage, KickPage, LeadPage, PadPage, SnarePage } from './pages/cookbook'
 import { DanceMonkeyPage } from './pages/DanceMonkeyPage'
@@ -20,16 +24,15 @@ import { ROUTES, followSiteLink, href, useRoute } from './router'
 import type { RoutePath } from './router'
 import './site.css'
 
-// Each header link opens the first page of its section and stays current on every page in it.
-const SECTIONS: readonly { label: string, path: RoutePath, prefix: string }[] = [
-  { label: 'Learn', path: ROUTES.firstSong, prefix: '/learn/' },
-  { label: 'Sound Cookbook', path: ROUTES.kick, prefix: '/cookbook/' },
-  { label: 'Examples', path: ROUTES.simpleMelody, prefix: '/examples/' },
-  { label: 'API', path: ROUTES.api, prefix: '/api' },
-  { label: 'Playground', path: ROUTES.playground, prefix: '/playground' },
+const SECTIONS: readonly { label: string, path: RoutePath }[] = [
+  { label: 'Home', path: ROUTES.home },
+  { label: 'Docs', path: ROUTES.docs },
+  { label: 'Playground', path: ROUTES.playground },
 ]
 
 const PAGES = {
+  [ROUTES.home]: HomePage,
+  [ROUTES.docs]: DocsPage,
   [ROUTES.firstSong]: LessonPage,
   [ROUTES.makeBeat]: MakeBeatPage,
   [ROUTES.addBass]: AddBassPage,
@@ -99,24 +102,27 @@ export function Site() {
 
   return (
     <PlaybackProvider>
-      <div className="site" onClick={followSiteLink}>
+      <div className={`site${route === ROUTES.home ? ' site-home' : ''}`} onClick={followSiteLink}>
         <a className="skip-link" href="#content" onClick={(event) => {
           // Move focus without adding a browser-history entry.
           event.preventDefault()
           content.current?.focus({ preventScroll: true })
           window.scrollTo(0, 0)
         }}>Skip to content</a>
-        <header className="site-header">
-          <a className="brand-logo" href={href(ROUTES.firstSong)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
+        <header className="site-header"><div className="site-header-inner">
+          <a className="brand-logo" href={href(ROUTES.home)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
           <nav className="site-nav" aria-label="Sections" ref={nav}>
-            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-label={section.label} aria-current={route.startsWith(section.prefix) ? 'page' : undefined}>{section.label.startsWith('Sound ') ? <><span className="nav-long">Sound </span>{section.label.slice(6)}</> : section.label}</a>)}
+            {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-label={section.label} aria-current={(section.path === ROUTES.docs ? route !== ROUTES.home && route !== ROUTES.playground : route === section.path) ? 'page' : undefined}>{section.label}</a>)}
             {bar && <span className="site-nav-bar" aria-hidden="true" style={{ transform: `translateX(${bar.left}px)`, width: bar.width }} />}
           </nav>
-        </header>
+        </div></header>
         <main id="content" ref={content} tabIndex={-1} className={route === ROUTES.playground ? 'site-main site-main-playground' : 'site-main'}>
-          <Page key={route} />
+          {route === ROUTES.home || route === ROUTES.playground ? <Page key={route} /> : <div className="docs">
+            <div className="docs-nav"><SectionNav groups={DOCS_NAV} current={route} label="Documentation" /></div>
+            <Page key={route} />
+          </div>}
         </main>
-        <footer className="site-footer"><span>Made to be played with.</span><span>Audio stays in your browser.</span></footer>
+        <footer className="site-footer"><span>Made to be played with.</span><nav aria-label="Project links"><a href="https://github.com/ngvihoa/react-strudel-kit">GitHub</a><a href="https://www.npmjs.com/package/react-strudel-kit">npm</a><a href="https://strudel.cc">Strudel</a></nav><span>Audio stays in your browser.</span></footer>
       </div>
     </PlaybackProvider>
   )

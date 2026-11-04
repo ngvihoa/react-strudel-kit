@@ -9,11 +9,11 @@ selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
 The suite covers:
 
-- All 25 routes at 375, 768 and 1440px, with no page-level horizontal overflow
+- All 27 routes at 375, 768, 1440 and 1920px, with no page-level horizontal overflow
   or links to unknown routes. Desktop and mobile Learn/Cookbook screenshots are
   saved under the ignored `test-results/` directory for visual review.
 - Automated axe accessibility checks on every route at 375 and 1440px, plus the
-  playing state of the Kick player. Skip navigation moves keyboard focus without
+  playing state of the Kick and landing players, including the landing copy feedback. Skip navigation moves keyboard focus without
   changing the hash; mobile navigation disclosures work by keyboard.
 - Play/Stop for every site player against real Strudel and Web Audio, player
   ownership, keyboard sliders, live changes, and no autoplay while stopped.
@@ -31,6 +31,26 @@ pattern evaluation and lifecycle behavior; they cannot establish audible quality
 The 2026-11-02 audit passed 19 Vitest files / 164 tests and 31 Playwright tests, with
 lint, typecheck and production build passing. Learn/Cookbook screenshots were
 also visually reviewed at 375, 768 and 1440px.
+
+## Landing page and unified Docs — 2026-11-04
+
+- Root README now focuses on installing and using the package; repository setup,
+  development and testing live in `docs/development.md`, linked from `AGENTS.md`.
+- `/` is a landing page with a real, source-backed four-note demo. `/docs` collects
+  the lessons, sound recipes, examples and API under a persistent shared sidebar.
+  Existing article URLs, direct reloads and legacy hash bookmarks remain supported.
+- Header content, main content and footer are bounded at 1280px. Keyboard mobile
+  navigation and all route layouts passed at 375, 768, 1440 and 1920px.
+- 20 Vitest files / 189 tests passed; lint, typecheck and production build passed.
+  The full Chromium suite passed all 47 tests. After the final landing hover and
+  clipboard-label corrections, its targeted browser test passed again, including
+  axe checks during playback and after copying the install command.
+- Landing screenshots were visually reviewed at 1440, 768, 390 and 375px. Design
+  inspection passed with zero failures; retained warnings concern restrained motion
+  and absence of video. See `website-design.md` for direction, review and provenance.
+- npm pack dry-run inspected 48 files for `react-strudel-kit@0.1.1`: no internal
+  docs, tests, agent instructions, development scripts or landing screenshots.
+  This website work does not create a new npm release.
 
 ## Initial JavaScript load
 

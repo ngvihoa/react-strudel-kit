@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { PatternExpression } from 'react-strudel-kit'
 import { sourceRegion } from '../content/source'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, SectionNav, Toc } from './components'
-import type { NavGroup } from './components'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, Toc } from './components'
 import { href } from './router'
 import type { RoutePath } from './router'
 
@@ -26,7 +25,6 @@ type Control<S> = { key: keyof S & string, label: string, unit: string, min: num
 
 export type SoundArticleConfig<S extends Record<string, number>> = {
   path: RoutePath
-  nav: readonly NavGroup[]
   crumbs: readonly string[]
   title: string
   intro: ReactNode
@@ -53,7 +51,6 @@ export function SoundArticle<S extends Record<string, number>>({ config }: { con
 
   return (
     <DocsLayout variant="cookbook"
-      nav={<SectionNav groups={config.nav} current={config.path} label="Sounds" />}
       header={<PageHeader crumbs={config.crumbs} title={config.title} intro={config.intro} meta={config.meta} />}
       asideLabel="Listen"
       aside={<Player id={`${config.path}-alone`} title={config.alone.title} pattern={alone} caption={config.alone.caption} headingLevel={2}>
@@ -102,7 +99,6 @@ export type ExampleSection = {
 
 export type ExampleArticleConfig = {
   path: RoutePath
-  nav: readonly NavGroup[]
   crumbs: readonly string[]
   title: string
   intro: ReactNode
@@ -122,7 +118,6 @@ export function ExampleArticle({ config }: { config: ExampleArticleConfig }) {
   const toc = config.sections.map((section) => ({ id: section.id, label: section.title }))
   return (
     <DocsLayout variant="example"
-      nav={<SectionNav groups={config.nav} current={config.path} label="Examples" />}
       header={<PageHeader crumbs={config.crumbs} title={config.title} intro={config.intro} meta={config.meta}
         learn={[config.goal]} />}
       asideLabel="About this example"

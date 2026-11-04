@@ -3,6 +3,8 @@ import type { MouseEvent } from 'react'
 
 // History routes use the host's SPA fallback for direct visits and reloads.
 export const ROUTES = {
+  home: '/',
+  docs: '/docs',
   firstSong: '/learn/first-song',
   makeBeat: '/learn/make-a-beat',
   addBass: '/learn/add-a-bass-line',
@@ -44,8 +46,8 @@ export const migrateLegacyRoute = () => {
 }
 
 const readRoute = (): RoutePath => {
-  const path = window.location.pathname.replace(/\/+$/, '')
-  return KNOWN.has(path) ? path as RoutePath : ROUTES.playground
+  const path = window.location.pathname.replace(/\/+$/, '') || '/'
+  return KNOWN.has(path) ? path as RoutePath : ROUTES.home
 }
 
 const subscribe = (onChange: () => void) => {
@@ -57,7 +59,7 @@ const subscribe = (onChange: () => void) => {
   }
 }
 
-export const useRoute = () => useSyncExternalStore(subscribe, readRoute, () => ROUTES.playground)
+export const useRoute = () => useSyncExternalStore(subscribe, readRoute, () => ROUTES.home)
 
 export const href = (path: RoutePath) => path
 

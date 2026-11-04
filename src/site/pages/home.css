@@ -1,0 +1,125 @@
+.landing { padding: 64px 24px 24px; color: var(--ink); }
+.landing h1, .landing h2, .landing h3, .landing p { margin: 0; }
+.landing-hero { display: grid; grid-template-columns: 1.05fr 1fr; align-items: center; gap: 48px; padding-bottom: 80px; }
+.landing h1 { font-size: clamp(64px, 7.4vw, 96px); font-weight: 600; line-height: 1.04; letter-spacing: -.065em; }
+.landing-intro > p { max-width: 420px; margin-top: 28px; font-size: 20px; line-height: 1.65; }
+.landing-action { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 52px; margin-top: 32px; padding: 14px 20px; color: white; background: var(--brand); border-radius: 4px; font-weight: 600; text-decoration: none; }
+.landing-action:hover { background: var(--brand-strong); }
+.landing-text-link { display: block; width: fit-content; margin-top: 20px; padding-block: 8px; color: var(--ink); text-underline-offset: 6px; }
+.landing-text-link span, .landing-action span { display: inline-block; margin-left: 8px; }
+.landing-instrument { min-width: 0; padding: 26px; background: var(--brand); border-radius: 4px; }
+.landing-instrument .player { margin: 0; padding: 0; background: transparent; border: 0; border-radius: 0; box-shadow: none; } /* taste-skill-ignore: remove the existing player shadow inside the live interface. */
+.landing-instrument .player-head { flex-wrap: wrap; }
+.landing-instrument .player-title h2 { color: white; font-size: 22px; font-weight: 500; }
+.landing-instrument .player-title p { max-width: 300px; margin-top: 8px; color: white; font-size: 14px; }
+.landing-instrument .player .player-state { color: white; }
+.landing-instrument .status-dot { background: currentColor; }
+.landing-instrument .player-buttons { margin-top: 20px; }
+.landing-instrument .play-button, .landing-instrument .stop-button { min-height: 44px; color: var(--ink); background: white; border: 0; border-radius: 4px; }
+.landing-instrument .player-controls { display: flex; flex-direction: column; border: 0; padding: 0; margin-top: 24px; gap: 24px; }
+.landing-notes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: 8px; }
+.landing-notes button { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-start; min-height: 172px; padding: 14px; color: var(--ink); background: #c9bfff; border: 0; border-radius: 4px; font-size: 18px; font-weight: 500; }
+.landing-notes button:nth-child(2) { min-height: 192px; }
+.landing-notes button:nth-child(3) { min-height: 212px; }
+.landing-notes button:nth-child(4) { min-height: 232px; }
+.landing-notes button[aria-pressed="true"] { background: var(--brand-strong); color: white; }
+.note-slot { font-size: 24px; }
+.landing-sound-controls { display: grid; grid-template-columns: 1fr 1.3fr; align-items: start; gap: 24px; }
+.landing-sound-controls .param label, .landing-sound-controls .param-select label, .landing-sound-controls .param output, .landing-sound-controls .range-limits { color: white; }
+.landing-sound-controls select { width: 100%; background: white; color: var(--ink); }
+.landing-sound-controls input[type="range"] { accent-color: white; }
+.landing-instrument :focus-visible { outline-color: white; }
+.landing-output { margin: 24px 0 0; padding: 16px; overflow-x: auto; color: white; background: var(--brand-strong); border-radius: 4px; font: 13px/1.7 var(--mono); }
+.landing-compose { display: grid; grid-template-columns: .8fr 1fr; gap: 96px; align-items: center; padding: 64px 48px; background: var(--panel); border-radius: 4px; }
+.landing h2 { font-size: clamp(32px, 3.2vw, 44px); line-height: 1.15; letter-spacing: -.04em; font-weight: 600; }
+.landing-compose p { margin-top: 24px; font-size: 17px; line-height: 1.75; }
+.landing-compose > div { min-width: 0; }
+.landing-compose .code-block { margin: 0; border-radius: 4px; }
+.landing-discover { margin-block: 120px; }
+.landing-discover > header { display: flex; align-items: end; justify-content: space-between; gap: 32px; margin-bottom: 48px; }
+.landing-discover > header p { max-width: 310px; font-size: 17px; line-height: 1.65; }
+.landing-explorer { display: grid; grid-template-columns: .9fr 1fr; gap: 64px; }
+.landing-explore-links { display: grid; gap: 12px; }
+.landing-explore-links > a { display: block; padding: 20px 24px; color: var(--ink); text-decoration: none; border-radius: 4px; }
+.landing-explore-links > a.is-preview, .landing-explore-links > a:hover, .landing-explore-links > a:focus-visible { background: var(--brand-tint); }
+.landing-explore-links h3 { display: flex; justify-content: space-between; font-size: 24px; line-height: 1.2; letter-spacing: -.025em; font-weight: 500; }
+.landing-explore-links p { margin-top: 12px; max-width: 350px; font-size: 16px; line-height: 1.6; }
+.landing-preview { position: relative; display: grid; place-items: center; min-width: 0; overflow: hidden; background: var(--brand-tint); border-radius: 4px; }
+.landing-preview img { grid-area: 1 / 1; width: calc(100% - 48px); height: auto; opacity: 0; }
+.landing-preview img.is-selected { opacity: 1; }
+.landing-mobile-preview { display: none; }
+.landing-close { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 64px; padding: 56px 48px; background: var(--brand); color: white; border-radius: 4px; }
+.landing-close h2 { font-size: clamp(36px, 4vw, 52px); }
+.landing-close p { font-size: 17px; line-height: 1.6; }
+.landing-close a { display: inline-block; padding-block: 12px; margin-top: 12px; color: white; text-underline-offset: 5px; }
+.landing-install { position: relative; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 16px; margin-block: 24px; color: var(--ink); background: white; border-radius: 4px; }
+.landing-install code { font: 13px/1.6 var(--mono); overflow-wrap: anywhere; }
+.landing-install button { min-height: 44px; padding: 8px; background: var(--panel); border: 0; border-radius: 4px; color: var(--ink); }
+.install-feedback { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.landing-close .landing-compatibility { font-size: 14px; }
+@media (max-width: 1000px) {
+  .landing-hero { gap: 28px; }
+  .landing h1 { font-size: 68px; }
+  .landing-instrument { padding: 20px; }
+  .landing-sound-controls { gap: 16px; grid-template-columns: 1fr; }
+  .landing-compose { gap: 32px; padding: 40px 24px; }
+  .landing-explorer { gap: 32px; }
+  .landing-close { padding: 40px 24px; gap: 32px; }
+}
+@media (max-width: 700px) {
+  .landing { padding: 40px 16px 16px; }
+  .landing-hero { grid-template-columns: 1fr; gap: 40px; padding-bottom: 64px; }
+  .landing h1 { font-size: clamp(52px, 13.5vw, 76px); }
+  .landing-intro > p { font-size: 18px; margin-top: 24px; }
+  .landing-instrument { padding: 20px 16px; }
+  .landing-instrument .player-title h2 { font-size: 20px; }
+  .landing-notes button { padding: 12px; min-height: 104px; font-size: 16px; }
+  .landing-notes button:nth-child(2) { min-height: 124px; }
+  .landing-notes button:nth-child(3) { min-height: 144px; }
+  .landing-notes button:nth-child(4) { min-height: 164px; }
+  .landing-sound-controls { grid-template-columns: 1fr; gap: 20px; }
+  .landing-compose { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; }
+  .landing-compose .code-block { margin-inline: -20px; border-radius: 0; }
+  .landing h2 { font-size: 32px; }
+  .landing-discover { margin-block: 80px; }
+  .landing-discover > header { display: block; margin-bottom: 32px; }
+  .landing-discover > header p { max-width: none; margin-top: 20px; }
+  .landing-explorer { display: block; }
+  .landing-explore-links { gap: 24px; }
+  .landing-explore-links > a { padding: 24px 20px; }
+  .landing-explore-links h3 { font-size: 24px; }
+  .landing-mobile-preview { display: block; width: 100%; height: auto; margin-top: 24px; border-radius: 4px; }
+  .landing-preview { display: none; }
+  .landing-close { grid-template-columns: 1fr; gap: 32px; padding: 32px 20px; }
+  .landing-close h2 { font-size: 36px; }
+  .landing-install { padding: 8px 12px; gap: 8px; }
+}
+
+.landing-sound-controls .range-control .range-limits, .landing-sound-controls .range-control output span { color: white; }
+.landing-sound-controls .range-control output, .landing-compose .code-toolbar { font-family: 'Be Vietnam Pro', sans-serif; }
+.landing-output code { font: inherit; }
+@media (max-width: 700px) { .landing-explore-links > a { background: var(--panel); } }
+
+/* First-visit orientation and pointer feedback; keyboard changes stay immediate. */
+@media (prefers-reduced-motion: no-preference) {
+  .landing-intro > * { animation: landing-arrive 500ms cubic-bezier(.22, 1, .36, 1) both; }
+  .landing-intro > p { animation-delay: 60ms; }
+  .landing-intro > .landing-action { animation-delay: 120ms; }
+  .landing-intro > .landing-text-link { animation-delay: 180ms; }
+  .landing-notes button { transform-origin: bottom; animation: landing-notes-in 420ms cubic-bezier(.33, 1, .68, 1) both; }
+  .landing-notes button:nth-child(2) { animation-delay: 50ms; }
+  .landing-notes button:nth-child(3) { animation-delay: 100ms; }
+  .landing-notes button:nth-child(4) { animation-delay: 150ms; }
+  .landing-preview img { transition: opacity 200ms cubic-bezier(.22, 1, .36, 1); }
+  .landing-explorer:focus-within .landing-preview img { transition: none; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .landing-action, .landing-text-link span { transition: transform 140ms cubic-bezier(.22, 1, .36, 1); }
+  .landing-action:active:not(:focus-visible) { transform: translateY(2px); }
+  .landing-text-link:hover span { transform: translateX(4px); }
+}
+@keyframes landing-arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes landing-notes-in { from { opacity: 0; transform: scaleY(.96); } to { opacity: 1; transform: none; } }
+
+.landing .code-block pre code { font: inherit; }
+.landing-instrument .play-button:hover:not(:disabled), .landing-instrument .stop-button:hover:not(:disabled) { color: var(--ink); background: var(--brand-tint); }

@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { toStrudelCode } from 'react-strudel-kit'
 import type { PatternExpression } from 'react-strudel-kit'
@@ -137,6 +137,19 @@ export type NavGroup = { title: string, items: readonly { label: string, path?: 
 
 /** Section navigation. Planned pages are listed without links so nothing unbuilt looks available. */
 export function SectionNav({ groups, current, label }: { groups: readonly NavGroup[], current: RoutePath, label: string }) {
+  const disclosure = useRef<HTMLDetailsElement>(null)
+  const wideNav = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    disclosure.current?.removeAttribute('open')
+    const wide = wideNav.current
+    const active = wide?.querySelector<HTMLElement>('[aria-current="page"]')
+    const sidebar = wide?.closest<HTMLElement>('.docs-nav')
+    if (!wide?.clientHeight || !active || !sidebar) return
+    const item = active.getBoundingClientRect()
+    const bounds = sidebar.getBoundingClientRect()
+    // Keep direct visits and Pager navigation visible without scrolling the article.
+    if (item.top < bounds.top || item.bottom > bounds.bottom) sidebar.scrollTop += item.top - bounds.top - 32
+  }, [current])
   const list = groups.map((group) => (
     <div className="section-nav-group" key={group.title}>
       <p>{group.title}</p>
@@ -149,9 +162,13 @@ export function SectionNav({ groups, current, label }: { groups: readonly NavGro
     </div>
   ))
   return (
-    <nav className="section-nav" aria-label={label}>
-      <div className="section-nav-wide">{list}</div>
-      <details className="section-nav-narrow">
+    <nav className="section-nav" aria-label={label} onClick={(event) => {
+      if (event.target instanceof Element && event.target.closest('a')) {
+        event.currentTarget.querySelector('details')?.removeAttribute('open')
+      }
+    }}>
+      <div className="section-nav-wide" ref={wideNav}>{list}</div>
+      <details className="section-nav-narrow" ref={disclosure}>
         <summary>{label}</summary>
         {list}
       </details>
@@ -160,7 +177,6 @@ export function SectionNav({ groups, current, label }: { groups: readonly NavGro
 }
 
 type DocsLayoutProps = {
-  nav: ReactNode
   header: ReactNode
   aside?: ReactNode
   asideLabel?: string
@@ -169,10 +185,9 @@ type DocsLayoutProps = {
 }
 
 /** Sidebar | content · aside. On narrow screens the aside follows the header (lesson: hidden; example: after the body). */
-export function DocsLayout({ nav, header, aside, asideLabel, children, variant }: DocsLayoutProps) {
+export function DocsLayout({ header, aside, asideLabel, children, variant }: DocsLayoutProps) {
   return (
-    <div className={`docs docs-${variant}`}>
-      <div className="docs-nav">{nav}</div>
+    <div className={`docs-page docs-${variant}`}>
       <div className={`docs-main${aside ? ' docs-has-aside' : ''}`}>
         <header className="docs-header">{header}</header>
         {aside && <aside className="docs-aside" aria-label={asideLabel}>{aside}</aside>}

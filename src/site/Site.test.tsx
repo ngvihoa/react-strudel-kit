@@ -21,19 +21,46 @@ describe('learning site template', () => {
   beforeEach(() => { vi.clearAllMocks(); window.history.replaceState(null, '', '/'); vi.spyOn(window, 'scrollTo').mockImplementation(() => {}) })
   afterEach(() => { vi.restoreAllMocks() })
 
-  it('opens the playground by default and links every section', () => {
+  it('opens the landing page by default and links the shared Docs area', () => {
     render(<Site />)
-    expect(screen.getByRole('heading', { name: 'Dance Monkey' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Turn code into music.' })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Sections' })
-    expect(within(nav).getByRole('link', { name: 'Playground' })).toHaveAttribute('aria-current', 'page')
-    for (const name of ['Learn', 'Sound Cookbook', 'Examples']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
+    expect(within(nav).getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
+    for (const name of ['Docs', 'Playground']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
+  })
+
+  it('keeps all documentation categories reachable from the same sidebar', () => {
+    go('/docs')
+    render(<Site />)
+    const nav = screen.getByRole('navigation', { name: 'Documentation' })
+    for (const [label, path] of [['Your first song', '/learn/first-song'], ['Keys', '/cookbook/keys'], ['Lo-fi loop', '/examples/lofi-loop'], ['API reference', '/api']]) {
+      fireEvent.click(within(nav).getAllByRole('link', { name: new RegExp('^' + label) })[0])
+      expect(window.location.pathname).toBe(path)
+      expect(screen.getByRole('navigation', { name: 'Documentation' })).toBe(nav)
+      expect(within(nav).getAllByRole('link', { name: new RegExp('^' + label) })[0]).toHaveAttribute('aria-current', 'page')
+    }
+  })
+
+  it('changes the landing melody without autoplay and updates the running pattern', async () => {
+    render(<Site />)
+    const demo = player('Four notes. Your sound.')
+    fireEvent.click(within(demo).getByRole('button', { name: /^Mute E4 / }))
+    fireEvent.change(within(demo).getByRole('combobox', { name: 'Sound' }), { target: { value: 'sine' } })
+    expect(evaluate).not.toHaveBeenCalled()
+    expect(document.querySelector('.landing-output')).toHaveTextContent('note("c4 ~ g4 b4").s("sine")')
+    fireEvent.click(within(demo).getByRole('button', { name: 'Play Four notes. Your sound.' }))
+    await waitFor(() => expect(within(demo).getByText('Playing')).toBeInTheDocument())
+    fireEvent.change(within(demo).getByRole('slider', { name: /Tempo/ }), { target: { value: 100 } })
+    await waitFor(() => expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('cpm(25)'), false))
+    fireEvent.click(screen.getByRole('link', { name: 'Start making music' }))
+    expect(document.querySelector('.player-playing')).toBeNull()
   })
 
   it('links all five completed lessons', () => {
     go('/learn/first-song')
     render(<Site />)
     expect(screen.getByRole('heading', { level: 1, name: 'Your first song' })).toBeInTheDocument()
-    const lessons = screen.getAllByRole('navigation', { name: 'Lessons' })[0]
+    const lessons = screen.getAllByRole('navigation', { name: 'Documentation' })[0]
     expect(within(lessons).getAllByRole('link', { name: /Your first song/ })[0]).toHaveAttribute('aria-current', 'page')
     for (const title of ['Make a beat', 'Add a bass line', 'Layer the parts', 'Control it with React']) {
       expect(within(lessons).getAllByRole('link', { name: title }).length).toBeGreaterThan(0)
@@ -167,11 +194,11 @@ describe('Cookbook and examples', () => {
     ['/examples/layer-a-song', 'Layer a song', 'Examples'],
     ['/examples/lofi-loop', 'Lo-fi loop', 'Examples'],
     ['/examples/house-loop', 'House loop', 'Examples'],
-  ])('%s renders with its section current and every code block cut from source', (path, title, section) => {
+  ])('%s renders with its section current and every code block cut from source', (path, title) => {
     go(path)
     render(<Site />)
     expect(screen.getByRole('heading', { level: 1, name: title })).toBeInTheDocument()
-    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: section })).toHaveAttribute('aria-current', 'page')
+    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'Docs' })).toHaveAttribute('aria-current', 'page')
     for (const pre of document.querySelectorAll('pre')) expect(pre.textContent).not.toMatch(/#(region|endregion)/)
     expect(screen.getAllByRole('region', { name: / player$/ }).length).toBeGreaterThan(1)
   })
@@ -179,7 +206,7 @@ describe('Cookbook and examples', () => {
   it('links a Cookbook sound to the examples that use it, and back', () => {
     go('/cookbook/snare')
     render(<Site />)
-    expect(screen.getByText(/^Used in:/)).toContainElement(screen.getByRole('link', { name: 'Backbeat' }))
+    expect(within(screen.getByText(/^Used in:/)).getByRole('link', { name: 'Backbeat' })).toBeInTheDocument()
     go('/examples/backbeat')
     const sounds = screen.getByText('Sounds used').parentElement as HTMLElement
     expect(within(sounds).getByRole('link', { name: 'Snare' })).toHaveAttribute('href', '/cookbook/snare')
@@ -216,7 +243,7 @@ describe('React example and API reference', () => {
     const { functionRegistry } = await import('react-strudel-kit')
     go('/api')
     render(<Site />)
-    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'API' })).toHaveAttribute('aria-current', 'page')
+    expect(within(screen.getByRole('navigation', { name: 'Sections' })).getByRole('link', { name: 'Docs' })).toHaveAttribute('aria-current', 'page')
     for (const name of Object.keys(functionRegistry)) expect(document.getElementById(`fn-${name}`)).not.toBeNull()
     const velocity = document.getElementById('fn-velocity') as HTMLElement
     expect(within(velocity).getByRole('link', { name: 'Hi-hat accents' })).toHaveAttribute('href', '/examples/hi-hat-accents')

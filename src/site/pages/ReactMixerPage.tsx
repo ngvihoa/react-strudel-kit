@@ -1,8 +1,7 @@
 import source from '../../content/examples/ReactMixer.tsx?raw'
 import { ReactMixer } from '../../content/examples/ReactMixer'
 import { sourceRegion, stripRegions } from '../../content/source'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, SectionNav, Toc } from '../components'
-import { EXAMPLES_NAV } from '../navigation'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, Toc } from '../components'
 import { ROUTES, href } from '../router'
 
 const TOC = [
@@ -16,7 +15,6 @@ const TOC = [
 export function ReactMixerPage() {
   return (
     <DocsLayout variant="example"
-      nav={<SectionNav groups={EXAMPLES_NAV} current={ROUTES.reactMixer} label="Examples" />}
       header={<PageHeader crumbs={['Examples', 'React']} title="Control it with React"
         intro="A small React component that plays the Layer a song example and lets you change tempo and mute parts while it runs."
         meta={['Intermediate', 'useStrudel', 'play · update · stop']}

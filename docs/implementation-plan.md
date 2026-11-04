@@ -2,6 +2,17 @@
 
 > **Kế hoạch tiếp theo được ghi ở phần cập nhật bên dưới.** Các mục từ “Tên tạm” trở đi là tài liệu thiết kế ban đầu, giữ để tham khảo và không phản ánh đầy đủ trạng thái triển khai hiện tại. Xem [usage guide](usage.md) và [README](../README.md) để dùng API đang được hỗ trợ.
 
+## Cập nhật 2026-11-04: README, landing page và Docs chung
+
+- [x] README dành cho người dùng package; hướng dẫn phát triển chuyển sang
+  [development guide](development.md), có tham chiếu từ `AGENTS.md`.
+- [x] Giới hạn shell của website ở 1280px.
+- [x] Trang `/` là landing page với demo nhạc tương tác; Playground ở `/playground`.
+- [x] Learn, Sound Cookbook, Examples và API dùng chung sidebar trong khu Docs;
+  `/docs` là điểm bắt đầu, các URL bài cũ được giữ nguyên.
+- [x] Xác minh browser, bàn phím, audio lifecycle, accessibility và responsive;
+  xem [validation](validation.md) và [ghi chú thiết kế](website-design.md).
+
 ## Cập nhật 2026-10-20: Trang hướng dẫn, examples và Sound Cookbook
 
 ### Mục tiêu và phạm vi

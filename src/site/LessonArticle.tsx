@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { PatternExpression } from 'react-strudel-kit'
 import { sourceRegion } from '../content/source'
-import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, SectionNav, Toc } from './components'
-import { LEARN_NAV } from './navigation'
+import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, Toc } from './components'
 import type { RoutePath } from './router'
 
 export type LessonStep = {
@@ -61,7 +60,6 @@ export function LessonArticle({ path, title, intro, lesson, learn, steps, practi
   const toc = [...steps.map(({ id, title: label }) => ({ id, label })),
     ...(practice ? [{ id: 'make-it-yours', label: 'Make it yours' }] : []), { id: 'recap', label: 'Recap' }]
   return <DocsLayout variant="lesson"
-    nav={<SectionNav groups={LEARN_NAV} current={path} label="Lessons" />}
     header={<PageHeader crumbs={['Learn', `Lesson ${lesson}`]} title={title} intro={intro} meta={[`Lesson ${lesson}`, '100 BPM']} learn={learn} />}
     asideLabel="On this page" aside={<Toc items={toc} />}>
     {steps.map((step, index) => <section className="lesson-step" id={step.id} key={step.id} aria-labelledby={`${step.id}-title`}>

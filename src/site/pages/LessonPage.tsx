@@ -5,8 +5,7 @@ import { FIRST_SONG_STEPS, TUNE_DEFAULTS, myTune } from '../../content/firstSong
 import type { TuneSettings, TuneSlot } from '../../content/firstSong'
 import { sourceRegion } from '../../content/source'
 import { WAVEFORMS } from '../../mixer'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSelect, ParamSlider, Player, SectionNav, Toc } from '../components'
-import { LEARN_NAV } from '../navigation'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSelect, ParamSlider, Player, Toc } from '../components'
 import { ROUTES, href } from '../router'
 
 const code = (region: string) => sourceRegion(source, region)
@@ -99,7 +98,6 @@ function MakeItYours() {
 export function LessonPage() {
   return (
     <DocsLayout variant="lesson"
-      nav={<SectionNav groups={LEARN_NAV} current={ROUTES.firstSong} label="Lessons" />}
       header={<PageHeader crumbs={['Learn', 'Getting started']} title="Your first song"
         intro="Play a note, line up a few more, shape their rhythm and set the tempo. Every example on this page is the code that plays."
         meta={['Lesson 1', '10 minutes']}

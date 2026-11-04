@@ -15,7 +15,7 @@ const click = (attributes: Record<string, string | undefined>, modifiers = {}) =
 
 it('uses path URLs and updates mounted consumers through browser history', () => {
   const { result } = renderHook(useRoute)
-  expect(result.current).toBe(ROUTES.playground)
+  expect(result.current).toBe(ROUTES.home)
   const event = click({ href: href(ROUTES.lofi) })
   expect(event.preventDefault).toHaveBeenCalledOnce()
   expect(window.location.pathname).toBe(ROUTES.lofi)

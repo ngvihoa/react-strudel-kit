@@ -5,6 +5,8 @@ import { ROUTES } from '../src/site/router'
 
 const routes = Object.values(ROUTES)
 const titles: Record<string, string> = {
+  [ROUTES.home]: 'Turn code into music.',
+  [ROUTES.docs]: 'Make music with code',
   [ROUTES.firstSong]: 'Your first song',
   [ROUTES.makeBeat]: 'Make a beat',
   [ROUTES.addBass]: 'Add a bass line',
@@ -24,7 +26,7 @@ const go = async (page: Page, route: string) => {
   await page.evaluate((path) => { window.history.pushState(null, '', path); window.dispatchEvent(new PopStateEvent('popstate')) }, route)
   await expect(page.locator('h1')).toHaveText(titles[route])
   await expect(page.getByRole('navigation', { name: 'Sections', exact: true }).locator('[aria-current="page"]')).toHaveAttribute('href',
-    `${route.startsWith('/learn/') ? ROUTES.firstSong : route.startsWith('/cookbook/') ? ROUTES.kick : route.startsWith('/examples/') ? ROUTES.simpleMelody : route}`)
+    route === ROUTES.home || route === ROUTES.playground ? route : ROUTES.docs)
 }
 
 test.beforeEach(async ({ page }) => {
@@ -52,6 +54,36 @@ test('every nested route supports a direct visit and a document reload', async (
   }
 })
 
+test('landing demo changes live, copies install command and stops on Docs navigation', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await go(page, ROUTES.home)
+  expect(await page.locator('.landing-notes button').first().evaluate((element) => getComputedStyle(element).animationName)).toBe('none')
+  const demo = page.getByRole('region', { name: 'Four notes. Your sound. player' })
+  await demo.getByRole('button', { name: /^Mute E4 / }).click()
+  await demo.getByRole('combobox', { name: 'Sound' }).selectOption('sine')
+  await expect(demo.locator('.player-state')).toHaveText('Ready')
+  await expect(page.locator('.landing-output')).toContainText('note("c4 ~ g4 b4").s("sine")')
+  await demo.getByRole('button', { name: /^Play / }).click()
+  await expect(demo.locator('.player-state')).toHaveText('Playing')
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await demo.getByRole('slider', { name: /Tempo/ }).focus()
+  await page.keyboard.press('ArrowRight')
+  await expect(page.locator('.landing-output')).toContainText('cpm(30.25)')
+  await expect(demo.locator('.player-state')).toHaveText('Playing')
+  await demo.getByRole('button', { name: /^Stop / }).click()
+  await expect(demo.locator('.player-state')).toHaveText('Ready')
+  await page.getByRole('button', { name: 'Copy install command' }).click()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('npm install react-strudel-kit')
+  await expect(page.getByRole('button', { name: 'Copied install command' })).toBeVisible()
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
+  await demo.getByRole('button', { name: /^Play / }).click()
+  await expect(demo.locator('.player-state')).toHaveText('Playing')
+  await page.getByRole('link', { name: 'Start making music' }).click()
+  await expect(page.locator('h1')).toHaveText('Your first song')
+  await expect(page.locator('.player-playing')).toHaveCount(0)
+})
+
 test('old hash bookmarks become clean URLs and survive reload', async ({ page }) => {
   await page.goto('/?source=bookmark#/examples/lofi-loop')
   await expect(page).toHaveURL(/\/examples\/lofi-loop\?source=bookmark$/)
@@ -64,22 +96,23 @@ test('Back and Forward retain the page and stop its playback', async ({ page }) 
   await page.goto(ROUTES.lofi)
   await page.getByRole('button', { name: 'Play Jazzy chords', exact: true }).click()
   await expect(page.locator('.player-playing')).toHaveCount(1)
-  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).click()
-  await expect(page.locator('h1')).toHaveText('Kick')
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).click()
+  await expect(page.locator('h1')).toHaveText('Make music with code')
   await page.goBack()
   await expect(page.locator('h1')).toHaveText('Lo-fi loop')
   await expect(page.locator('.player-playing')).toHaveCount(0)
   await page.goForward()
-  await expect(page.locator('h1')).toHaveText('Kick')
+  await expect(page.locator('h1')).toHaveText('Make music with code')
 })
 
-for (const width of [375, 768, 1440]) {
+for (const width of [375, 768, 1440, 1920]) {
   test(`all routes fit at ${width}px and link to available pages`, async ({ page }, testInfo) => {
     await page.setViewportSize({ width, height: 1000 })
     for (const route of routes) {
       await go(page, route)
       await page.evaluate(() => document.fonts.ready)
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width)
+      expect(await page.locator('.site-main').evaluate((element) => element.getBoundingClientRect().width)).toBeLessThanOrEqual(1280)
       const links = await page.locator('a[href^="/"]').evaluateAll((elements) => elements.map((element) => element.getAttribute('href')!))
       expect(links.every((link) => routes.includes(link as typeof routes[number]))).toBe(true)
     }
@@ -95,6 +128,11 @@ for (const width of [375, 1440]) {
     await page.setViewportSize({ width, height: 1000 })
     for (const route of routes) {
       await go(page, route)
+      // Measure settled text, rather than a partially transparent entrance frame.
+      await page.evaluate(() => document.fonts.ready)
+      if (route === ROUTES.home) await page.locator('.landing').evaluate(async (element) => {
+        await Promise.allSettled(element.getAnimations({ subtree: true }).map((animation) => animation.finished))
+      })
       const { violations } = await new AxeBuilder({ page }).analyze()
       expect(violations, route).toEqual([])
     }
@@ -107,10 +145,10 @@ test('mobile navigation disclosures work by keyboard', async ({ page }) => {
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await expect(menu).toHaveAttribute('open', '')
-  await expect(menu.getByRole('link')).toHaveCount(5)
-  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Sound Cookbook', exact: true }).focus()
+  await expect(menu.getByRole('link')).toHaveCount(routes.length - 2)
+  await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).focus()
   await page.keyboard.press('Enter')
-  await expect(page.locator('h1')).toHaveText('Kick')
+  await expect(page.locator('h1')).toHaveText('Make music with code')
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await menu.getByRole('link', { name: 'Snare', exact: true }).focus()
@@ -128,7 +166,7 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
   await expect(page.locator('h1')).toHaveText('Your first song')
 })
 
-const customPlayers = new Set<string>([ROUTES.api, ROUTES.playground, ROUTES.reactMixer, ROUTES.controlReact])
+const customPlayers = new Set<string>([ROUTES.home, ROUTES.docs, ROUTES.api, ROUTES.playground, ROUTES.reactMixer, ROUTES.controlReact])
 for (const route of [ROUTES.makeBeat, ROUTES.addBass, ROUTES.layerParts, ROUTES.controlReact]) {
   test(`${route}: lesson layout and accessibility`, async ({ page }, testInfo) => {
     await go(page, route)

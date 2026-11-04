@@ -136,15 +136,12 @@ function Section({ id, title, children }: { id: string, title: string, children:
 }
 
 export function ApiPage() {
-  const nav = <div className="section-nav">
-    <div className="section-nav-wide"><Toc items={SECTIONS} /></div>
-    <details className="section-nav-narrow"><summary>On this page</summary><div className="section-nav-group"><Toc items={SECTIONS} /></div></details>
-  </div>
   return (
-    <DocsLayout variant="reference" nav={nav}
+    <DocsLayout variant="reference"
       header={<PageHeader crumbs={['API']} title="API reference"
         intro="Every public helper, the functions fn() accepts, and how playback behaves. Tables are generated from the package, and “Used in” links to pages that call each function."
         meta={['react-strudel-kit', 'react-strudel-kit/react']} />}>
+      <div className="api-index"><Toc items={SECTIONS} /></div>
       <Section id="entrypoints" title="Entrypoints">
         <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Import</th><th scope="col">Contents</th></tr></thead>
