@@ -26,11 +26,11 @@ trong `implementation-plan.md` được giữ để tham khảo.
 
 ## 2. Đóng gói và tài liệu cho người cài
 
-- [ ] Thêm LICENSE, metadata repository/bugs/homepage và README ngay trong package.
-- [ ] Giới hạn file tarball: ESM, declarations/maps và production source để tra cứu;
+- [x] Thêm LICENSE, metadata repository/bugs/homepage và README ngay trong package.
+- [x] Giới hạn file tarball: ESM, declarations/maps và production source để tra cứu;
   loại test, mock, config và source của reference app.
-- [ ] Build sạch trước mỗi lần pack để không lấy output cũ.
-- [ ] Xem manifest thực tế của `npm pack`, kiểm tra các đích của exports tồn tại.
+- [x] Build sạch trước mỗi lần pack để không lấy output cũ.
+- [x] Xem manifest thực tế của `npm pack`, kiểm tra các đích của exports tồn tại.
 
 Phát hiện ban đầu: `npm pack --dry-run` lấy 33 file source/test/config và không
 lấy `dist` do kế thừa `.gitignore`. Các entrypoint vì thế trỏ đến file vắng mặt.

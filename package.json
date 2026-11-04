@@ -17,7 +17,7 @@
     "test": "vitest",
     "test:ui": "npm test -- --ui",
     "coverage": "npm test -- --run --coverage",
-    "build:package": "tsc -p packages/react-strudel-kit/tsconfig.build.json && vite build --config packages/react-strudel-kit/vite.config.ts",
+    "build:package": "npm run build --workspace=react-strudel-kit",
     "test:e2e": "playwright test"
   },
   "dependencies": {

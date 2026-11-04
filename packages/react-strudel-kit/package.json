@@ -2,7 +2,27 @@
   "name": "react-strudel-kit",
   "version": "0.1.0",
   "private": true,
+  "description": "Typed Strudel pattern composition and shared React audio playback",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ngvihoa/react-strudel-kit.git",
+    "directory": "packages/react-strudel-kit"
+  },
+  "homepage": "https://github.com/ngvihoa/react-strudel-kit#readme",
+  "bugs": "https://github.com/ngvihoa/react-strudel-kit/issues",
+  "keywords": ["strudel", "react", "typescript", "music", "live-coding"],
   "type": "module",
+  "files": [
+    "dist",
+    "src",
+    "!src/**/*.test.*",
+    "!src/**/*.type-test.*"
+  ],
+  "scripts": {
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && vite build",
+    "prepack": "npm run build"
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/src/index.d.ts",

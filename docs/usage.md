@@ -185,7 +185,7 @@ for notation beyond this toolkit's typed subset.
 | `@strudel/web` | Pinned to `1.3.0`; adapter targets its returned transport/state APIs |
 | `@strudel/mini` | Pinned to `1.2.6` |
 | TypeScript | `~6.0.2`, strict mode |
-| Node.js | Locally verified on 24.22.0; use Node 24.15+ for this repository's dev/test dependencies |
+| Node.js | Latest local checks on 26.13.0; use Node 24.15+ for this repository's dev/test dependencies |
 | Browser | Web Audio in a browser/client component; use localhost or HTTPS |
 
 These describe declared requirements and the locally checked setup, not a

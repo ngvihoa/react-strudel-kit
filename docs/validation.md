@@ -139,3 +139,20 @@ and document reloads, pass axe at 375/1440px and have no horizontal page overflo
 375/768/1440px. New lesson screenshots were visually reviewed. The owner approved
 the Lo-fi chord revision at that point. Overall listening acceptance is recorded
 in the 2026-11-04 section above.
+
+## Release packaging — 2026-11-04
+
+The owner selected the unscoped name `react-strudel-kit` and asked for a license
+consistent with Strudel's requirements. The project and package now carry
+AGPL-3.0-or-later, with the full license text and a package-specific README.
+Both remain private during release preparation.
+
+A real `npm pack` ran its prepack build, removed a deliberately stale output file
+and produced 46 files (36,407 bytes compressed / 159,300 bytes unpacked at this
+stage). Both ESM entrypoints and their declarations were present, with production
+source and declaration maps. Test files, mocks and build/config scripts were
+absent. Lint and `git diff --check` passed. Tarball consumer testing follows as a
+separate release step; these packaging checks alone do not establish playback.
+
+Registry checks on this date returned 404 for the name and E401 for `npm whoami`.
+The name is not reserved, and publication still needs an authenticated npm account.
