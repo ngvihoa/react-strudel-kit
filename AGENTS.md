@@ -180,3 +180,14 @@ gains, filter values and slider ranges were chosen on paper.
    warning from `npm run build` (Strudel could be lazy-loaded).
 5. **Later, only when asked:** the Vietnamese language option; license choice and package
    release (plan milestones 6+).
+
+## Documentation audiences
+
+- `README.md` is the consumer entrypoint: installation, a first working pattern,
+  compatibility and links to explore the website. Keep maintainer workflows out.
+- Read `docs/development.md` for local setup, repository structure and validation;
+  `docs/release-plan.md` for publishing; `docs/website-design.md` for the website direction.
+- `/` is the landing page, `/docs` is the shared documentation entrypoint, and
+  `/playground` is the mixer/editor. Lessons, sounds, examples and API share the
+  Docs sidebar. Preserve their existing URLs and the legacy hash migration.
+- Cap the site shell at 1280px; verify 375px, 768px and wide desktop layouts.

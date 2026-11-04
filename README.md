@@ -1,81 +1,26 @@
 # React Strudel Kit
 
-A TypeScript toolkit for creating Strudel patterns, with a browser-only React
-playback hook and a small Vite playground. Strudel owns the pattern engine and
-audio scheduler; this package provides typed composition and React integration.
+**Write music in TypeScript. Play it with React.**
 
-[Website](https://react-strudel-kit.vercel.app/) ·
-[Learn](https://react-strudel-kit.vercel.app/learn/first-song) ·
-[API reference](https://react-strudel-kit.vercel.app/api)
+Build [Strudel](https://strudel.cc) patterns with typed functions and Mini-Notation
+helpers, then connect them to your own React controls. Strudel provides the music
+engine and audio; React Strudel Kit provides typed composition and playback integration.
 
-Published on npm as [react-strudel-kit](https://www.npmjs.com/package/react-strudel-kit),
-currently **0.1.1**. Install it in an existing React application:
+[Explore the website](https://react-strudel-kit.vercel.app/) ·
+[Documentation](https://react-strudel-kit.vercel.app/docs) ·
+[npm](https://www.npmjs.com/package/react-strudel-kit)
+
+## Install
 
 ```bash
 npm install react-strudel-kit
 ```
 
-See the [package README](packages/react-strudel-kit/README.md) for integration
-and the [release guide](docs/release-plan.md) for local tarball testing and release records.
+Requires React 18 or later, an ESM-capable bundler and a browser with Web Audio.
+Use the playback hook in a browser/client component. TypeScript declarations
+support `bundler` and `NodeNext` resolution. There is no CommonJS build.
 
-## Run the playground
-
-Use Node.js 24.15 or later in the Node 24 series for development. The latest local
-checks ran on Node 26.13.0; see [validation notes](docs/validation.md) for coverage.
-
-```bash
-npm install
-npm run dev
-```
-
-Open the localhost URL printed by Vite. Start with your device volume low; nothing
-plays until you press Play. The header links five sections:
-
-| Section | Route | What it is |
-| --- | --- | --- |
-| Learn | `/learn/…` (5 lessons) | Notes → drums → bass → arrangement → React playback, with players and practice controls |
-| Sound Cookbook | `/cookbook/kick`, `/snare`, `/hi-hat`, `/bass`, `/keys`, `/lead`, `/pad` | How each synthesized sound is built, with live sliders |
-| Examples | `/examples/…` (11 pages) | Rhythm, harmony, arrangement, React control and styles, one goal per page |
-| API | `/api` | Every public helper and `fn` function, generated from the package, with links to pages that use it |
-| Playground | `/playground` (default) | The free-form mixer and code editor described below |
-
-Code shown on these pages is cut from the module that plays (`src/content/`,
-`src/songs/`), so the text and the sound cannot drift apart. Timing claims made
-in the text are checked against Strudel's real pattern engine in tests. Leaving a page stops
-its music, and only one player plays at a time.
-
-Routes use normal paths, for example `/examples/lofi-loop`. Direct visits and
-reloads work in Vite dev/preview. Old `/#/…` bookmarks are replaced with the clean
-URL. For static deployment, serve `index.html` for unknown non-asset paths;
-`vercel.json` supplies this rule for Vercel and `public/_redirects` for
-Netlify/Cloudflare Pages. Other hosts
-need the equivalent SPA fallback (for nginx: `try_files $uri $uri/ /index.html;`).
-
-In the **Playground**, the **Mixer** opens with **Dance Monkey**, an eight-bar
-instrumental chorus:
-
-- Change **tempo** and **master volume** while the music runs.
-- **Mute** individual parts, or **Solo** one or several parts together.
-- Adjust each part's level. Change the melody, bass or keys between triangle,
-  sine, square and sawtooth synths.
-- **Reset mix** restores the current arrangement's settings, including its tempo,
-  while keeping playback running. Controls changed while stopped never autoplay.
-- Choose a simpler arrangement from the dropdown to experiment with one or two parts.
-  Changing arrangements stops playback and starts with a fresh mix.
-- **Ctrl/⌘+Enter** plays; **Escape** or **Stop** stops, including pending work.
-- **Code editor** keeps an independent, editable Strudel draft. Switching modes
-  stops playback and retains mixer settings and the editor draft. Only the draft
-  is saved locally; mixer settings reset on reload. **Session only** means draft
-  storage failed. Copy that draft before leaving. Reload never starts playback.
-
-All arrangements use built-in synths without sample downloads. See
-[Dance Monkey notes and controls](docs/dance-monkey.md).
-
-## React playback
-
-Install `react-strudel-kit` in your React app, or build the local workspace
-package for repository development. React integration is a separate entrypoint
-and must run in a browser/client component.
+## Play your first pattern
 
 ```tsx
 import { chain, fn, pitch, sample, sequence } from 'react-strudel-kit'
@@ -107,17 +52,8 @@ export function Player() {
 pattern. Call it from a click or keyboard gesture so the browser can enable audio.
 `update(input)` replaces a running pattern without stopping or restarting the
 scheduler. It does nothing while stopped; use it for live React controls after Play.
-All mounted hooks share one transport. The Strudel runtime loads on the first Play;
-audio resumes in that gesture even if its chunk is still downloading.
-Unmounting the last consumer stops playback; the shared engine/context remain
-available for remounts.
-The mixer builds typed patterns from React state and passes them to `play` or
-`update`. Serialization is an internal engine-adapter step.
+## Compose with type checking
 
-See [the usage guide](docs/usage.md) for lifecycle, error handling, supported
-functions, Mini-Notation, compatibility, and troubleshooting.
-
-## Typed composition
 
 ```ts
 import { chain, fn, mini, patternCallback, toStrudelCode } from 'react-strudel-kit'
@@ -137,52 +73,23 @@ shared registry. `mini()` validates Mini-Notation syntax with Strudel's parser.
 This covers the declared API subset; it does not verify sample availability,
 musical values, or raw JavaScript code.
 
-## Development
+## Find your next sound
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Build the workspace package, then run Vite with HMR |
-| `npm run build` | Build package, check types, and build the playground |
-| `npm run build:package` | Emit package ESM and declarations |
-| `npm run typecheck` | Check app, package, tests, and standalone consumer declarations |
-| `npm test -- --run` | Build the package, then run the full Vitest suite |
-| `npm run test:e2e` | Build and test the production site in Chromium (Playwright + axe) |
-| `npm run test:package` | Pack, install and test isolated React 18/19 consumers, including types and real browser playback |
-| `npm run lint` | Run ESLint |
-| `npm run preview` | Serve a previously built playground |
+Start with [Your first song](https://react-strudel-kit.vercel.app/learn/first-song),
+then follow the lessons through drums, bass, arrangement and React controls.
+The [Docs](https://react-strudel-kit.vercel.app/docs) bring the lessons, sound
+recipes, examples and API reference together.
 
-After editing package source during a dev/test watch session, run
-`npm run build:package` again. App source changes use Vite HMR directly.
+- Shape synthesized sounds with the [Sound Cookbook](https://react-strudel-kit.vercel.app/cookbook/kick).
+- Explore a [lo-fi loop](https://react-strudel-kit.vercel.app/examples/lofi-loop), a
+  [house loop](https://react-strudel-kit.vercel.app/examples/house-loop) or a
+  [React mixer](https://react-strudel-kit.vercel.app/examples/react-mixer).
+- Look up [API functions](https://react-strudel-kit.vercel.app/api) and jump to examples that use them.
+- Try the [Playground](https://react-strudel-kit.vercel.app/playground) to mix parts or edit code.
 
-```text
-packages/react-strudel-kit/src/  Typed API, serializers, transport, unit tests
-src/                            Reference app: playground, mixer and integration tests
-src/site/                       Learning-site shell, page templates and shared components
-src/content/                    Lesson and Cookbook patterns shown and played on those pages
-src/test/public-api.type-test.ts  Compile-time checks against the built package
-docs/                           Usage guide and historical design notes
-```
+For integration details, see the [usage guide](docs/usage.md), including playback
+lifecycle, errors and compatibility.
 
-The package's `tsconfig.json` includes source and tests so the editor loads local
-declarations. `tsconfig.build.json` emits production declarations and excludes
-tests. Consumer type-tests use `skipLibCheck: false` without the app's ambient shims.
+## License
 
-Tests cover parser/serializer behavior, real Strudel pattern timing without
-audio, shared transport lifecycle, React Strict Mode, error/cancellation paths,
-and the playground through built package exports. Unit playback tests mock Web Audio.
-Browser tests use real Strudel and Web Audio for every page player, keyboard controls,
-ownership, cancellation and route cleanup, and check accessibility and all routes at
-375, 768 and 1440px. They do not judge sound quality or device compatibility.
-
-Before the first browser test run, install Chromium with `npx playwright install chromium`.
-To use an existing Chromium binary, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
-The test server builds and serves the production app on port 4173.
-
-## License and release status
-
-This project is licensed under [AGPL-3.0-or-later](LICENSE), selected for the first
-release to follow Strudel's integration guidance. The pinned Strudel packages
-also declare `AGPL-3.0-or-later` and retain their own notices. See the
-[upstream integration and license guidance](https://strudel.cc/technical-manual/project-start/).
-The root app remains private. Only `packages/react-strudel-kit` is configured for
-public npm publication; [the release plan](docs/release-plan.md) tracks progress.
+[AGPL-3.0-or-later](LICENSE). Strudel retains its own copyright and license notices.

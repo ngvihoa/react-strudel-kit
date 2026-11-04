@@ -2,7 +2,13 @@
 
 - [Current usage guide](usage.md): implemented API, lifecycle, examples, compatibility, and troubleshooting.
 - [Dance Monkey example](dance-monkey.md): play and edit the short instrumental arrangement.
-- [Repository README](../README.md): local setup, playground controls, development commands, and release status.
+- [Repository README](../README.md): package installation, first pattern and links to explore.
+
+## Maintainers
+
+- [Development guide](development.md): local setup, repository structure, commands and browser testing.
+- [Release guide](release-plan.md): packaging, validation and publication records.
+- [Website design notes](website-design.md): landing-page direction and visual validation.
 
 ## Historical design notes
 
