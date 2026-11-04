@@ -1,5 +1,5 @@
-import type { Engine } from './engine'
-import type { StrudelError, StrudelErrorCode, StrudelInput, UseStrudelResult } from './types'
+import type { Engine } from './engine.js'
+import type { StrudelError, StrudelErrorCode, StrudelInput, UseStrudelResult } from './types.js'
 
 type Snapshot = Pick<UseStrudelResult, 'status' | 'error'>
 type Dependencies = {

@@ -1,8 +1,8 @@
 import type {
     PatternExpression, PatternFactoryCall, PatternFactoryName, PatternModifierCall,
     PatternModifierName, StrudelArgument,
-} from './types'
-import { functionRegistry, type FactoryFunctionName, type FunctionName, type ModifierFunctionName } from './registry'
+} from './types.js'
+import { functionRegistry, type FactoryFunctionName, type FunctionName, type ModifierFunctionName } from './registry.js'
 
 type RuntimeCall<Name extends FunctionName> = Extract<
     PatternFactoryCall | PatternModifierCall,

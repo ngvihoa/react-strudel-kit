@@ -181,10 +181,10 @@ for notation beyond this toolkit's typed subset.
 
 | Component | Current setup |
 | --- | --- |
-| React | Peer requirement `>=18`; local checks run with installed React 19.3.0 |
+| React | Peer requirement `>=18`; tarball consumers checked on React/React DOM 18.3.1 and 19.3.0 |
 | `@strudel/web` | Pinned to `1.3.0`; adapter targets its returned transport/state APIs |
 | `@strudel/mini` | Pinned to `1.2.6` |
-| TypeScript | `~6.0.2`, strict mode |
+| TypeScript | 6.0.3 checked in strict mode with `bundler` and `NodeNext` resolution |
 | Node.js | Latest local checks on 26.13.0; use Node 24.15+ for this repository's dev/test dependencies |
 | Browser | Web Audio in a browser/client component; use localhost or HTTPS |
 

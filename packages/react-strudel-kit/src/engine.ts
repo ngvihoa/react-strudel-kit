@@ -1,5 +1,5 @@
-import { toStrudelCode } from './serializer'
-import type { StrudelInput } from './types'
+import { toStrudelCode } from './serializer.js'
+import type { StrudelInput } from './types.js'
 
 type Web = typeof import('@strudel/web')
 let web: Web | undefined

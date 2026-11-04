@@ -4,8 +4,8 @@ import type {
     PatternExpression,
     PatternFactoryCall,
     PatternModifierCall,
-} from './types'
-import type { MiniPattern } from './types'
+} from './types.js'
+import type { MiniPattern } from './types.js'
 
 /** Creates a typed sample or synth pattern. */
 export const s = (value: MiniPattern): PatternExpression => pattern({ name: 's', args: [value] })

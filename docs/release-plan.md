@@ -38,13 +38,13 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 
 ## 3. Kiểm thử consumer độc lập
 
-- [ ] Tạo tarball thật; cài vào thư mục tạm bên ngoài workspace, không dùng alias,
+- [x] Tạo tarball thật; cài vào thư mục tạm bên ngoài workspace, không dùng alias,
   symlink package, ambient shim của app hoặc node_modules của repo để resolve kit.
-- [ ] Typecheck public API với `skipLibCheck: false`; kiểm tra usage hợp lệ và sai kiểu.
-- [ ] Build app React/Vite từ tarball; kiểm tra runtime thực trong Chromium:
+- [x] Typecheck public API với `skipLibCheck: false`; kiểm tra usage hợp lệ và sai kiểu.
+- [x] Build app React/Vite từ tarball; kiểm tra runtime thực trong Chromium:
   mount không autoplay, Play, live update, Stop và unmount consumer cuối.
-- [ ] Kiểm tra React 18 và 19 trước khi xác nhận peer range; ghi đúng phiên bản đã chạy.
-- [ ] Ghi lại lệnh tái lập và giới hạn xác minh trong `docs/validation.md`.
+- [x] Kiểm tra React 18 và 19 trước khi xác nhận peer range; ghi đúng phiên bản đã chạy.
+- [x] Ghi lại lệnh tái lập và giới hạn xác minh trong `docs/validation.md`.
 
 ## 4. CI và chuẩn bị bản phát hành
 

@@ -156,3 +156,33 @@ separate release step; these packaging checks alone do not establish playback.
 
 Registry checks on this date returned 404 for the name and E401 for `npm whoami`.
 The name is not reserved, and publication still needs an authenticated npm account.
+
+### Independent tarball consumers
+
+Run `npm run test:package` after installing Chromium (or setting the same
+`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` used by the browser suite). This packs the
+workspace with prepack enabled, inspects that exact tarball and installs it into
+two temporary apps outside the workspace. No package symlink, source alias,
+workspace node_modules or app ambient shim is used to resolve kit code/types.
+The harness itself uses the repository's Playwright installation.
+
+Passed on Node 26.13.0, TypeScript 6.0.3 and Vite 8.3.5:
+
+| React / React DOM | React / React DOM types | Declarations | Browser |
+| --- | --- | --- | --- |
+| 18.3.1 | 18.3.31 / 18.3.7 | `bundler` and `NodeNext`, strict, `skipLibCheck: false` | Production build, real Chromium/Web Audio |
+| 19.3.0 | 19.3.0 / 19.3.0 | Same | Same |
+
+Each app compiles the public API's valid/invalid type assertions and the package
+README's TypeScript/TSX snippets. Browser checks cover Strict Mode, no autoplay on
+mount or stopped update, Play, live update to a different pitch, Stop, fresh Play
+and unmount of the final consumer. Native oscillator calls are observed without
+replacing synthesis; the updated pitch appears and new oscillator scheduling
+ceases after Stop/unmount. Runtime/console/HTTP errors fail the check.
+
+This caught declarations with extensionless relative imports that failed under
+NodeNext. Production source imports now use `.js` specifiers, making the emitted
+declarations valid in both resolution modes. The checks establish these exact
+React/toolchain combinations in Chromium, not all React/TypeScript versions,
+SSR playback or cross-device compatibility. Failed temporary apps are retained
+with their paths printed for diagnosis; successful temporary apps are removed.

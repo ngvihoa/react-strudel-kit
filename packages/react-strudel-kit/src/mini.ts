@@ -1,5 +1,5 @@
 import { parse } from '@strudel/mini/krill-parser.js'
-import type { MiniNotation } from './types'
+import type { MiniNotation } from './types.js'
 
 const toParserInput = (value: string): string => JSON.stringify(value)
 

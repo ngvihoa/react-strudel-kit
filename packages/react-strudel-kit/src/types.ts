@@ -1,4 +1,4 @@
-import type { MiniNode } from './mini-ast'
+import type { MiniNode } from './mini-ast.js'
 
 declare const miniNotationBrand: unique symbol
 
@@ -7,7 +7,7 @@ declare const miniNotationBrand: unique symbol
  *
  * @example
  * ```ts
- * import { mini } from './mini'
+ * import { mini } from './mini.js'
  *
  * const rhythm = mini('bd ~ sd ~')
  * const melody = mini('<c3 eb3 f3 g3>')

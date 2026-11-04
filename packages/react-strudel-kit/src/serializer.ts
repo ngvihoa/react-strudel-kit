@@ -1,6 +1,6 @@
-import type { PatternCallback, PatternExpression, PatternFactoryCall, PatternModifierCall, StrudelArgument, StrudelCodeInput } from './types'
-import type { MiniNode } from './mini-ast'
-import { toMiniNotation } from './mini-serializer'
+import type { PatternCallback, PatternExpression, PatternFactoryCall, PatternModifierCall, StrudelArgument, StrudelCodeInput } from './types.js'
+import type { MiniNode } from './mini-ast.js'
+import { toMiniNotation } from './mini-serializer.js'
 
 /**
  * Checks whether an argument is a typed Mini-Notation AST node.

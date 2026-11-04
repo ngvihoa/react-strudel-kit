@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react'
-import { createEngine, unlockAudio } from './engine'
-import { createTransport } from './transport'
-import type { UseStrudelResult } from './types'
+import { createEngine, unlockAudio } from './engine.js'
+import { createTransport } from './transport.js'
+import type { UseStrudelResult } from './types.js'
 
 const transport = createTransport({ createEngine, unlockAudio })
 

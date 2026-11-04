@@ -18,7 +18,8 @@
     "test:ui": "npm test -- --ui",
     "coverage": "npm test -- --run --coverage",
     "build:package": "npm run build --workspace=react-strudel-kit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:package": "node scripts/test-package.mjs"
   },
   "dependencies": {
     "@fontsource/be-vietnam-pro": "^5.3.0",

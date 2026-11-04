@@ -19,7 +19,7 @@ npm install /tmp/react-strudel-kit-0.1.0.tgz
 ```
 
 Requires React 18 or later, an ESM-capable bundler and a browser with Web Audio.
-Use TypeScript's `moduleResolution: "bundler"` for a Vite application. The hook
+Declarations support TypeScript's `bundler` and `NodeNext` resolution. The hook
 must run in a browser/client component. There is no CommonJS build.
 
 ## Play a typed pattern
@@ -86,6 +86,8 @@ availability, musical values or raw JavaScript code.
 - [Reference app, lessons, Cookbook and examples](https://github.com/ngvihoa/react-strudel-kit#readme)
 - [Validation and tested versions](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/validation.md)
 - Runtime dependencies are pinned to `@strudel/web@1.3.0` and `@strudel/mini@1.2.6`.
+- Isolated tarball consumers have been tested with React/React DOM 18.3.1 and
+  19.3.0, TypeScript 6.0.3, Vite 8.3.5 and Chromium on Node 26.13.0.
 - ESM, declarations, declaration maps and production TypeScript source are included.
 
 ## License

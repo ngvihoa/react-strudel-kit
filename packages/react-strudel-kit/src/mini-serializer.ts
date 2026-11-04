@@ -1,4 +1,4 @@
-import type { MiniNode } from './mini-ast'
+import type { MiniNode } from './mini-ast.js'
 
 // Sequences contain slices; stack/choice/polymeter lanes contain sequences.
 // Operators need their own slice so nested weights and modifiers stay scoped.

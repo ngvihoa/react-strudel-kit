@@ -1,4 +1,4 @@
-import type { PatternFactoryName, PatternModifierName } from './types'
+import type { PatternFactoryName, PatternModifierName } from './types.js'
 
 /** Describes how a domain function maps to the Strudel runtime. */
 export type FunctionRegistryEntry =

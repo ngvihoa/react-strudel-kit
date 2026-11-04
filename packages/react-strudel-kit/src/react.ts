@@ -1,2 +1,2 @@
-export { useStrudel } from './useStrudel'
-export type { StrudelError, StrudelInput, TransportStatus, UseStrudelResult } from './types'
+export { useStrudel } from './useStrudel.js'
+export type { StrudelError, StrudelInput, TransportStatus, UseStrudelResult } from './types.js'

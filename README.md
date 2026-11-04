@@ -135,6 +135,7 @@ musical values, or raw JavaScript code.
 | `npm run typecheck` | Check app, package, tests, and standalone consumer declarations |
 | `npm test -- --run` | Build the package, then run the full Vitest suite |
 | `npm run test:e2e` | Build and test the production site in Chromium (Playwright + axe) |
+| `npm run test:package` | Pack, install and test isolated React 18/19 consumers, including types and real browser playback |
 | `npm run lint` | Run ESLint |
 | `npm run preview` | Serve a previously built playground |
 
