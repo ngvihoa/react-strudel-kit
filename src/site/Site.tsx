@@ -1,8 +1,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { ComponentType } from 'react'
 import { useStrudel } from 'react-strudel-kit/react'
+import { Package } from 'lucide-react'
 import App from '../App'
 import logo from '../assets/rsk-logo.png'
+import githubMark from '../assets/github.svg'
 import { SiteFooter } from './SiteFooter'
 import { DOCS_NAV } from './navigation'
 import { SectionNav } from './components'
@@ -111,19 +113,23 @@ export function Site() {
           window.scrollTo(0, 0)
         }}>Skip to content</a>
         <header className="site-header"><div className="site-header-inner">
-          <a className="brand-logo" href={href(ROUTES.home)}><img src={logo} alt="react-strudel-kit home" width={86} height={28} /></a>
+          <a className="brand-logo" href={href(ROUTES.home)} aria-label="react-strudel-kit home"><img src={logo} alt="" width={86} height={28} /><span className="brand-name">react-strudel-kit</span></a>
           <nav className="site-nav" aria-label="Sections" ref={nav}>
             {SECTIONS.map((section) => <a key={section.path} href={href(section.path)} aria-label={section.label} aria-current={(section.path === ROUTES.docs ? route !== ROUTES.home && route !== ROUTES.playground : route === section.path) ? 'page' : undefined}>{section.label}</a>)}
             {bar && <span className="site-nav-bar" aria-hidden="true" style={{ transform: `translateX(${bar.left}px)`, width: bar.width }} />}
+          </nav>
+          <nav className="header-projects" aria-label="Package links">
+            <a href="https://github.com/ngvihoa/react-strudel-kit" aria-label="GitHub repository" title="GitHub repository" target="_blank" rel="noreferrer noopener"><img src={githubMark} width={18} height={18} alt="" /><span>GitHub</span></a>
+            <a href="https://www.npmjs.com/package/react-strudel-kit" aria-label="npm package" title="npm package" target="_blank" rel="noreferrer noopener"><Package size={18} aria-hidden="true" /><span>npm</span></a>
           </nav>
         </div></header>
         <main id="content" ref={content} tabIndex={-1} className={route === ROUTES.playground ? 'site-main site-main-playground' : 'site-main'}>
           {route === ROUTES.home || route === ROUTES.playground ? <Page key={route} /> : <div className="docs">
             <div className="docs-nav"><SectionNav groups={DOCS_NAV} current={route} label="Documentation" /></div>
-            <Page key={route} />
+            <div className="docs-content"><Page key={route} /><SiteFooter /></div>
           </div>}
         </main>
-        <SiteFooter />
+        {(route === ROUTES.home || route === ROUTES.playground) && <SiteFooter />}
       </div>
     </PlaybackProvider>
   )

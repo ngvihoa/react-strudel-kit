@@ -1,3 +1,4 @@
+import { AudioLines, BookOpen, Code2, Compass, Music2 } from 'lucide-react'
 import { ROUTES } from './router'
 import type { NavGroup } from './components'
 
@@ -50,10 +51,10 @@ export const EXAMPLES_NAV: readonly NavGroup[] = [
 
 /** All articles share one navigation tree; URLs stay stable for bookmarks. */
 export const DOCS_NAV: readonly NavGroup[] = [
-  { title: 'Start here', items: [{ label: 'Documentation', path: ROUTES.docs }] },
-  { title: 'Learn', items: LEARN_NAV.flatMap((group) => group.items) },
-  { title: 'Sound cookbook', items: COOKBOOK_NAV.flatMap((group) => group.items) },
-  { title: 'Examples', items: EXAMPLES_NAV.flatMap((group) => group.items).map((item) =>
+  { title: 'Start here', icon: Compass, items: [{ label: 'Documentation', path: ROUTES.docs }] },
+  { title: 'Learn', icon: BookOpen, items: LEARN_NAV.flatMap((group) => group.items) },
+  { title: 'Sound cookbook', icon: AudioLines, items: COOKBOOK_NAV.flatMap((group) => group.items) },
+  { title: 'Examples', icon: Music2, items: EXAMPLES_NAV.flatMap((group) => group.items).map((item) =>
     item.path === ROUTES.reactMixer ? { ...item, label: 'React mixer' } : item) },
-  { title: 'Reference', items: [{ label: 'API reference', path: ROUTES.api }] },
+  { title: 'Reference', icon: Code2, items: [{ label: 'API reference', path: ROUTES.api }] },
 ]

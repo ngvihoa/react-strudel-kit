@@ -1,7 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import type { LucideIcon } from 'lucide-react'
 import { toStrudelCode } from 'react-strudel-kit'
 import type { PatternExpression } from 'react-strudel-kit'
+import { useSectionNavigation } from './useSectionNavigation'
 import { usePlayer } from './playback'
 import { href } from './router'
 import type { RoutePath } from './router'
@@ -133,7 +135,7 @@ export function Callout({ kind = 'note', title, children }: { kind?: 'note' | 't
   )
 }
 
-export type NavGroup = { title: string, items: readonly { label: string, path?: RoutePath, meta?: string }[] }
+export type NavGroup = { title: string, icon?: LucideIcon, items: readonly { label: string, path?: RoutePath, meta?: string }[] }
 
 /** Section navigation. Planned pages are listed without links so nothing unbuilt looks available. */
 export function SectionNav({ groups, current, label }: { groups: readonly NavGroup[], current: RoutePath, label: string }) {
@@ -152,7 +154,7 @@ export function SectionNav({ groups, current, label }: { groups: readonly NavGro
   }, [current])
   const list = groups.map((group) => (
     <div className="section-nav-group" key={group.title}>
-      <p>{group.title}</p>
+      <p>{group.icon && <group.icon size={17} strokeWidth={1.7} aria-hidden="true" />}{group.title}</p>
       <ol>
         {group.items.map((item) => <li key={item.label}>
           {item.path ? <a href={href(item.path)} aria-current={item.path === current ? 'page' : undefined}>{item.label}{item.meta && <small>{item.meta}</small>}</a>
@@ -223,16 +225,7 @@ export function PageHeader({ crumbs, title, intro, meta, learn }: PageHeaderProp
 
 /** "On this page" with the section in view highlighted. */
 export function Toc({ items }: { items: readonly { id: string, label: string }[] }) {
-  const [active, setActive] = useState(items[0]?.id)
-  useEffect(() => {
-    if (typeof IntersectionObserver === 'undefined') return
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0]
-      if (visible) setActive(visible.target.id)
-    }, { rootMargin: '-80px 0px -60% 0px' })
-    items.forEach((item) => { const element = document.getElementById(item.id); if (element) observer.observe(element) })
-    return () => observer.disconnect()
-  }, [items])
+  const { active, jump } = useSectionNavigation(items.map((item) => item.id))
   return (
     <nav className="toc" aria-label="On this page">
       <p>On this page</p>
@@ -240,8 +233,7 @@ export function Toc({ items }: { items: readonly { id: string, label: string }[]
         <a href={`#${item.id}`} aria-current={item.id === active ? 'location' : undefined} onClick={(event) => {
           // Keep reading position changes out of browser history.
           event.preventDefault()
-          setActive(item.id)
-          document.getElementById(item.id)?.scrollIntoView({ behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+          jump(item.id, event.detail > 0)
         }}>{item.label}</a>
       </li>)}</ol>
     </nav>
