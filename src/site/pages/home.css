@@ -89,11 +89,4 @@
   .landing-questions h2 { font-size: 30px; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .landing-product, .landing h1 span, .landing-hero > p, .landing-install, .landing-actions a { animation: package-arrive 450ms cubic-bezier(.22, 1, .36, 1) both; }
-  .landing h1 span + span { animation-delay: 60ms; }
-  .landing-install { animation-delay: 100ms; }
-  .session-listen:has(.player-playing) .session-record { animation: session-turn 16s linear infinite; }
-}
-@keyframes package-arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-@keyframes session-turn { to { transform: rotate(360deg); } }
+/* Anime.js owns entrance, scroll-reveal and playback-indicator motion. */

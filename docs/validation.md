@@ -333,3 +333,30 @@ for the 48-file, 67,879-byte tarball:
 ```text
 sha512-2CGdm9rhFkie59Ka23ELwuon1RKfGDZbPwnWb+6qwLH+x8FyQaKJibZhSQivSqR9AJ6VgH7gH8GiY1MhkRL5hQ==
 ```
+
+## Website motion and navigation — 2026-11-04
+
+Anime.js now drives the slower hero entrance, once-per-visit section reveals,
+playback-only record rotation and pointer section jumps. The header exposes
+GitHub/npm, sidebar groups have Lucide icons and the Docs footer stays inside the
+content column. No public package source, metadata or version changed.
+
+- `npm test -- --run`: 189 tests across 20 files passed.
+- `npm run lint`, `npm run typecheck` and the production build passed. The
+  pre-existing large Strudel chunk warning remains.
+- Full Chromium suite: 52 tests passed, including four new navigation/motion
+  regressions. Accessibility checks cover all routes at 375px and 1440px.
+  After the final mobile npm label change, a fresh production build and both
+  targeted header/footer and all-route 375px accessibility tests passed again.
+- New checks exercise an uninterrupted long jump (only the destination becomes
+  active), wheel interruption, repeated clicks and resumption of manual scrollspy;
+  header links across 320/375/768/1440px; footer/sidebar separation; normal and
+  live reduced-motion preference changes; once-only reveals; route cleanup; and
+  record rotation restricted to explicit playback.
+- Visual review at 320px, 375px, 768px and 1440px found no horizontal page overflow.
+  All nine lower landing reveal groups completed without browser runtime errors.
+  The mobile header retains an explicit npm label and the GitHub mark.
+
+Design choices, asset sources and motion timings are recorded in
+[`website-design.md`](website-design.md). These dependencies and notes are
+website/repository-only; this work does not require an npm release.

@@ -4,6 +4,9 @@
 
 ## Điều chỉnh theo feedback 2026-11-04
 
+- [x] Dùng Anime.js: hero chậm hơn, reveal các khối phía dưới khi cuộn, hỗ trợ reduced motion.
+- [x] Header có GitHub/npm; icon ở nhóm sidebar; footer Docs nằm trong cột nội dung.
+- [x] Quick access giữ mục đích khi nhảy xa, tiếp tục scrollspy khi cuộn thủ công.
 - [x] Render logo trong README gốc; README npm đã có logo.
 - [x] Hero nêu rõ tên package và đưa lệnh install lên màn hình đầu tiên.
 - [x] Bỏ demo bốn nốt và gallery screenshot hover; dùng Lo-fi + House theo lựa chọn của chủ dự án.

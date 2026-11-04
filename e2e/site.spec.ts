@@ -62,7 +62,8 @@ test('landing presents installation first, plays full sessions and cleans up on 
   await expect(hero.getByText('react-strudel-kit', { exact: true })).toBeVisible()
   const install = hero.getByRole('button', { name: 'Copy install command' })
   expect((await install.boundingBox())!.y).toBeLessThan(1000)
-  expect(await hero.locator('h1 span').first().evaluate((element) => getComputedStyle(element).animationName)).toBe('none')
+  await expect(page.locator('.landing')).toHaveAttribute('data-hero-state', 'static')
+  expect(await hero.locator('h1 span').first().evaluate((element) => getComputedStyle(element).opacity)).toBe('1')
   const demo = page.getByRole('region', { name: / session player$/ })
   await expect(demo.locator('.player-state')).toHaveText('Ready')
   await page.getByRole('button', { name: 'House', exact: true }).click()
@@ -151,13 +152,11 @@ for (const width of [375, 768, 1440, 1920]) {
 for (const width of [375, 1440]) {
   test(`all pages pass automated accessibility checks at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     for (const route of routes) {
       await go(page, route)
-      // Measure settled text, rather than a partially transparent entrance frame.
+      // Audit all content fully visible; normal-motion behavior has separate coverage.
       await page.evaluate(() => document.fonts.ready)
-      if (route === ROUTES.home) await page.locator('.landing').evaluate(async (element) => {
-        await Promise.allSettled(element.getAnimations({ subtree: true }).map((animation) => animation.finished))
-      })
       const { violations } = await new AxeBuilder({ page }).analyze()
       expect(violations, route).toEqual([])
     }

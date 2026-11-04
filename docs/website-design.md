@@ -121,3 +121,30 @@ keyboard operation and no horizontal page overflow through 1920px.
 Final taste inspection: zero failures with the three documented allowances;
 remaining warnings are font-size count, no video and restrained motion. Source
 lint has no failures, with the conventional library “Get started” wording retained.
+
+## Header, motion and Docs corrections — 2026-11-04
+
+Reference review: the live headers of [Mantine](https://mantine.dev/) and
+[TanStack](https://tanstack.com/) separate product identity, internal navigation
+and project links. Apply that hierarchy here: wordmark, Home/Docs/Playground,
+then explicit GitHub and npm links. On phones the header uses two rows; the
+GitHub mark and readable npm label remain available. The GitHub mark comes from
+[GitHub's own favicon](https://github.githubassets.com/favicons/favicon.svg).
+Lucide icons identify the five sidebar groups rather than decorating every article.
+
+Anime.js replaces the short CSS entrance. Hero elements move 20px and fade over
+1100ms, with 110ms stagger after an initial 100ms delay. Lower section groups
+move 18px over 900ms with 90ms stagger, triggered once when they enter the
+viewport. Focus also reveals a group. The record rotates in 16 seconds only
+while playback is active. Reduced motion displays all content immediately and
+disables rotation. Following [Anime.js React guidance](https://animejs.com/documentation/getting-started/using-with-react/),
+the landing owns a scope that reverts transient styles and animations on cleanup;
+observers/listeners are disconnected on route and motion-preference changes.
+Anime.js and Lucide are website dependencies, not package dependencies.
+
+The Docs footer now belongs to the content column, so the sticky sidebar cannot
+end on top of a footer spanning underneath it. Quick access uses Anime.js for
+pointer jumps and pins the selected destination until arrival. Wheel, touch or
+navigation keys cancel the jump and restore manual scrollspy; keyboard and
+reduced-motion jumps are immediate. Active links keep the same font weight to
+avoid line-wrap changes. Footer, navigation and TOC do not receive scroll reveals.

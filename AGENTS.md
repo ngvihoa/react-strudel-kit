@@ -204,3 +204,11 @@ gains, filter values and slider ranges were chosen on paper.
   learning links. Keep a full footer with package, Docs, project and license links.
 - Keep the Docs section index visible in a separate sticky right rail on desktop,
   with an inline alternative on narrower screens; do not hide it to fit 1280px.
+- Use Anime.js for landing motion: gradual hero entrance, once-per-visit section
+  reveals and a record that rotates only during playback. Honor reduced motion
+  and revert scopes/listeners on unmount. See `docs/website-design.md` for timings.
+- Keep GitHub and npm directly accessible in the header. Sidebar icons belong
+  on group headings; the Docs footer stays inside the content column.
+- During a clicked section jump, keep quick access on the chosen destination;
+  resume scrollspy after arrival or interruption. Avoid changing text metrics
+  between active/inactive TOC items.
