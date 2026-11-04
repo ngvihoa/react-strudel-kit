@@ -145,7 +145,8 @@ in the 2026-11-04 section above.
 The owner selected the unscoped name `react-strudel-kit` and asked for a license
 consistent with Strudel's requirements. The project and package now carry
 AGPL-3.0-or-later, with the full license text and a package-specific README.
-Both remain private during release preparation.
+Both remained private during this initial packaging step; publication readiness
+is tracked separately below.
 
 A real `npm pack` ran its prepack build, removed a deliberately stale output file
 and produced 46 files (36,407 bytes compressed / 159,300 bytes unpacked at this
@@ -186,3 +187,28 @@ declarations valid in both resolution modes. The checks establish these exact
 React/toolchain combinations in Chromium, not all React/TypeScript versions,
 SSR playback or cross-device compatibility. Failed temporary apps are retained
 with their paths printed for diagnosis; successful temporary apps are removed.
+
+### Release candidate preflight
+
+The final candidate includes CHANGELOG, LICENSE and the install-focused package
+README: 47 files, 36,813 bytes compressed / 160,665 bytes unpacked. Both isolated
+React consumers passed again against this artifact. Successful runs now retain
+the tested `.tgz` and `package-validation.json` under ignored `artifacts/`, with
+integrity, source commit, tracked dirty state and tested versions.
+
+Local release checks passed: all 20 Vitest files / 187 tests, 45 Playwright site
+tests, lint, typecheck and the production build. `npm audit --omit=dev` returned
+zero findings on 2026-11-04. The existing warning for the deferred Strudel chunk
+over 500 kB remains.
+
+The GitHub Actions workflow runs those checks and the isolated consumers on
+Node 24, then uploads the tested tarball and browser diagnostics. It passed
+actionlint 1.7.12 locally. The hosted workflow has not run yet: these commits have
+not been pushed, so this is not evidence of a completed Node 24 CI run.
+
+Only the library package is now publishable, with public access and the public
+npm registry configured; the root remains private. A publish dry-run on the
+tested tarball passed with `--tag latest --access public --ignore-scripts`.
+No package has been published and no Git release tag has been created. The npm
+account must still authenticate before actual publication; the name/version and
+registry integrity will be checked again at that point.

@@ -48,16 +48,21 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 
 ## 4. CI và chuẩn bị bản phát hành
 
-- [ ] CI cho lint, typecheck/build, Vitest, browser tests và tarball consumer.
-- [ ] Changelog `0.1.0`, README hướng dẫn cài, giới hạn browser/ESM và compatibility.
-- [ ] Chạy đầy đủ kiểm tra; kiểm tra nội dung tarball và metadata lần cuối.
-- [ ] Chỉ bỏ `private: true` ở package khi các mục chuẩn bị phía trên hoàn tất.
+- [x] Thêm workflow CI cho lint, typecheck/build, Vitest, browser tests và tarball
+  consumer. Lần chạy thực tế trên GitHub sẽ được xác nhận sau khi push.
+- [x] Changelog `0.1.0`, README hướng dẫn cài, giới hạn browser/ESM và compatibility.
+- [x] Chạy đầy đủ kiểm tra local; kiểm tra nội dung tarball và metadata lần cuối.
+  187 unit tests, 45 browser tests, lint/typecheck/build và hai tarball consumer qua.
+- [x] Bỏ `private: true` ở package; root giữ nguyên private. Chỉ publish tarball đã
+  qua kiểm thử, không publish từ root.
 
 ## 5. Phát hành và xác minh registry
 
 - [ ] Người dùng đăng nhập npm bằng `npm login` và hoàn tất xác thực tài khoản.
   Không gửi token, mật khẩu hoặc mã OTP vào chat hay commit.
 - [ ] Chốt version/dist-tag và tài khoản publish; kiểm tra tên lại ngay trước release.
+- [x] `npm publish` dry-run với bản `0.1.0`, public access và dist-tag `latest` qua;
+  không gửi bản phát hành lên registry.
 - [ ] Đối chiếu `npm publish --dry-run` với artifact đã kiểm thử, rồi publish đúng
   tarball đó với public access. Ghi lại version, integrity và commit nguồn.
 - [ ] Cài bản từ npm vào consumer sạch; xác nhận metadata, types, build và playback.
@@ -65,6 +70,43 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 
 Các lần phát hành sau có thể dùng npm trusted publishing qua GitHub Actions.
 Chưa cấu hình publish tự động khi tài khoản npm và quyền của repo chưa được chốt.
+
+## Quy trình tái lập
+
+Chạy từ root (Node 24.15+, Chromium đã cài):
+
+```sh
+npm ci
+npm run lint
+npm test -- --run
+npm run typecheck
+npm run test:e2e
+npm run test:package
+```
+
+`test:e2e` build production site. `test:package` build rồi pack và kiểm thử chính
+tarball đó trên React 18/19; khi thành công, giữ bản đã thử tại
+`artifacts/react-strudel-kit-0.1.0.tgz`, kèm `package-validation.json` ghi integrity,
+commit, trạng thái tracked files và phiên bản toolchain. Thư mục artifacts bị
+Git ignore; CI upload artifact để tải về, không tự publish. Muốn tái lập đầy đủ,
+chạy từ commit sạch; `AGENTS.md` chưa tracked của người dùng không được đưa vào tarball.
+
+Sau khi kiểm tra đầy đủ và đã đăng nhập đúng npm account:
+
+```sh
+npm whoami --registry=https://registry.npmjs.org
+npm view react-strudel-kit version --registry=https://registry.npmjs.org
+npm publish ./artifacts/react-strudel-kit-0.1.0.tgz --access public --tag latest --dry-run --ignore-scripts
+# Thực hiện khi sẵn sàng phát hành; version trên npm không thể ghi đè.
+npm publish ./artifacts/react-strudel-kit-0.1.0.tgz --access public --tag latest --ignore-scripts
+npm view react-strudel-kit@0.1.0 version dist.integrity --registry=https://registry.npmjs.org
+```
+
+Nếu tên đã có người dùng hoặc version tồn tại, dừng và kiểm tra quyền/version;
+không đổi tên hay tăng version tự động. So sánh `dist.integrity` với artifact đã
+kiểm thử. Tài liệu npm mô tả [publish từ tarball và dry-run](https://docs.npmjs.com/cli/v11/commands/npm-publish/).
+Sau khi publish thành công, đổi phần release status trong README/changelog và
+kiểm thử cài package từ registry trước khi gắn tag Git.
 
 ## Tài liệu đối chiếu
 

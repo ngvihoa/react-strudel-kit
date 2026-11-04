@@ -4,11 +4,16 @@ Typed Strudel pattern composition and a shared React playback hook. Strudel owns
 the pattern engine and audio scheduler; this kit adds typed builders, serializers
 and React lifecycle integration.
 
-## Release status and installation
+## Installation
 
-The first npm release is being prepared. This package is still private; there is
-no published version to install yet. A local tarball can be installed into a
-separate React application:
+The npm installation command for the first release is:
+
+```sh
+npm install react-strudel-kit
+```
+
+During release preparation, evaluate a local tarball in a separate React
+application:
 
 ```sh
 # From the repository root; prepack builds ESM and declarations first.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { execFileSync } from 'node:child_process'
-import { cpSync, lstatSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import { cpSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, relative } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -26,13 +26,13 @@ try {
   const tarball = join(work, tarballs[0])
   const [pack] = JSON.parse(run('npm', ['pack', tarball, '--dry-run', '--ignore-scripts', '--json']))
   const files = new Set(pack.files.map(file => file.path))
-  for (const path of ['README.md', 'LICENSE', 'src/useStrudel.ts', 'dist/index.js', 'dist/react.js']) assert(files.has(path), `Missing ${path}`)
+  for (const path of ['README.md', 'LICENSE', 'CHANGELOG.md', 'src/useStrudel.ts', 'dist/index.js', 'dist/react.js']) assert(files.has(path), `Missing ${path}`)
   for (const entry of Object.values(manifest.exports)) {
     for (const path of Object.values(entry)) assert(files.has(path.replace(/^\.\//, '')), `Missing export ${path}`)
   }
   for (const path of files) {
     assert(!/(?:\.test\.|\.type-test\.|^test\/|^scripts\/|tsconfig|vite\.config)/.test(path), `Unexpected packed file ${path}`)
-    assert(/^(?:dist\/|src\/|package\.json$|README\.md$|LICENSE$)/.test(path), `Unexpected packed path ${path}`)
+    assert(/^(?:dist\/|src\/|package\.json$|README\.md$|CHANGELOG\.md$|LICENSE$)/.test(path), `Unexpected packed path ${path}`)
   }
   assert.equal(readFileSync(join(root, 'LICENSE'), 'utf8'), readFileSync(join(root, 'packages/react-strudel-kit/LICENSE'), 'utf8'))
   console.log(`Tarball: ${pack.name}@${pack.version}, ${files.size} files, ${pack.size} bytes, ${pack.integrity}`)
@@ -133,6 +133,18 @@ try {
       await new Promise((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve()))
     }
   }
+  const artifacts = join(root, 'artifacts')
+  mkdirSync(artifacts, { recursive: true })
+  cpSync(tarball, join(artifacts, pack.filename))
+  writeFileSync(join(artifacts, 'package-validation.json'), JSON.stringify({
+    name: pack.name, version: pack.version, filename: pack.filename,
+    integrity: pack.integrity, shasum: pack.shasum,
+    sourceCommit: run('git', ['rev-parse', 'HEAD']).trim(),
+    sourceDirty: Boolean(run('git', ['status', '--porcelain', '--untracked-files=no']).trim()),
+    node: process.version, typescript: installedVersion('typescript'), vite: installedVersion('vite'),
+    react: versions.map(version => version.react),
+  }, null, 2) + '\n')
+  console.log(`Tested artifact saved to ${join('artifacts', pack.filename)}`)
   success = true
 } catch (error) {
   if (error.stdout) console.error(error.stdout.toString())

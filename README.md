@@ -4,8 +4,8 @@ A TypeScript toolkit for creating Strudel patterns, with a browser-only React
 playback hook and a small Vite playground. Strudel owns the pattern engine and
 audio scheduler; this package provides typed composition and React integration.
 
-The package is currently a **private workspace package**, preparing its first npm
-release. See the [release plan](docs/release-plan.md) and
+The workspace package is preparing its first npm release and is **not yet
+published**. See the [release plan](docs/release-plan.md) and
 [package README](packages/react-strudel-kit/README.md) for local tarball installation.
 
 ## Run the playground
@@ -172,5 +172,5 @@ This project is licensed under [AGPL-3.0-or-later](LICENSE), selected for the fi
 release to follow Strudel's integration guidance. The pinned Strudel packages
 also declare `AGPL-3.0-or-later` and retain their own notices. See the
 [upstream integration and license guidance](https://strudel.cc/technical-manual/project-start/).
-The root app and package remain private while release checks are completed;
-[the release plan](docs/release-plan.md) tracks packaging and publication.
+The root app remains private. Only `packages/react-strudel-kit` is configured for
+public npm publication; [the release plan](docs/release-plan.md) tracks progress.
