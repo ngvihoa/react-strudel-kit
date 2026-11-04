@@ -9,7 +9,7 @@ selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
 The suite covers:
 
-- All 21 routes at 375, 768 and 1440px, with no page-level horizontal overflow
+- All 25 routes at 375, 768 and 1440px, with no page-level horizontal overflow
   or links to unknown routes. Desktop and mobile Learn/Cookbook screenshots are
   saved under the ignored `test-results/` directory for visual review.
 - Automated axe accessibility checks on every route at 375 and 1440px, plus the
@@ -64,7 +64,12 @@ typescript-estree releases require minimatch 10. The npm force suggestion would
 downgrade typescript-eslint to 8.14.0. No forced downgrade, major override or audit
 suppression was applied. Recheck upstream support before updating this dependency.
 
-## Listening pass — pending owner review
+## Listening pass — owner accepted 2026-11-04
+
+After the Lo-fi iteration below, the owner accepted the current sound in the
+conversation on 2026-11-04. No further sound changes were requested. This records
+the owner's listening judgement, not a measured clipping check or a documented
+cross-device/browser matrix. The listening checklist was:
 
 - Listen to each Cookbook sound alone and in its groove; compare default,
   minimum, maximum and reset settings with the explanation on the page.
@@ -86,8 +91,8 @@ Validation for this iteration: 45 content/site tests, lint, typecheck and produc
 build passed. The focused Lo-fi Playwright test passed Play/Stop for all four
 players against the real engine, including Jazzy chords and the full loop.
 
-The owner approved the revised Lo-fi chords on 2026-11-03. Other sounds, gains and
-slider ranges remain pending.
+The owner approved the revised Lo-fi chords on 2026-11-03, followed by acceptance
+of the current sound overall on 2026-11-04.
 
 ## Path routing — 2026-11-03
 
@@ -132,4 +137,5 @@ Final 2026-11-03 validation passed: 20 Vitest files / 187 tests, all 45 Playwrig
 tests, lint, typecheck and production build. The 25 routes support direct visits
 and document reloads, pass axe at 375/1440px and have no horizontal page overflow at
 375/768/1440px. New lesson screenshots were visually reviewed. The owner approved
-the Lo-fi chord revision; this does not replace listening review of other sounds.
+the Lo-fi chord revision at that point. Overall listening acceptance is recorded
+in the 2026-11-04 section above.

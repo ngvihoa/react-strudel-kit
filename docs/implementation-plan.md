@@ -13,12 +13,13 @@ cân nhắc framework tài liệu hoặc tách app riêng.
 
 Template UI, điều hướng, 5 bài Learn, 7 trang Cookbook, 11 trang Examples và API
 Reference đã có (xem checklist bên dưới). Kiểm tra browser và audio lifecycle
-tự động đã hoàn tất; bước tiếp theo là nghe thử trên thiết bị thật để chỉnh chất âm.
+tự động đã hoàn tất. Người dùng đã duyệt chất âm hiện tại; bước tiếp theo là
+chuẩn bị phát hành npm theo [kế hoạch release](release-plan.md).
 
 Xác minh 2026-11-02: đã sửa skip link và accessibility, thêm browser tests,
 vá dependency trong range hiện hành và tách Strudel thành chunk tải ở lần Play
 đầu tiên. Audit còn 12 moderate từ minimatch của tooling, không còn high;
-production 0. Chi tiết, kích thước bundle và phần nghe thử còn lại ở
+production 0. Chi tiết, kích thước bundle và phạm vi xác minh ở
 [ghi chú xác minh](validation.md).
 
 ### Cấu trúc điều hướng
@@ -121,30 +122,30 @@ lựa chọn **tiếng Việt**:
 - [x] Hoàn thiện bài “Bản nhạc đầu tiên” và trang example Dance Monkey làm mẫu;
   code hiển thị và playback dùng cùng source: trang import module và bản `?raw`
   của nó, cắt theo `// #region`; tab “Strudel output” lấy từ `toStrudelCode`
-  của pattern đang phát. *Cần nghe thử trên thiết bị thật.*
+  của pattern đang phát.
 - [x] Thêm các example cơ bản theo lộ trình và ba bài Cookbook đầu tiên:
   kick, snare, hi-hat; có liên kết qua lại giữa bài học và ví dụ.
   Âm thanh (`src/content/drums.ts`) là danh sách modifier, tách khỏi nhịp; example
   import âm và tự viết nhịp. Examples: A simple melody, Four on the floor, Backbeat,
   Hi-hat accents. Trang dùng chung template `SoundArticle` / `ExampleArticle`
   (`src/site/templates.tsx`). Các nhận định về nhịp trên trang được kiểm tra bằng
-  engine Strudel thật (`src/content/content.test.ts`). *Cần nghe thử trên thiết bị thật.*
+  engine Strudel thật (`src/content/content.test.ts`).
 - [x] Mở rộng bass, keys, lead, pad và các ví dụ nhiều phong cách; bổ sung
   API Reference và đồng bộ README/quickstart theo API hiện hành.
   Cookbook tonal ở `src/content/tonal.ts`; examples: Bass line, Chords and arpeggios,
   Layer a song, Control it with React (component chạy thật trên trang), Lo-fi loop,
   House loop. Trang `/api` sinh bảng hàm từ `functionRegistry` (thiếu mô tả là lỗi
   biên dịch) và cột “Used in” quét source các trang. Nhạc lý (hợp âm, quãng năm,
-  swing, off-beat) được kiểm tra bằng engine Strudel thật. *Cần nghe thử trên thiết bị thật.*
+  swing, off-beat) được kiểm tra bằng engine Strudel thật.
 - [x] Kiểm tra tự động điều hướng, responsive, keyboard và audio lifecycle.
   Playwright chạy production build: 25 route ở 375/768/1440px; axe trên mọi trang;
   Play/Stop từng player với Strudel/Web Audio thật; ownership, keyboard, React mixer,
   Playground và hủy Play đang chờ audio khi Stop/chuyển trang. Vitest kiểm tra
   cancellation và nhạc lý; tab Strudel output phản ánh tham số đang chọn.
   Chạy bằng `npm run test:e2e`; xem [ghi chú xác minh](validation.md).
-- [ ] Nghe thử trên thiết bị thật: chỉnh gain, defaults và slider ranges theo
-  chất âm thực tế, ưu tiên tonal Cookbook, Lo-fi và House. Kiểm thử tự động
-  không xác nhận được chất lượng âm, clipping hay khả năng tương thích thiết bị.
+- [x] Người dùng duyệt chất âm hiện tại ngày 2026-11-04, sau vòng chỉnh Lo-fi.
+  Đây là đánh giá nghe của người dùng; chưa có ma trận browser/thiết bị được ghi
+  nhận. Kiểm thử tự động không xác nhận chất lượng âm hoặc clipping.
 
 ### Chuỗi Learn tiếp theo — 2026-11-03
 
