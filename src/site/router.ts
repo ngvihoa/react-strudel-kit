@@ -5,6 +5,7 @@ import type { MouseEvent } from 'react'
 export const ROUTES = {
   home: '/',
   docs: '/docs',
+  installation: '/docs/installation',
   firstSong: '/learn/first-song',
   makeBeat: '/learn/make-a-beat',
   addBass: '/learn/add-a-bass-line',

@@ -51,7 +51,10 @@ export const EXAMPLES_NAV: readonly NavGroup[] = [
 
 /** All articles share one navigation tree; URLs stay stable for bookmarks. */
 export const DOCS_NAV: readonly NavGroup[] = [
-  { title: 'Start here', icon: Compass, items: [{ label: 'Documentation', path: ROUTES.docs }] },
+  { title: 'Start here', icon: Compass, items: [
+    { label: 'Introduction', path: ROUTES.docs },
+    { label: 'Installation', path: ROUTES.installation },
+  ] },
   { title: 'Learn', icon: BookOpen, items: LEARN_NAV.flatMap((group) => group.items) },
   { title: 'Sound cookbook', icon: AudioLines, items: COOKBOOK_NAV.flatMap((group) => group.items) },
   { title: 'Examples', icon: Music2, items: EXAMPLES_NAV.flatMap((group) => group.items).map((item) =>

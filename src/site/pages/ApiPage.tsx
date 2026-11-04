@@ -14,6 +14,7 @@ const SOURCES = import.meta.glob<string>(['../../content/**/*.{ts,tsx}', '!../..
   { query: '?raw', import: 'default', eager: true })
 
 const PAGES: readonly { label: string, path: RoutePath, file: string }[] = [
+  { label: 'Installation', path: ROUTES.installation, file: 'content/GettingStarted.tsx' },
   { label: 'Your first song', path: ROUTES.firstSong, file: 'content/firstSong.ts' },
   { label: 'Make a beat', path: ROUTES.makeBeat, file: 'content/lessons/makeBeat.ts' },
   { label: 'Add a bass line', path: ROUTES.addBass, file: 'content/lessons/addBass.ts' },

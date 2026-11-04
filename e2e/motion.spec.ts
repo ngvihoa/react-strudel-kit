@@ -49,7 +49,7 @@ test('questions expand smoothly, reverse repeated clicks and retain keyboard and
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await summary.click()
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).click()
-  await expect(page.locator('h1')).toHaveText('Make music with code')
+  await expect(page.locator('h1')).toHaveText('Introduction')
   expect(errors).toEqual([])
 })
 
@@ -79,7 +79,7 @@ test('Anime.js reveals lower sections once and responds to reduced motion withou
   // Cleanup while an entrance is running must leave the next route usable.
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).click()
-  await expect(page.locator('h1')).toHaveText('Make music with code')
+  await expect(page.locator('h1')).toHaveText('Introduction')
   expect(errors).toEqual([])
 })
 

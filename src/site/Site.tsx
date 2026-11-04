@@ -11,6 +11,7 @@ import { SectionNav } from './components'
 import { PlaybackProvider } from './PlaybackProvider'
 import { HomePage } from './pages/HomePage'
 import { DocsPage } from './pages/DocsPage'
+import { InstallationPage } from './pages/InstallationPage'
 import { ApiPage } from './pages/ApiPage'
 import { BassPage, HiHatPage, KeysPage, KickPage, LeadPage, PadPage, SnarePage } from './pages/cookbook'
 import { DanceMonkeyPage } from './pages/DanceMonkeyPage'
@@ -36,6 +37,7 @@ const SECTIONS: readonly { label: string, path: RoutePath }[] = [
 const PAGES = {
   [ROUTES.home]: HomePage,
   [ROUTES.docs]: DocsPage,
+  [ROUTES.installation]: InstallationPage,
   [ROUTES.firstSong]: LessonPage,
   [ROUTES.makeBeat]: MakeBeatPage,
   [ROUTES.addBass]: AddBassPage,

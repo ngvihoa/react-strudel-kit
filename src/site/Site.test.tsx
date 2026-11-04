@@ -41,6 +41,27 @@ describe('learning site template', () => {
     }
   })
 
+  it('starts with Introduction and Installation and renders the actual starter component source', async () => {
+    go('/docs')
+    render(<Site />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Introduction' })).toBeInTheDocument()
+    const navigation = screen.getByRole('navigation', { name: 'Documentation' })
+    expect(within(navigation).getAllByRole('link').slice(0, 2).map((link) => link.textContent)).toEqual(['Introduction', 'Installation'])
+    fireEvent.click(within(navigation).getAllByRole('link', { name: 'Installation' })[0])
+    expect(screen.getByRole('heading', { level: 1, name: 'Installation' })).toBeInTheDocument()
+    expect(screen.getByText('npm install react-strudel-kit')).toBeInTheDocument()
+    const starter = screen.getByRole('group', { name: 'First pattern player' })
+    expect(within(starter).getByText('idle')).toBeInTheDocument()
+    expect(evaluate).not.toHaveBeenCalled()
+    expect(document.querySelector('pre')?.textContent).toBe('npm install react-strudel-kit')
+    expect([...document.querySelectorAll('pre')].some((pre) => pre.textContent?.includes('export function GettingStarted()'))).toBe(true)
+    fireEvent.click(within(starter).getByRole('button', { name: 'Play' }))
+    await waitFor(() => expect(within(starter).getByText('playing')).toBeInTheDocument())
+    expect(evaluate).toHaveBeenLastCalledWith('note("c4 e4 g4 b4").s("triangle").gain(0.3).cpm(30)', false)
+    fireEvent.click(within(starter).getByRole('button', { name: 'Stop' }))
+    await waitFor(() => expect(within(starter).getByText('idle')).toBeInTheDocument())
+  })
+
   it('switches full landing arrangements without autoplay and updates the live level', async () => {
     render(<Site />)
     fireEvent.click(screen.getByRole('button', { name: 'House' }))

@@ -172,3 +172,14 @@ at maximum. The initial slider stays at 70%. Per-event velocity is preserved;
 the slider no longer overwrites the hi-hat accents or echoed notes' velocities.
 Strudel output shows the actual applied level. Cookbook/examples and package
 defaults are unchanged. See the PCM measurement bounds in `validation.md`.
+
+## Docs onboarding — 2026-11-04
+
+The Start here group now begins with Introduction at `/docs`, then Installation
+at `/docs/installation`. Introduction explains the toolkit's scope, the Strudel
+relationship and routes into the learning material. Installation covers consumer
+requirements, npm installation, public imports and a small React player. It
+renders and displays the same `src/content/GettingStarted.tsx` module, without a
+second site player. Both articles retain the shared sidebar and section index;
+the pager connects Introduction → Installation → Your first song in both directions.
+Internal setup and package-development instructions remain in repository docs.

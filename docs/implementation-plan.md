@@ -4,6 +4,8 @@
 
 ## Điều chỉnh theo feedback 2026-11-04
 
+- [x] Bổ sung Introduction ở `/docs` và Installation ở `/docs/installation`, có sidebar,
+  quick access, component mẫu chạy trực tiếp và luồng sang bài Your first song.
 - [x] Dùng Anime.js: hero chậm hơn, reveal các khối phía dưới khi cuộn, hỗ trợ reduced motion.
 - [x] Header có GitHub/npm; icon ở nhóm sidebar; footer Docs nằm trong cột nội dung.
 - [x] Quick access giữ mục đích khi nhảy xa, tiếp tục scrollspy khi cuộn thủ công.

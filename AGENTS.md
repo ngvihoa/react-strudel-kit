@@ -190,6 +190,9 @@ gains, filter values and slider ranges were chosen on paper.
 - `/` is the landing page, `/docs` is the shared documentation entrypoint, and
   `/playground` is the mixer/editor. Lessons, sounds, examples and API share the
   Docs sidebar. Preserve their existing URLs and the legacy hash migration.
+- Start here contains Introduction at `/docs` and Installation at
+  `/docs/installation`, followed by Your first song. The Installation page runs
+  and shows `src/content/GettingStarted.tsx`; use its raw source, not copied JSX.
 - Cap the site shell at 1280px; verify 375px, 768px and wide desktop layouts.
 
 ## Website priorities — owner feedback 2026-11-04

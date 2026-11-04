@@ -68,6 +68,10 @@
 
 /* Prose */
 .docs-body { margin-top: 40px; color: var(--ink-2); }
+.installation-demo { margin-bottom: 20px; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+.installation-demo [role="group"] { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.installation-demo output { color: var(--muted); font-size: .875rem; }
+.installation-demo [role="alert"] { flex-basis: 100%; }
 .docs-body > section, .docs-body > .lesson-step { margin-top: 56px; }
 .docs-body > :first-child { margin-top: 0; }
 .docs-body h2 { margin: 0 0 14px; color: var(--ink); font-size: 1.5rem; font-weight: 700; line-height: 1.3; letter-spacing: -.015em; scroll-margin-top: calc(var(--header) + 24px); }
@@ -247,8 +251,8 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
 .api-index .toc ol { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .docs-starts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
 .docs-starts section { padding: 24px; background: var(--panel); border-radius: var(--radius); }
-.docs-starts h2 { font-size: 1.125rem; }
-.docs-starts h2 a { text-decoration: none; }
+.docs-starts h3 { margin: 0 0 14px; font-size: 1.125rem; line-height: 1.3; }
+.docs-starts h3 a { text-decoration: none; }
 .docs-starts p { margin-bottom: 0; }
 @media (max-width: 860px) {
   .docs-starts { grid-template-columns: 1fr; gap: 16px; }

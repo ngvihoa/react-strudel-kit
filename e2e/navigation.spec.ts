@@ -1,5 +1,40 @@
 import { expect, test } from '@playwright/test'
 
+test('Introduction leads through Installation to a source-backed React player and the lessons', async ({ page, context }) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/docs')
+  await expect(page.locator('h1')).toHaveText('Introduction')
+  const navigation = page.locator('.section-nav-wide')
+  await expect(navigation.getByRole('link').nth(0)).toHaveText('Introduction')
+  await expect(navigation.getByRole('link').nth(1)).toHaveText('Installation')
+  await navigation.getByRole('link', { name: 'Installation', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(page).toHaveURL(/\/docs\/installation$/)
+  await expect(page.locator('h1')).toHaveText('Installation')
+  await expect(page.getByRole('complementary', { name: 'Quick access' }).getByRole('link', { name: 'Install the package', exact: true })).toBeVisible()
+  await page.locator('.code-block').first().getByRole('button', { name: 'Copy code' }).click()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('npm install react-strudel-kit')
+  await expect(page.locator('pre').nth(1)).toContainText('export function GettingStarted()')
+  const player = page.getByRole('group', { name: 'First pattern player' })
+  await expect(player.locator('output')).toHaveText('idle')
+  await player.getByRole('button', { name: 'Play', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(player.locator('output')).toHaveText('playing')
+  await player.getByRole('button', { name: 'Stop', exact: true }).click()
+  await expect(player.locator('output')).toHaveText('idle')
+  await player.getByRole('button', { name: 'Play', exact: true }).click()
+  await expect(player.locator('output')).toHaveText('playing')
+  await page.getByRole('navigation', { name: 'Previous and next' }).getByRole('link', { name: /Next.*Your first song/ }).click()
+  await expect(page.locator('h1')).toHaveText('Your first song')
+  await expect(page.locator('.player-playing')).toHaveCount(0)
+  await page.goBack()
+  await expect(page.locator('h1')).toHaveText('Installation')
+  await expect(player.locator('output')).toHaveText('idle')
+  expect(errors).toEqual([])
+})
+
 test('project links remain accessible at small and large widths; Docs footer stays beside the sidebar', async ({ page }) => {
   await page.goto('/docs')
   for (const width of [320, 375, 768, 1440]) {

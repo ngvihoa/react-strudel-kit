@@ -391,3 +391,21 @@ and preserved Lo-fi accent velocity. The targeted landing browser test passed
 with real playback, level updates, generated code, route cleanup and axe checks;
 lint, typecheck and production build passed. This is a website-only correction;
 no package release is required.
+
+## Introduction and Installation — 2026-11-04
+
+`/docs` is the Introduction article and `/docs/installation` provides consumer
+requirements, the npm command and a runnable React starter. Both are first in
+Start here and have a separate section index. Pager links connect Introduction,
+Installation and Your first song. The displayed starter is imported as raw text
+from the exact component rendered on the page; API Used in includes that module.
+
+The new browser flow verifies keyboard navigation, copying the npm command,
+actual Play/Stop, no initial autoplay, route cleanup and a stopped player after
+Back. Direct visits/reloads, all-route accessibility at 375/1440px and page widths
+at 375/768/1440/1920px include Installation. Rendered Introduction and Installation
+were inspected at 375, 768 and 1440px with no horizontal page overflow.
+
+190 unit tests in 20 files and all 54 Chromium tests passed. Lint, typecheck and
+production build passed; the existing large Strudel chunk warning remains.
+Package source, tarball contents and version are unchanged.

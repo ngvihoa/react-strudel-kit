@@ -6,7 +6,8 @@ import { ROUTES } from '../src/site/router'
 const routes = Object.values(ROUTES)
 const titles: Record<string, string> = {
   [ROUTES.home]: 'Make music with React.',
-  [ROUTES.docs]: 'Make music with code',
+  [ROUTES.docs]: 'Introduction',
+  [ROUTES.installation]: 'Installation',
   [ROUTES.firstSong]: 'Your first song',
   [ROUTES.makeBeat]: 'Make a beat',
   [ROUTES.addBass]: 'Add a bass line',
@@ -123,12 +124,12 @@ test('Back and Forward retain the page and stop its playback', async ({ page }) 
   await page.getByRole('button', { name: 'Play Jazzy chords', exact: true }).click()
   await expect(page.locator('.player-playing')).toHaveCount(1)
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).click()
-  await expect(page.locator('h1')).toHaveText('Make music with code')
+  await expect(page.locator('h1')).toHaveText('Introduction')
   await page.goBack()
   await expect(page.locator('h1')).toHaveText('Lo-fi loop')
   await expect(page.locator('.player-playing')).toHaveCount(0)
   await page.goForward()
-  await expect(page.locator('h1')).toHaveText('Make music with code')
+  await expect(page.locator('h1')).toHaveText('Introduction')
 })
 
 for (const width of [375, 768, 1440, 1920]) {
@@ -172,7 +173,7 @@ test('mobile navigation disclosures work by keyboard', async ({ page }) => {
   await expect(menu.getByRole('link')).toHaveCount(routes.length - 2)
   await page.getByRole('navigation', { name: 'Sections', exact: true }).getByRole('link', { name: 'Docs', exact: true }).focus()
   await page.keyboard.press('Enter')
-  await expect(page.locator('h1')).toHaveText('Make music with code')
+  await expect(page.locator('h1')).toHaveText('Introduction')
   await menu.locator('summary').focus()
   await page.keyboard.press('Enter')
   await menu.getByRole('link', { name: 'Snare', exact: true }).focus()
@@ -190,7 +191,7 @@ test('skip link moves keyboard focus and preserves the lesson route', async ({ p
   await expect(page.locator('h1')).toHaveText('Your first song')
 })
 
-const customPlayers = new Set<string>([ROUTES.home, ROUTES.docs, ROUTES.api, ROUTES.playground, ROUTES.reactMixer, ROUTES.controlReact])
+const customPlayers = new Set<string>([ROUTES.home, ROUTES.docs, ROUTES.installation, ROUTES.api, ROUTES.playground, ROUTES.reactMixer, ROUTES.controlReact])
 for (const route of [ROUTES.makeBeat, ROUTES.addBass, ROUTES.layerParts, ROUTES.controlReact]) {
   test(`${route}: lesson layout and accessibility`, async ({ page }, testInfo) => {
     await go(page, route)
