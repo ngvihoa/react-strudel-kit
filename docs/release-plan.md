@@ -12,6 +12,8 @@ trong `implementation-plan.md` được giữ để tham khảo.
 - Bản đầu đề xuất: `0.1.0` (version hiện có), ESM với hai entrypoint
   `react-strudel-kit` và `react-strudel-kit/react`.
 - Root workspace/reference app tiếp tục `private: true`; chỉ package được phát hành.
+- Website: `https://react-strudel-kit.vercel.app/`; npm homepage trỏ đến website,
+  repository/bugs trỏ đến GitHub. README npm có logo RSK và link Learn/API/Examples.
 - Mỗi phần hoàn thành có kiểm tra và commit riêng.
 
 ## 1. Đồng bộ trạng thái và lập kế hoạch
@@ -31,6 +33,8 @@ trong `implementation-plan.md` được giữ để tham khảo.
   loại test, mock, config và source của reference app.
 - [x] Build sạch trước mỗi lần pack để không lấy output cũ.
 - [x] Xem manifest thực tế của `npm pack`, kiểm tra các đích của exports tồn tại.
+- [x] Kèm logo trong `assets/`, dùng URL ảnh tuyệt đối trong README để hiển thị
+  trên npm; bổ sung link website/docs/GitHub/issues và license.
 
 Phát hiện ban đầu: `npm pack --dry-run` lấy 33 file source/test/config và không
 lấy `dist` do kế thừa `.gitignore`. Các entrypoint vì thế trỏ đến file vắng mặt.
@@ -58,7 +62,7 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 
 ## 5. Phát hành và xác minh registry
 
-- [ ] Người dùng đăng nhập npm bằng `npm login` và hoàn tất xác thực tài khoản.
+- [x] Người dùng đăng nhập npm bằng `npm login`; `npm whoami` xác nhận `ngvihoa`.
   Không gửi token, mật khẩu hoặc mã OTP vào chat hay commit.
 - [ ] Chốt version/dist-tag và tài khoản publish; kiểm tra tên lại ngay trước release.
 - [x] `npm publish` dry-run với bản `0.1.0`, public access và dist-tag `latest` qua;
@@ -66,6 +70,8 @@ Package chưa có README/license riêng. Đây là lỗi cần sửa trước kh
 - [ ] Đối chiếu `npm publish --dry-run` với artifact đã kiểm thử, rồi publish đúng
   tarball đó với public access. Ghi lại version, integrity và commit nguồn.
 - [ ] Cài bản từ npm vào consumer sạch; xác nhận metadata, types, build và playback.
+  Chạy `npm run test:package -- --registry`: cài version từ npm và so sánh integrity
+  với tarball local, rồi chạy lại các kiểm tra consumer React 18/19.
 - [ ] Tag Git đúng version và cập nhật trạng thái phát hành sau khi registry xác nhận.
 
 Các lần phát hành sau có thể dùng npm trusted publishing qua GitHub Actions.

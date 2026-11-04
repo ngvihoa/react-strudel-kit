@@ -9,6 +9,7 @@ import { chromium, expect } from '@playwright/test'
 const root = fileURLToPath(new URL('../', import.meta.url))
 const work = mkdtempSync(join(tmpdir(), 'react-strudel-kit-consumer-'))
 const manifest = JSON.parse(readFileSync(join(root, 'packages/react-strudel-kit/package.json'), 'utf8'))
+const fromRegistry = process.argv.includes('--registry')
 const installedVersion = (name) => JSON.parse(readFileSync(join(root, 'node_modules', name, 'package.json'), 'utf8')).version
 const run = (command, args, cwd = root) => execFileSync(command, args, {
   cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 180_000,
@@ -26,16 +27,21 @@ try {
   const tarball = join(work, tarballs[0])
   const [pack] = JSON.parse(run('npm', ['pack', tarball, '--dry-run', '--ignore-scripts', '--json']))
   const files = new Set(pack.files.map(file => file.path))
-  for (const path of ['README.md', 'LICENSE', 'CHANGELOG.md', 'src/useStrudel.ts', 'dist/index.js', 'dist/react.js']) assert(files.has(path), `Missing ${path}`)
+  for (const path of ['README.md', 'LICENSE', 'CHANGELOG.md', 'assets/rsk-logo.png', 'src/useStrudel.ts', 'dist/index.js', 'dist/react.js']) assert(files.has(path), `Missing ${path}`)
   for (const entry of Object.values(manifest.exports)) {
     for (const path of Object.values(entry)) assert(files.has(path.replace(/^\.\//, '')), `Missing export ${path}`)
   }
   for (const path of files) {
     assert(!/(?:\.test\.|\.type-test\.|^test\/|^scripts\/|tsconfig|vite\.config)/.test(path), `Unexpected packed file ${path}`)
-    assert(/^(?:dist\/|src\/|package\.json$|README\.md$|CHANGELOG\.md$|LICENSE$)/.test(path), `Unexpected packed path ${path}`)
+    assert(/^(?:dist\/|src\/|assets\/|package\.json$|README\.md$|CHANGELOG\.md$|LICENSE$)/.test(path), `Unexpected packed path ${path}`)
   }
   assert.equal(readFileSync(join(root, 'LICENSE'), 'utf8'), readFileSync(join(root, 'packages/react-strudel-kit/LICENSE'), 'utf8'))
+  assert.equal(manifest.homepage, 'https://react-strudel-kit.vercel.app/')
   console.log(`Tarball: ${pack.name}@${pack.version}, ${files.size} files, ${pack.size} bytes, ${pack.integrity}`)
+  if (fromRegistry) {
+    const dist = JSON.parse(run('npm', ['view', `${manifest.name}@${manifest.version}`, 'dist', '--json', '--registry=https://registry.npmjs.org']))
+    assert.equal(dist.integrity, pack.integrity, 'Registry artifact differs from the local release tarball')
+  }
 
   browser = await chromium.launch({
     executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,
@@ -51,7 +57,7 @@ try {
     writeFileSync(join(app, 'package.json'), JSON.stringify({
       name: 'isolated-tarball-consumer', private: true, type: 'module',
       dependencies: {
-        [manifest.name]: `file:${tarball}`,
+        [manifest.name]: fromRegistry ? manifest.version : `file:${tarball}`,
         react: version.react, 'react-dom': version.react,
       },
       devDependencies: {
@@ -63,6 +69,11 @@ try {
     const kit = join(app, 'node_modules', manifest.name)
     assert(!lstatSync(kit).isSymbolicLink(), 'Consumer resolved a workspace link')
     assert(realpathSync(kit).startsWith(realpathSync(app) + '/'), 'Kit must be installed inside the consumer')
+    const lock = JSON.parse(readFileSync(join(app, 'package-lock.json'), 'utf8'))
+    const installed = lock.packages[`node_modules/${manifest.name}`]
+    assert.equal(installed.version, manifest.version)
+    assert.equal(installed.integrity, pack.integrity, 'Installed artifact integrity mismatch')
+    if (fromRegistry) assert(installed.resolved.startsWith('https://registry.npmjs.org/'))
     // Reuse public contract assertions, with no app shims or TS path aliases.
     cpSync(join(root, 'src/test/public-api.type-test.ts'), join(app, 'public-api.type-test.ts'))
     const readme = readFileSync(join(root, 'packages/react-strudel-kit/README.md'), 'utf8')
@@ -127,7 +138,7 @@ try {
       await assertStopped()
       await expect(page.getByRole('alert')).toHaveCount(0)
       assert.deepEqual(errors, [])
-      console.log(`PASS React ${version.react}: isolated install, bundler/NodeNext declarations, README, production build, real Play/Update/Stop/unmount`)
+      console.log(`PASS React ${version.react}: ${fromRegistry ? 'registry' : 'tarball'} install, bundler/NodeNext declarations, README, production build, real Play/Update/Stop/unmount`)
     } finally {
       await page.close()
       await new Promise((resolve, reject) => server.httpServer.close(error => error ? reject(error) : resolve()))
@@ -138,6 +149,7 @@ try {
   cpSync(tarball, join(artifacts, pack.filename))
   writeFileSync(join(artifacts, 'package-validation.json'), JSON.stringify({
     name: pack.name, version: pack.version, filename: pack.filename,
+    installSource: fromRegistry ? 'registry' : 'tarball',
     integrity: pack.integrity, shasum: pack.shasum,
     sourceCommit: run('git', ['rev-parse', 'HEAD']).trim(),
     sourceDirty: Boolean(run('git', ['status', '--porcelain', '--untracked-files=no']).trim()),

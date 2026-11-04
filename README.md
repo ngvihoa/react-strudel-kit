@@ -4,6 +4,10 @@ A TypeScript toolkit for creating Strudel patterns, with a browser-only React
 playback hook and a small Vite playground. Strudel owns the pattern engine and
 audio scheduler; this package provides typed composition and React integration.
 
+[Website](https://react-strudel-kit.vercel.app/) ·
+[Learn](https://react-strudel-kit.vercel.app/learn/first-song) ·
+[API reference](https://react-strudel-kit.vercel.app/api)
+
 The workspace package is preparing its first npm release and is **not yet
 published**. See the [release plan](docs/release-plan.md) and
 [package README](packages/react-strudel-kit/README.md) for local tarball installation.

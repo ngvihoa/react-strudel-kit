@@ -212,3 +212,26 @@ tested tarball passed with `--tag latest --access public --ignore-scripts`.
 No package has been published and no Git release tag has been created. The npm
 account must still authenticate before actual publication; the name/version and
 registry integrity will be checked again at that point.
+
+### npm presentation and deployed documentation
+
+The owner supplied `https://react-strudel-kit.vercel.app/` as the public website.
+Package `homepage` now uses that URL; repository and issue links remain on GitHub.
+The package README includes an absolute logo image URL, Website/Learn/API/GitHub/
+Issues links and links to the live Cookbook, examples and Playground. The same
+logo is included as `assets/rsk-logo.png` in the tarball. The package LICENSE link
+is absolute so it can work from npm's rendered README as well as GitHub.
+
+The updated 48-file tarball (67,936 bytes compressed at this stage) passed both
+isolated React consumers again, including README compilation and installed
+integrity checks. `npm run test:package -- --registry` adds post-publication
+verification against the registry's integrity and installs that exact npm version.
+
+Live checks initially found HTTP 200 at the website root and HTTP 404 at
+`/learn/first-song`. `vercel.json` now supplies the SPA rewrite recommended in
+[Vercel's Vite documentation](https://vercel.com/docs/frameworks/frontend/vite#using-vite-to-make-spas).
+The deployment and linked routes will be checked after this commit is pushed.
+
+The first hosted CI run on release candidate `4329165` passed on Node 24:
+[run 41834296827](https://github.com/ngvihoa/react-strudel-kit/actions/runs/41834296827).
+The metadata/assets update will receive its own hosted run before publication.

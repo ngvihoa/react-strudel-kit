@@ -1,12 +1,20 @@
 # React Strudel Kit
 
+[![React Strudel Kit](https://raw.githubusercontent.com/ngvihoa/react-strudel-kit/main/packages/react-strudel-kit/assets/rsk-logo.png)](https://react-strudel-kit.vercel.app/)
+
 Typed Strudel pattern composition and a shared React playback hook. Strudel owns
 the pattern engine and audio scheduler; this kit adds typed builders, serializers
 and React lifecycle integration.
 
+[Website](https://react-strudel-kit.vercel.app/) ·
+[Learn](https://react-strudel-kit.vercel.app/learn/first-song) ·
+[API reference](https://react-strudel-kit.vercel.app/api) ·
+[GitHub](https://github.com/ngvihoa/react-strudel-kit) ·
+[Report an issue](https://github.com/ngvihoa/react-strudel-kit/issues)
+
 ## Installation
 
-The npm installation command for the first release is:
+Install into an existing React application:
 
 ```sh
 npm install react-strudel-kit
@@ -88,7 +96,9 @@ availability, musical values or raw JavaScript code.
 ## Documentation and compatibility
 
 - [Usage, API boundaries and troubleshooting](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/usage.md)
-- [Reference app, lessons, Cookbook and examples](https://github.com/ngvihoa/react-strudel-kit#readme)
+- [Sound Cookbook](https://react-strudel-kit.vercel.app/cookbook/kick)
+- [Runnable examples](https://react-strudel-kit.vercel.app/examples/simple-melody)
+- [Interactive Playground](https://react-strudel-kit.vercel.app/playground)
 - [Validation and tested versions](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/validation.md)
 - Runtime dependencies are pinned to `@strudel/web@1.3.0` and `@strudel/mini@1.2.6`.
 - Isolated tarball consumers have been tested with React/React DOM 18.3.1 and
@@ -97,6 +107,6 @@ availability, musical values or raw JavaScript code.
 
 ## License
 
-AGPL-3.0-or-later. See [LICENSE](./LICENSE) and the
+AGPL-3.0-or-later. See [LICENSE](https://github.com/ngvihoa/react-strudel-kit/blob/main/LICENSE) and the
 [Strudel integration guidance](https://strudel.cc/technical-manual/project-start/).
 Strudel dependencies retain their own notices and licenses.

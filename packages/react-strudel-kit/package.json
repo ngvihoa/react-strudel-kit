@@ -8,12 +8,13 @@
     "url": "git+https://github.com/ngvihoa/react-strudel-kit.git",
     "directory": "packages/react-strudel-kit"
   },
-  "homepage": "https://github.com/ngvihoa/react-strudel-kit#readme",
+  "homepage": "https://react-strudel-kit.vercel.app/",
   "bugs": "https://github.com/ngvihoa/react-strudel-kit/issues",
   "keywords": ["strudel", "react", "typescript", "music", "live-coding"],
   "type": "module",
   "files": [
     "CHANGELOG.md",
+    "assets",
     "dist",
     "src",
     "!src/**/*.test.*",
