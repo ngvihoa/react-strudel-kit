@@ -1,7 +1,7 @@
 import source from '../../content/examples/ReactMixer.tsx?raw'
 import { ReactMixer } from '../../content/examples/ReactMixer'
 import { sourceRegion, stripRegions } from '../../content/source'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, Toc } from '../components'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager } from '../components'
 import { ROUTES, href } from '../router'
 
 const TOC = [
@@ -14,14 +14,13 @@ const TOC = [
 /** This page runs the user-facing component as written: no site player wraps it. */
 export function ReactMixerPage() {
   return (
-    <DocsLayout variant="example"
+    <DocsLayout variant="example" toc={TOC}
       header={<PageHeader crumbs={['Examples', 'React']} title="Control it with React"
         intro="A small React component that plays the Layer a song example and lets you change tempo and mute parts while it runs."
         meta={['Intermediate', 'useStrudel', 'play · update · stop']}
         learn={[<>Turn React state into a typed pattern, and swap it in with <code>update()</code> while music plays</>]} />}
       asideLabel="About this example"
       aside={<div className="facts">
-        <Toc items={TOC} />
         <div><p>Techniques</p><ul><li><code>useStrudel</code></li><li><code>play</code> · <code>update</code> · <code>stop</code></li><li>A pure pattern builder</li></ul></div>
         <div><p>Learn first</p><ul><li><a href={href(ROUTES.layerASong)}>Layer a song</a></li></ul></div>
         <div><p>Reference</p><ul><li><a href={href(ROUTES.api)}>API reference</a></li></ul></div>

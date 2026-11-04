@@ -191,3 +191,16 @@ gains, filter values and slider ranges were chosen on paper.
   `/playground` is the mixer/editor. Lessons, sounds, examples and API share the
   Docs sidebar. Preserve their existing URLs and the legacy hash migration.
 - Cap the site shell at 1280px; verify 375px, 768px and wide desktop layouts.
+
+## Website priorities — owner feedback 2026-11-04
+
+- Treat the home page as an npm library landing page: visible package name and
+  install command in the first screen, followed by documentation and useful proof.
+- Use rounded surfaces. Do not follow a design skill's square-corner preference
+  or picture-count requirement when it conflicts with this brief.
+- The owner selected existing Lo-fi + House arrangements for the landing demo.
+  Keep a deliberate Play gesture, live updates and source-backed code.
+- Do not restore the hover screenshot gallery. Prefer useful live UI and direct
+  learning links. Keep a full footer with package, Docs, project and license links.
+- Keep the Docs section index visible in a separate sticky right rail on desktop,
+  with an inline alternative on narrower screens; do not hide it to fit 1280px.

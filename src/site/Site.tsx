@@ -3,6 +3,7 @@ import type { ComponentType } from 'react'
 import { useStrudel } from 'react-strudel-kit/react'
 import App from '../App'
 import logo from '../assets/rsk-logo.png'
+import { SiteFooter } from './SiteFooter'
 import { DOCS_NAV } from './navigation'
 import { SectionNav } from './components'
 import { PlaybackProvider } from './PlaybackProvider'
@@ -122,7 +123,7 @@ export function Site() {
             <Page key={route} />
           </div>}
         </main>
-        <footer className="site-footer"><span>Made to be played with.</span><nav aria-label="Project links"><a href="https://github.com/ngvihoa/react-strudel-kit">GitHub</a><a href="https://www.npmjs.com/package/react-strudel-kit">npm</a><a href="https://strudel.cc">Strudel</a></nav><span>Audio stays in your browser.</span></footer>
+        <SiteFooter />
       </div>
     </PlaybackProvider>
   )

@@ -5,7 +5,7 @@ import { ROUTES } from '../src/site/router'
 
 const routes = Object.values(ROUTES)
 const titles: Record<string, string> = {
-  [ROUTES.home]: 'Turn code into music.',
+  [ROUTES.home]: 'Make music with React.',
   [ROUTES.docs]: 'Make music with code',
   [ROUTES.firstSong]: 'Your first song',
   [ROUTES.makeBeat]: 'Make a beat',
@@ -54,34 +54,59 @@ test('every nested route supports a direct visit and a document reload', async (
   }
 })
 
-test('landing demo changes live, copies install command and stops on Docs navigation', async ({ page, context }) => {
+test('landing presents installation first, plays full sessions and cleans up on navigation', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await go(page, ROUTES.home)
-  expect(await page.locator('.landing-notes button').first().evaluate((element) => getComputedStyle(element).animationName)).toBe('none')
-  const demo = page.getByRole('region', { name: 'Four notes. Your sound. player' })
-  await demo.getByRole('button', { name: /^Mute E4 / }).click()
-  await demo.getByRole('combobox', { name: 'Sound' }).selectOption('sine')
+  const hero = page.locator('.landing-hero')
+  await expect(hero.getByText('react-strudel-kit', { exact: true })).toBeVisible()
+  const install = hero.getByRole('button', { name: 'Copy install command' })
+  expect((await install.boundingBox())!.y).toBeLessThan(1000)
+  expect(await hero.locator('h1 span').first().evaluate((element) => getComputedStyle(element).animationName)).toBe('none')
+  const demo = page.getByRole('region', { name: / session player$/ })
   await expect(demo.locator('.player-state')).toHaveText('Ready')
-  await expect(page.locator('.landing-output')).toContainText('note("c4 ~ g4 b4").s("sine")')
-  await demo.getByRole('button', { name: /^Play / }).click()
+  await page.getByRole('button', { name: 'House', exact: true }).click()
+  await expect(demo).toHaveAttribute('aria-label', 'House session player')
+  await expect(demo.locator('.player-state')).toHaveText('Ready')
+  await demo.getByRole('button', { name: 'Play House session' }).click()
   await expect(demo.locator('.player-state')).toHaveText('Playing')
+  await page.getByRole('button', { name: 'Lo-fi', exact: true }).click()
+  await expect(demo).toHaveAttribute('aria-label', 'Lo-fi session player')
+  await expect(demo.locator('.player-state')).toHaveText('Playing')
+  await demo.getByRole('slider', { name: /Listening level/ }).fill('50')
+  await page.getByRole('button', { name: 'Strudel output', exact: true }).click()
+  await expect(page.locator('.session-code pre')).toContainText('velocity(0.5)')
+  await expect(page.locator('.session-code pre')).toContainText('cpm(20)')
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-  await demo.getByRole('slider', { name: /Tempo/ }).focus()
-  await page.keyboard.press('ArrowRight')
-  await expect(page.locator('.landing-output')).toContainText('cpm(30.25)')
-  await expect(demo.locator('.player-state')).toHaveText('Playing')
-  await demo.getByRole('button', { name: /^Stop / }).click()
+  await demo.getByRole('button', { name: 'Stop Lo-fi session' }).click()
   await expect(demo.locator('.player-state')).toHaveText('Ready')
-  await page.getByRole('button', { name: 'Copy install command' }).click()
+  await install.click()
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('npm install react-strudel-kit')
-  await expect(page.getByRole('button', { name: 'Copied install command' })).toBeVisible()
+  await expect(hero.getByRole('button', { name: 'Copied install command' })).toBeVisible()
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
-  await demo.getByRole('button', { name: /^Play / }).click()
+  await demo.getByRole('button', { name: 'Play Lo-fi session' }).click()
   await expect(demo.locator('.player-state')).toHaveText('Playing')
-  await page.getByRole('link', { name: 'Start making music' }).click()
+  await hero.getByRole('link', { name: 'Get started', exact: true }).click()
   await expect(page.locator('h1')).toHaveText('Your first song')
   await expect(page.locator('.player-playing')).toHaveCount(0)
+})
+
+test('Docs section index stays on the right while scrolling and supports keyboard jumps', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const rail = page.getByRole('complementary', { name: 'Quick access' })
+  await expect(rail).toBeVisible()
+  expect(await rail.evaluate((element) => getComputedStyle(element).position)).toBe('sticky')
+  const article = await page.locator('.docs-main').boundingBox()
+  expect((await rail.boundingBox())!.x).toBeGreaterThanOrEqual(article!.x + article!.width)
+  await page.evaluate(() => window.scrollTo(0, 700))
+  await expect.poll(async () => (await rail.boundingBox())!.y).toBe(60)
+  await rail.getByRole('link', { name: 'Set the tempo', exact: true }).focus()
+  await page.keyboard.press('Enter')
+  await expect(rail.getByRole('link', { name: 'Set the tempo', exact: true })).toHaveAttribute('aria-current', 'location')
+  await expect(page.getByRole('heading', { name: 'Set the tempo', exact: true })).toBeInViewport()
+  await go(page, ROUTES.api)
+  await expect(rail.getByRole('link', { name: 'Modifiers', exact: true })).toBeVisible()
 })
 
 test('old hash bookmarks become clean URLs and survive reload', async ({ page }) => {

@@ -4,7 +4,7 @@ import {
   slow, stack, subcycle, toMiniNotation, weight,
 } from 'react-strudel-kit'
 import type { FunctionName, MiniNode } from 'react-strudel-kit'
-import { Callout, DocsLayout, PageHeader, Toc } from '../components'
+import { Callout, DocsLayout, PageHeader } from '../components'
 import { ROUTES, href } from '../router'
 import type { RoutePath } from '../router'
 
@@ -137,11 +137,10 @@ function Section({ id, title, children }: { id: string, title: string, children:
 
 export function ApiPage() {
   return (
-    <DocsLayout variant="reference"
+    <DocsLayout variant="reference" toc={SECTIONS}
       header={<PageHeader crumbs={['API']} title="API reference"
         intro="Every public helper, the functions fn() accepts, and how playback behaves. Tables are generated from the package, and “Used in” links to pages that call each function."
         meta={['react-strudel-kit', 'react-strudel-kit/react']} />}>
-      <div className="api-index"><Toc items={SECTIONS} /></div>
       <Section id="entrypoints" title="Entrypoints">
         <div className="table-wrap" tabIndex={0}><table className="anatomy">
           <thead><tr><th scope="col">Import</th><th scope="col">Contents</th></tr></thead>

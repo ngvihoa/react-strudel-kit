@@ -5,7 +5,7 @@ import { FIRST_SONG_STEPS, TUNE_DEFAULTS, myTune } from '../../content/firstSong
 import type { TuneSettings, TuneSlot } from '../../content/firstSong'
 import { sourceRegion } from '../../content/source'
 import { WAVEFORMS } from '../../mixer'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSelect, ParamSlider, Player, Toc } from '../components'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSelect, ParamSlider, Player } from '../components'
 import { ROUTES, href } from '../router'
 
 const code = (region: string) => sourceRegion(source, region)
@@ -104,7 +104,7 @@ export function LessonPage() {
         learn={[<>Play a note with <code>pitch</code> and <code>fn('note', …)</code></>, <>Put notes in a row with <code>sequence</code></>,
           <>Shape rhythm with <code>weight</code> and <code>rest</code>, and how that differs from <code>repeat</code></>, <>Set the speed with <code>cpm</code></>]} />}
       asideLabel="On this page"
-      aside={<Toc items={TOC} />}>
+      toc={TOC}>
       <Callout kind="caution" title="Before you press Play">
         Turn your device volume down. Sound starts only when you press a Play button, and only one example plays at a time.
       </Callout>

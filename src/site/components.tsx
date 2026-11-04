@@ -180,19 +180,21 @@ type DocsLayoutProps = {
   header: ReactNode
   aside?: ReactNode
   asideLabel?: string
+  toc?: readonly { id: string, label: string }[]
   children: ReactNode
   variant: 'lesson' | 'example' | 'cookbook' | 'reference'
 }
 
-/** Sidebar | content · aside. On narrow screens the aside follows the header (lesson: hidden; example: after the body). */
-export function DocsLayout({ header, aside, asideLabel, children, variant }: DocsLayoutProps) {
+/** Article flow and a separate sticky section index; narrow screens stack the index above the article. */
+export function DocsLayout({ header, aside, asideLabel, toc, children, variant }: DocsLayoutProps) {
   return (
-    <div className={`docs-page docs-${variant}`}>
+    <div className={`docs-page docs-${variant}${toc ? ' docs-with-toc' : ''}`}>
       <div className={`docs-main${aside ? ' docs-has-aside' : ''}`}>
         <header className="docs-header">{header}</header>
         {aside && <aside className="docs-aside" aria-label={asideLabel}>{aside}</aside>}
         <div className="docs-body">{children}</div>
       </div>
+      {toc && <aside className="docs-quick-access" aria-label="Quick access"><Toc items={toc} /></aside>}
     </div>
   )
 }
@@ -239,7 +241,7 @@ export function Toc({ items }: { items: readonly { id: string, label: string }[]
           // Keep reading position changes out of browser history.
           event.preventDefault()
           setActive(item.id)
-          document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })
+          document.getElementById(item.id)?.scrollIntoView({ behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
         }}>{item.label}</a>
       </li>)}</ol>
     </nav>

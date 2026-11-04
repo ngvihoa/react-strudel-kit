@@ -2,6 +2,15 @@
 
 > **Kế hoạch tiếp theo được ghi ở phần cập nhật bên dưới.** Các mục từ “Tên tạm” trở đi là tài liệu thiết kế ban đầu, giữ để tham khảo và không phản ánh đầy đủ trạng thái triển khai hiện tại. Xem [usage guide](usage.md) và [README](../README.md) để dùng API đang được hỗ trợ.
 
+## Điều chỉnh theo feedback 2026-11-04
+
+- [x] Render logo trong README gốc; README npm đã có logo.
+- [x] Hero nêu rõ tên package và đưa lệnh install lên màn hình đầu tiên.
+- [x] Bỏ demo bốn nốt và gallery screenshot hover; dùng Lo-fi + House theo lựa chọn của chủ dự án.
+- [x] Bo góc mềm hơn; footer có nhận diện, Docs, npm, GitHub, feedback và license.
+- [x] Khôi phục quick access sticky bên phải Docs, có bản inline ở màn hình hẹp.
+- [x] Kiểm tra 189 unit tests, 48 browser tests, typecheck/lint/build và ảnh render.
+
 ## Cập nhật 2026-11-04: README, landing page và Docs chung
 
 - [x] README dành cho người dùng package; hướng dẫn phát triển chuyển sang

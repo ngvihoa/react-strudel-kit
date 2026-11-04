@@ -9,7 +9,7 @@ import { audibleParts, buildMix, createMixSettings } from '../../mixer'
 import type { TrackMix } from '../../mixer'
 import { sourceRegion, stripRegions } from '../../content/source'
 import { TrackControls } from '../../components/TrackControls'
-import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, Toc } from '../components'
+import { CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player } from '../components'
 import { ROUTES, href } from '../router'
 
 const code = (region: string) => sourceRegion(source, region)
@@ -63,13 +63,12 @@ export function DanceMonkeyPage() {
   }))
 
   return (
-    <DocsLayout variant="example"
+    <DocsLayout variant="example" toc={TOC}
       header={<PageHeader crumbs={['Examples', 'Full songs']} title="Dance Monkey"
         intro="An eight-bar instrumental chorus in six parts. Mix it first, then read how each part is written."
         meta={['Advanced', DANCE_MONKEY.key, `${DANCE_MONKEY_BPM} BPM`, `${DANCE_MONKEY.bars} bars`]} />}
       asideLabel="About this example"
       aside={<div className="facts">
-        <Toc items={TOC} />
         <div><p>Techniques</p><ul><li><code>sequence</code> and <code>weight</code> for rhythm</li><li><code>repeat</code> for quick figures</li><li><code>cat</code> for one bar per cycle</li><li><code>stack</code> for layering</li><li><code>update</code> for live mixing</li></ul></div>
         <div><p>Learn first</p><ul><li><a href={href(ROUTES.simpleMelody)}>A simple melody</a></li><li><a href={href(ROUTES.backbeat)}>Backbeat</a></li><li><a href={href(ROUTES.hiHatAccents)}>Hi-hat accents</a></li></ul></div>
       </div>}>

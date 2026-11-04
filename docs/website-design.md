@@ -1,97 +1,123 @@
-# Website design and validation
+# Package website direction
 
-## Direction
+## Current brief — 2026-11-04 revision
 
-One motif, seed 1241963431. Retain Be Vietnam Pro, JetBrains Mono for code,
-and the existing indigo brand. No redraw. On this page, the kit's four-slot
-Mini-Notation sequence becomes a playable strip that repeats in the page rhythm.
-The live interaction is a four-note melody: change its waveform and tempo, then
-play or stop it with the shared browser transport.
+The owner rejected the earlier four-note hero, screenshot hover gallery, square
+surfaces, understated footer and missing right-hand Docs index. Passing layout
+and accessibility checks did not establish that the design served the product.
 
-## Product facts and argument
+This is a landing page for **react-strudel-kit**, an npm library. Its first screen
+must identify the package, explain what it adds to Strudel, and offer installation
+and documentation. The owner selected the existing Lo-fi and House arrangements
+for the listening demo. Keep the 1280px shell and the shared Docs sidebar.
 
-- Typed `fn` calls validate declared function names and arguments.
-- Mini-Notation has typed AST helpers and a parser-backed string helper.
-- Patterns serialize to Strudel code.
-- React playback has a separate import, `react-strudel-kit/react`.
-- `useStrudel` shares a transport across consumers.
-- The runtime loads on the first Play gesture.
-- Live controls update a running pattern; stopped controls do not autoplay.
-- Lessons progress from notes through rhythm and arrangement to React.
-- Seven sound recipes use built-in synths and noise.
-- Examples include lo-fi, house and a working React mixer.
-- The API reference links functions to pages that use them.
-- Clean article URLs retain direct visits and reloads.
+## Research and direction
 
-Show composition becoming sound first, then prove discovery through real interface
-captures, and finish with the install command. No usage counts or testimonials.
+Live official references inspected on 2026-11-04:
 
-## Copy deck
+- [Motion](https://motion.dev/): library identity, explanation, install command and
+  Get started action in the first screen; demonstrations then prove the API.
+- [React Spring](https://www.react-spring.dev/): installation and documentation
+  entrypoint in the hero, with interactions demonstrating the subject.
+- [Tone.js](https://tonejs.github.io/): a clear statement of the audio library's
+  role, installation and working musical examples.
 
-- Hero: “Turn code into music.”
-- Support: “Compose Strudel patterns in TypeScript. Bring them to life with React.”
-- Action: “Start making music” → first lesson.
-- Demo: “Four notes. Your sound.” Change waveform and tempo; Play starts audio.
-- Discovery: “Follow your curiosity.” Lessons, sounds, examples and API share Docs.
-- Close: “Make something worth hearing.” Install the published package.
+These are references for information hierarchy, not evidence that a visual style
+is universally popular or that their layouts should be copied.
 
-## Assets
+Taste-skill draw: `borrowed-category` / “Dressed as something else”, seed 91394382.
+The borrowed category is a listening session: the kit's real arrangements become
+a record-and-code workspace. Installation comes before the listening session.
+No further direction redraw. The photo slot becomes the working player, since
+this brief rejects screenshot-led presentation and needs an audible demonstration.
 
-Landing images are captures of this repository's working interface, not stock
-photography or invented product mockups. They remain repository website assets;
-no development notes or screenshots are added to the npm package.
+## Product inventory and argument
 
-## Validation
+- The public package name is `react-strudel-kit`.
+- The RSK mark is an existing project asset.
+- Strudel provides the engine; the kit provides typed composition and React integration.
+- `fn` and `chain` build serializable typed patterns.
+- React playback comes from `react-strudel-kit/react`.
+- The engine loads on a Play gesture; stopped controls never autoplay.
+- Lo-fi and House already exist as source-backed arrangements.
+- The Lo-fi sound was previously accepted by the owner.
+- Live listening level uses velocity, preserving the arrangements' master headroom.
+- The shared Docs area has lessons, sound recipes, examples and API reference.
+- Clean URLs and the Playground remain available.
+- AGPL-3.0-or-later and the upstream Strudel relationship must be discoverable.
 
-Visual review at 1440, 768, 390 and 375px, with the site shell also checked at
-1920px. Retain indigo explicitly (`--allow palette-purple`) because it is the
-existing project brand. The live audio demo serves the subject better than an
-unrelated stock video; no video is embedded. Motion stays limited to the opening
-sequence, pointer feedback and discovery preview, with a reduced-motion path.
+Claims and proof: hero → package identity and install; session → real music and
+its source; next steps → specific learning paths; questions → actual requirements
+and integration limits; footer → documentation, npm, GitHub, feedback and license.
 
-### Review rounds
+## Copy and interaction
 
-ROUND 1
-Seen in one second: typed music composition with a playable four-note instrument.
-Idea: the actual Mini-Notation slots form the page's main visual device.
-Live thing: mute a note, change the synth or tempo, and hear the result.
-Layout: hero=split instrument / composition=source proof / discovery=index and preview / close=install.
-Scores: design 6.5 · usability 7 · creativity 7 · content 8 → overall 6.0 (inspection cap).
-Top problems: low-contrast tempo hints on indigo; four identical filled discovery
-rows; code inheriting a third browser monospace face.
-Fixes: white control labels, one selected discovery row, explicit inherited code font.
+- Identity: react-strudel-kit.
+- Hero: “Make music with React.”
+- Install: `npm install react-strudel-kit`, with working copy feedback.
+- Session: “A little code. A whole groove.” Lo-fi and House are complete arrangements.
+- Controls: style selection, Play/Stop and listening level. No autoplay.
+- Code: extracted from the exact arrangement module. Strudel output includes the
+  current listening level. Links open the full arrangement and its constituent sounds.
+- Discovery: “Your next musical idea.” Concrete text links replace hover screenshots.
+- Footer: package identity, Explore and Project groups, Strudel attribution and license.
 
-ROUND 2
-Seen in one second: code becomes an instrument, with a clear route into the lessons.
-Idea and live thing: unchanged, now supported by a quieter discovery index.
-Layout: desktop keeps the paired compositions; phones show every preview inline.
-Scores: design 7.5 · usability 8 · creativity 7 · content 8 → overall 7.6.
-Remaining limits: screenshots are illustrative at phone size; follow the links for
-readable, working controls. The motif is a familiar sequencer interpretation.
-No stock assets, testimonial placeholders or claims of user adoption are present.
+## Brand and deliberate skill exceptions
 
-### Asset provenance
+Keep Be Vietnam Pro, JetBrains Mono for code, and the existing indigo brand.
+Surfaces use 20–24px radii and controls 9–14px, following the owner's request for
+softer corners instead of the skill's preference for square corners.
 
-All four images were captured from this repository's own interface (project
-copyright holders, AGPL-3.0-or-later); there are no external creators or stock
-licenses to credit. Their source pages are linked directly by the discovery rows:
+The owner's rejection of screenshot presentation takes priority over the skill's
+four-picture floor. No screenshot gallery, stock photographs or unrelated video
+are introduced to satisfy a count. Inspection records `--allow few-pictures` and
+`--allow palette-purple` openly. The sole bitmap is the existing project logo
+(project copyright holders, AGPL-3.0-or-later); the record is CSS, not photography
+or a fabricated waveform. It turns only while playing, with rotation disabled when reduced motion is requested.
+No fictional customers, usage statistics, reviews or placeholder content.
 
-| File | Source | Captured region |
-| --- | --- | --- |
-| `src/assets/landing/keys.png` | `/cookbook/keys` | `.docs-aside .player` |
-| `src/assets/landing/lofi.png` | `/examples/lofi-loop` | `#chords` |
-| `src/assets/landing/react.png` | `/examples/react-mixer` | `.react-mixer` |
-| `src/assets/landing/api.png` | `/api` | `#compose` |
+## Docs layout
 
-Captures use a 1280×960 viewport at device scale 1.5 with fonts ready and animations
-disabled. Recapture affected images when these interfaces change. The hero is real
-HTML controls, not an image. No photographic stand-ins or launch placeholders.
+The section index is separate from cookbook players and example facts. At desktop
+width it occupies a 168px sticky rail on the right. Below 1180px it flows above the
+article; it is not hidden. Existing article URLs, players, shared navigation and
+keyboard section jumps continue working. The Playground footer styles are scoped
+so they cannot dictate the layout of the site footer.
 
-### Final checks
+## Visual review
 
-20 Vitest files / 189 tests; lint; typecheck; production build; all 47 Chromium
-browser tests passed. The final landing test was rerun after hover-state contrast
-and clipboard-label corrections, with axe checking the playing and copied states.
-Design inspector: zero failures at 1440, 768, 390 and 375px; two retained warnings
-(no video, restrained motion) are explained above. npm pack dry-run found no
-internal documentation or website screenshots among the 48 package files.
+Round 1: installation and identity now lead, but the tablet footer inherited a
+Playground `display:flex` rule, squeezing its brand and project links. Scope that
+rule to the app; keep the site footer's own grid. Remove redundant compatibility
+metadata between hero and demo, and keep the install command within the phone width.
+
+Round 2: inspected full-page renders at 1440, 768, 390 and 375px. The hero has two
+lines, the install command is on the first screen, the listening session stacks on
+phones, and the footer has readable grouped links at all widths. No screenshot
+assets remain. The record is intentionally an illustration of playback, not a
+claim to visualize the timing or spectrum of the audio.
+
+Self-review: design 7, usability 8, creativity 7, content 8 → 7.4/10 under the brief's
+explicit imagery exception. This is an internal critique, not a user acceptance
+score or an external award. Remaining limitation: synth playback quality still
+requires human listening on actual devices; automated checks cannot judge it.
+
+Inspector note: on phones it misclassifies the hero's actual “Get started” action
+as a pill eyebrow above the following section. The action belongs inside the hero
+and is required for the package entrypoint; it is not a section label. Retain it
+and record `--allow eyebrow` for this specific false positive, alongside the
+explicit brand and imagery exceptions. Type-size count, no video and restrained
+motion remain review warnings, not claims that more decoration would improve use.
+
+## Validation record
+
+189 unit tests in 20 files passed; lint, typecheck and production build passed.
+The full Chromium run reported all 48 tests passing; the final targeted landing
+and sticky-index run also passed with exit code 0. Axe checks cover every route
+at 375px and 1440px, plus playing and copied states on the landing page. Route
+coverage includes direct visits, reloads, legacy bookmarks, live audio updates,
+keyboard operation and no horizontal page overflow through 1920px.
+
+Final taste inspection: zero failures with the three documented allowances;
+remaining warnings are font-size count, no video and restrained motion. Source
+lint has no failures, with the conventional library “Get started” wording retained.

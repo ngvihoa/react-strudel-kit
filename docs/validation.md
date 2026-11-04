@@ -32,6 +32,31 @@ The 2026-11-02 audit passed 19 Vitest files / 164 tests and 31 Playwright tests,
 lint, typecheck and production build passing. Learn/Cookbook screenshots were
 also visually reviewed at 375, 768 and 1440px.
 
+## Package landing revision — 2026-11-04
+
+Owner feedback supersedes the initial landing review below. The repository README
+now renders the existing package logo; the npm README already had that logo.
+
+The hero visibly names `react-strudel-kit`, explains the library and places the
+install command before any demo. The four-note toy and raster screenshot gallery
+were removed. The owner selected the existing complete Lo-fi and House loops;
+style and listening-level changes update playback without autoplay while stopped.
+Rounded surfaces, useful learning links, FAQ and a full grouped footer replace the
+previous presentation. Playground footer selectors are scoped to its app shell.
+
+The Docs section index now has a separate sticky right rail at desktop widths and
+an inline layout below 1180px. It no longer competes with cookbook players or
+example facts. A browser test checks its position while scrolling and keyboard
+section jumps. All 27 routes still fit within the 1280px shell, with no horizontal
+page overflow at 375, 768, 1440 and 1920px.
+
+Checks: 20 Vitest files / 189 tests passed, lint/typecheck/production build passed,
+and the full browser runner reported 48 passing tests, including axe on every
+route at 375 and 1440px and live landing playback. Full-page renders were inspected
+at 1440, 768, 390 and 375px. This checks functionality and layout, not audible quality.
+See [website design](website-design.md) for official references, owner constraints,
+asset provenance and explicit inspector exceptions.
+
 ## Landing page and unified Docs — 2026-11-04
 
 - Root README now focuses on installing and using the package; repository setup,

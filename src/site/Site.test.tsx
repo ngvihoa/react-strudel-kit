@@ -23,7 +23,7 @@ describe('learning site template', () => {
 
   it('opens the landing page by default and links the shared Docs area', () => {
     render(<Site />)
-    expect(screen.getByRole('heading', { name: 'Turn code into music.' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Make music with React.' })).toBeInTheDocument()
     const nav = screen.getByRole('navigation', { name: 'Sections' })
     expect(within(nav).getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page')
     for (const name of ['Docs', 'Playground']) expect(within(nav).getByRole('link', { name })).toBeInTheDocument()
@@ -41,18 +41,19 @@ describe('learning site template', () => {
     }
   })
 
-  it('changes the landing melody without autoplay and updates the running pattern', async () => {
+  it('switches full landing arrangements without autoplay and updates the live level', async () => {
     render(<Site />)
-    const demo = player('Four notes. Your sound.')
-    fireEvent.click(within(demo).getByRole('button', { name: /^Mute E4 / }))
-    fireEvent.change(within(demo).getByRole('combobox', { name: 'Sound' }), { target: { value: 'sine' } })
+    fireEvent.click(screen.getByRole('button', { name: 'House' }))
+    const demo = player('House session')
     expect(evaluate).not.toHaveBeenCalled()
-    expect(document.querySelector('.landing-output')).toHaveTextContent('note("c4 ~ g4 b4").s("sine")')
-    fireEvent.click(within(demo).getByRole('button', { name: 'Play Four notes. Your sound.' }))
+    fireEvent.click(within(demo).getByRole('button', { name: 'Play House session' }))
     await waitFor(() => expect(within(demo).getByText('Playing')).toBeInTheDocument())
-    fireEvent.change(within(demo).getByRole('slider', { name: /Tempo/ }), { target: { value: 100 } })
-    await waitFor(() => expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('cpm(25)'), false))
-    fireEvent.click(screen.getByRole('link', { name: 'Start making music' }))
+    fireEvent.change(within(demo).getByRole('slider', { name: /Listening level/ }), { target: { value: 50 } })
+    await waitFor(() => expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('velocity(0.5)'), false))
+    fireEvent.click(screen.getByRole('button', { name: 'Lo-fi' }))
+    await waitFor(() => expect(within(player('Lo-fi session')).getByText('Playing')).toBeInTheDocument())
+    expect(evaluate).toHaveBeenLastCalledWith(expect.stringContaining('cpm(20)'), false)
+    fireEvent.click(within(document.querySelector('.landing-hero') as HTMLElement).getByRole('link', { name: 'Get started' }))
     expect(document.querySelector('.player-playing')).toBeNull()
   })
 

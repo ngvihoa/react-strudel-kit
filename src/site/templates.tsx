@@ -2,16 +2,15 @@ import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import type { PatternExpression } from 'react-strudel-kit'
 import { sourceRegion } from '../content/source'
-import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player, Toc } from './components'
+import { Callout, CodeBlock, DocsLayout, PageHeader, Pager, ParamSlider, Player } from './components'
 import { href } from './router'
 import type { RoutePath } from './router'
 
 type Link = { label: string, path: RoutePath }
 
-function Facts({ toc, groups }: { toc: readonly { id: string, label: string }[], groups: readonly { title: string, items: readonly ReactNode[] }[] }) {
+function Facts({ groups }: { groups: readonly { title: string, items: readonly ReactNode[] }[] }) {
   return (
     <div className="facts">
-      <Toc items={toc} />
       {groups.filter((group) => group.items.length > 0).map((group) => (
         <div key={group.title}><p>{group.title}</p><ul>{group.items.map((item, index) => <li key={index}>{item}</li>)}</ul></div>
       ))}
@@ -50,7 +49,9 @@ export function SoundArticle<S extends Record<string, number>>({ config }: { con
   const code = (region: string) => sourceRegion(config.source, region)
 
   return (
-    <DocsLayout variant="cookbook"
+    <DocsLayout variant="cookbook" toc={[
+      { id: 'sound', label: 'The sound' }, { id: 'anatomy', label: 'How it is built' }, { id: 'groove', label: 'In a groove' },
+    ]}
       header={<PageHeader crumbs={config.crumbs} title={config.title} intro={config.intro} meta={config.meta} />}
       asideLabel="Listen"
       aside={<Player id={`${config.path}-alone`} title={config.alone.title} pattern={alone} caption={config.alone.caption} headingLevel={2}>
@@ -117,11 +118,11 @@ export type ExampleArticleConfig = {
 export function ExampleArticle({ config }: { config: ExampleArticleConfig }) {
   const toc = config.sections.map((section) => ({ id: section.id, label: section.title }))
   return (
-    <DocsLayout variant="example"
+    <DocsLayout variant="example" toc={toc}
       header={<PageHeader crumbs={config.crumbs} title={config.title} intro={config.intro} meta={config.meta}
         learn={[config.goal]} />}
       asideLabel="About this example"
-      aside={<Facts toc={toc} groups={[
+      aside={<Facts groups={[
         { title: 'Techniques', items: config.techniques },
         { title: 'Learn first', items: linkList(config.learnFirst) },
         { title: 'Sounds used', items: linkList(config.sounds) },

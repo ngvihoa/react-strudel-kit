@@ -24,7 +24,7 @@
 .site-main { flex: 1; width: 100%; max-width: 1280px; margin-inline: auto; }
 .site-main:focus-visible { outline: 3px solid var(--brand); outline-offset: -3px; }
 .site-main-playground .app-shell { padding-top: 4px; }
-.site-footer { width: 100%; max-width: 1280px; margin-inline: auto; display: flex; justify-content: space-between; gap: 16px; padding: 20px 24px; color: var(--faint); font-size: .8125rem; border-top: 1px solid var(--line); }
+
 .studio-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
 .studio-bar .mode-switch { margin-bottom: 0; }
 
@@ -169,7 +169,6 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
 @media (max-width: 860px) {
   .site-header-inner { padding-inline: 16px; gap: 16px; }
   .site-nav a { min-height: 44px; padding: 0 10px; font-size: .8125rem; }
-  .site-footer { flex-direction: column; gap: 6px; padding: 20px 16px 24px; }
   .docs { display: block; }
   .docs-nav { position: static; height: auto; padding: 16px 16px 0; border-right: 0; }
   .section-nav-wide { display: none; }
@@ -243,8 +242,6 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
 @media (max-width: 1240px) { .docs-reference .docs-main { grid-template-columns: minmax(0, 1fr); } }
 
 
-.site-footer nav { display: flex; gap: 20px; }
-.site-footer a { color: var(--muted); text-underline-offset: 4px; }
 .api-index { padding: 20px 24px; background: var(--panel); border-radius: var(--radius); }
 .api-index .toc ol { display: flex; flex-wrap: wrap; gap: 4px 24px; }
 .docs-starts { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
@@ -256,4 +253,41 @@ a.pager-card:hover { border-color: var(--brand-soft); box-shadow: 0 2px 8px rgb(
   .docs-starts { grid-template-columns: 1fr; gap: 16px; }
 }
 
-.site-home .site-header, .site-home .site-footer { border: 0; }
+.site-home .site-header { border: 0; }
+
+/* The section index remains visible independently of players and article facts. */
+.docs-quick-access { padding: 40px 16px 40px 0; align-self: start; position: sticky; top: var(--header); max-height: calc(100svh - var(--header)); overflow-y: auto; }
+.docs-quick-access .toc > p { font-family: inherit; text-transform: none; letter-spacing: normal; font-size: .8125rem; }
+@media (min-width: 1180px) {
+  .docs-with-toc { display: grid; grid-template-columns: minmax(0, 1fr) 168px; align-items: start; }
+  .docs-with-toc .docs-main { padding-inline: 32px; }
+}
+@media (max-width: 1179px) {
+  .docs-with-toc { display: flex; flex-direction: column; }
+  .docs-quick-access { order: -1; position: static; padding: 24px 40px 0; max-height: none; }
+  .docs-quick-access .toc ol { display: flex; flex-wrap: wrap; gap: 0 20px; }
+}
+@media (max-width: 860px) { .docs-quick-access { padding: 24px 16px 0; } }
+
+.docs-body > section { scroll-margin-top: calc(var(--header) + 24px); }
+
+.site-footer { width: calc(100% - 48px); max-width: 1232px; margin: 0 auto 24px; padding: 48px 40px 24px; color: var(--ink); background: var(--panel); border-radius: 24px; }
+.footer-main { display: grid; grid-template-columns: 1.8fr 1fr 1fr; gap: 48px; }
+.footer-brand > a { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 16px; font-size: 22px; font-weight: 600; letter-spacing: -.035em; text-decoration: none; }
+.footer-brand img { width: 70px; height: auto; }
+.footer-brand p { margin: 24px 0 0; font-size: 20px; line-height: 1.5; letter-spacing: -.025em; }
+.site-footer nav { display: flex; flex-direction: column; align-items: start; gap: 4px; }
+.site-footer nav h2 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+.site-footer nav a { display: inline-block; min-height: 40px; padding-block: 8px; color: var(--muted); font-size: 14px; text-decoration: none; }
+.site-footer a:hover { color: var(--brand); }
+.footer-bottom { display: flex; justify-content: space-between; gap: 16px; margin-top: 48px; font-size: 13px; color: var(--muted); }
+.footer-bottom p { margin: 0; }
+.footer-bottom a { text-underline-offset: 4px; }
+@media (max-width: 760px) {
+  .site-footer { width: calc(100% - 32px); padding: 32px 24px 24px; border-radius: 20px; margin-bottom: 16px; }
+  .footer-main { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
+  .footer-brand { grid-column: 1 / -1; }
+  .footer-brand > a { font-size: 20px; gap: 12px; }
+  .footer-brand p { font-size: 18px; margin-top: 16px; }
+  .footer-bottom { flex-direction: column; gap: 12px; margin-top: 32px; }
+}
