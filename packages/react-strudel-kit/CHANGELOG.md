@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.1
+
+- Simplify the npm README around installation and usage. Move local release
+  testing instructions to the repository's release guide and keep compatibility
+  requirements concise. Runtime code and public APIs are unchanged.
+
 ## 0.1.0
 
 Initial release:

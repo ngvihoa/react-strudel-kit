@@ -16,7 +16,7 @@ npm install react-strudel-kit
 ```
 
 See the [package README](packages/react-strudel-kit/README.md) for integration
-and local tarball installation, and the [release record](docs/release-plan.md).
+and the [release guide](docs/release-plan.md) for local tarball testing and release records.
 
 ## Run the playground
 

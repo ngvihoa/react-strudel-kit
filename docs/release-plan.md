@@ -95,6 +95,21 @@ publish trong trình duyệt npm.
 
 ## Quy trình tái lập
 
+### Thử tarball local khi chuẩn bị release
+
+Hướng dẫn này dành cho người phát triển package. README trên npm chỉ hướng dẫn
+người dùng cài từ registry và tích hợp vào app React.
+
+```sh
+# Từ root repository; prepack build ESM và declarations trước khi pack.
+npm pack --workspace=react-strudel-kit --pack-destination /tmp
+
+# Từ app React độc lập, cài tarball của version đang chuẩn bị phát hành.
+npm install /tmp/react-strudel-kit-0.1.1.tgz
+```
+
+### Kiểm tra trước khi phát hành
+
 Chạy từ root (Node 24.15+, Chromium đã cài):
 
 ```sh
@@ -108,7 +123,7 @@ npm run test:package
 
 `test:e2e` build production site. `test:package` build rồi pack và kiểm thử chính
 tarball đó trên React 18/19; khi thành công, giữ bản đã thử tại
-`artifacts/react-strudel-kit-0.1.0.tgz`, kèm `package-validation.json` ghi integrity,
+`artifacts/react-strudel-kit-0.1.1.tgz`, kèm `package-validation.json` ghi integrity,
 commit, trạng thái tracked files và phiên bản toolchain. Thư mục artifacts bị
 Git ignore; CI upload artifact để tải về, không tự publish. Muốn tái lập đầy đủ,
 chạy từ commit sạch; `AGENTS.md` chưa tracked của người dùng không được đưa vào tarball.
@@ -118,10 +133,10 @@ Sau khi kiểm tra đầy đủ và đã đăng nhập đúng npm account:
 ```sh
 npm whoami --registry=https://registry.npmjs.org
 npm view react-strudel-kit version --registry=https://registry.npmjs.org
-npm publish ./artifacts/react-strudel-kit-0.1.0.tgz --access public --tag latest --dry-run --ignore-scripts
+npm publish ./artifacts/react-strudel-kit-0.1.1.tgz --access public --tag latest --dry-run --ignore-scripts
 # Thực hiện khi sẵn sàng phát hành; version trên npm không thể ghi đè.
-npm publish ./artifacts/react-strudel-kit-0.1.0.tgz --access public --tag latest --ignore-scripts
-npm view react-strudel-kit@0.1.0 version dist.integrity --registry=https://registry.npmjs.org
+npm publish ./artifacts/react-strudel-kit-0.1.1.tgz --access public --tag latest --ignore-scripts
+npm view react-strudel-kit@0.1.1 version dist.integrity --registry=https://registry.npmjs.org
 ```
 
 Nếu tên đã có người dùng hoặc version tồn tại, dừng và kiểm tra quyền/version;

@@ -20,21 +20,6 @@ Install into an existing React application:
 npm install react-strudel-kit
 ```
 
-During release preparation, evaluate a local tarball in a separate React
-application:
-
-```sh
-# From the repository root; prepack builds ESM and declarations first.
-npm pack --workspace=react-strudel-kit --pack-destination /tmp
-
-# From your React application's directory.
-npm install /tmp/react-strudel-kit-0.1.0.tgz
-```
-
-Requires React 18 or later, an ESM-capable bundler and a browser with Web Audio.
-Declarations support TypeScript's `bundler` and `NodeNext` resolution. The hook
-must run in a browser/client component. There is no CommonJS build.
-
 ## Play a typed pattern
 
 ```tsx
@@ -93,17 +78,20 @@ toStrudelCode(melody)
 `mini()` validates syntax with Strudel's parser. Types do not check sample
 availability, musical values or raw JavaScript code.
 
-## Documentation and compatibility
+## Documentation
 
 - [Usage, API boundaries and troubleshooting](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/usage.md)
 - [Sound Cookbook](https://react-strudel-kit.vercel.app/cookbook/kick)
 - [Runnable examples](https://react-strudel-kit.vercel.app/examples/simple-melody)
 - [Interactive Playground](https://react-strudel-kit.vercel.app/playground)
 - [Validation and tested versions](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/validation.md)
-- Runtime dependencies are pinned to `@strudel/web@1.3.0` and `@strudel/mini@1.2.6`.
-- Isolated tarball consumers have been tested with React/React DOM 18.3.1 and
-  19.3.0, TypeScript 6.0.3, Vite 8.3.5 and Chromium on Node 26.13.0.
-- ESM, declarations, declaration maps and production TypeScript source are included.
+
+## Compatibility
+
+Requires React 18+ and an ESM-capable bundler. TypeScript declarations are included.
+Playback needs a browser with Web Audio; use the hook in a browser/client component.
+See the [usage guide](https://github.com/ngvihoa/react-strudel-kit/blob/main/docs/usage.md#compatibility)
+for detailed compatibility information.
 
 ## License
 
