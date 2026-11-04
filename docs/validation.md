@@ -409,3 +409,18 @@ were inspected at 375, 768 and 1440px with no horizontal page overflow.
 190 unit tests in 20 files and all 54 Chromium tests passed. Lint, typecheck and
 production build passed; the existing large Strudel chunk warning remains.
 Package source, tarball contents and version are unchanged.
+
+## Learn contextual references — 2026-11-04
+
+Reviewed all five Learn pages. Added contextual Cookbook links for kick, snare,
+hi-hat, bass, keys and lead, plus links for named lessons, the arrangement source
+and React example. Existing first-song references remain. Links now appear where
+concepts are introduced rather than only in recap paragraphs; repeated words and
+source snippets are not automatically linked. Musical patterns are unchanged.
+
+The 41 site unit tests, lint, typecheck and production build passed. A Chromium
+pass followed the 22 distinct internal targets referenced by Learn prose, checked
+all five pages at 375px for overflow, activated an inline hi-hat link by keyboard
+and verified that clicking a kick reference while playing stops audio on route
+change. No browser runtime errors occurred. Make a beat renders were inspected
+at 375px and 1440px, including the new indigo, underlined links in the introduction.

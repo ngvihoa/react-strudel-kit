@@ -79,7 +79,7 @@
 .docs-body p { margin: 0 0 16px; }
 .docs code, .learn-box code { padding: .15em .4em; color: var(--ink); font: .85em var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
 .docs pre code { padding: 0; color: inherit; background: none; border: 0; font-size: inherit; }
-.docs-body a, .facts a { color: var(--brand); text-decoration-color: var(--brand-soft); text-underline-offset: 3px; }
+.docs-body a, .lede a, .facts a { color: var(--brand); text-decoration-color: var(--brand-soft); text-underline-offset: 3px; }
 
 /* Numbered steps joined by a rail, like a checklist you work down. */
 .lesson-step { position: relative; padding-left: 52px; scroll-margin-top: calc(var(--header) + 24px); }

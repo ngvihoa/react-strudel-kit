@@ -132,6 +132,10 @@ Routes: `/learn/first-song`; `/cookbook/{kick,snare,hi-hat,bass,keys,lead,pad}`;
    `src/assets/rsk-logo.png` (cropped from `rsk-logo.png`); there is no SVG yet.
 9. **Match the surrounding style:** no semicolons, single quotes, 2-space indent in `src/`
    (the package uses 4 spaces), and short comments that explain why.
+10. **Link concepts where they are introduced.** Learn prose should link sounds
+    to their Cookbook pages and named lessons/examples to the corresponding
+    internal article, using `href(ROUTES...)`. Do not leave all references for the
+    recap or auto-link every repeated word, heading or source-code token.
 
 ## Gotchas found the hard way
 

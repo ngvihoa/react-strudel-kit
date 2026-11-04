@@ -48,7 +48,7 @@ function PracticePlayer({ path, practice }: { path: RoutePath, practice: Practic
 export function LessonArticle({ path, title, intro, lesson, learn, steps, practice, recap, previous, next }: {
   path: RoutePath
   title: string
-  intro: string
+  intro: ReactNode
   lesson: number
   learn: readonly ReactNode[]
   steps: readonly LessonStep[]

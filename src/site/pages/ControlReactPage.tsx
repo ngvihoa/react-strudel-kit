@@ -11,14 +11,14 @@ export function ControlReactPage() {
     learn={[<>Build a pattern from React state</>, <>Start audio with a gesture and update it while playing</>, <>Stop playback and handle errors</>]}
     steps={[
       { id: 'try-it', title: 'Play the component', body: <>
-        <p>This is the actual component shown below, playing the same four parts from Layer the parts.
+        <p>This is the actual component shown below, playing the same four parts from <a href={href(ROUTES.layerParts)}>Layer the parts</a>.
           Press Play, change the tempo, and untick a part. These checkboxes include or exclude entire parts.</p>
         <p>Try changing controls after Stop too: the controls change, but audio waits for another Play.</p>
         <div className="react-mixer-frame"><ReactMixer /></div>
       </> },
       { id: 'state', title: 'Keep the controls as plain state', source, region: 'state', body: <>
         <p>The state has a BPM value and a muted flag for each part. It stores the user’s choices, not an audio engine.
-          The imported <code>LAYERS</code> map contains the reusable drum, bass, chord and melody patterns.</p>
+          The imported <a href={href(ROUTES.layerASong)}><code>LAYERS</code></a> map contains the reusable drum, bass, chord and melody patterns.</p>
       </> },
       { id: 'build', title: 'Turn state into a pattern', source, region: 'build', body: <>
         <p>The builder filters muted parts and stacks the remaining patterns. If everything is muted, it returns{' '}
@@ -44,7 +44,7 @@ export function ControlReactPage() {
       <details className="source-details"><summary>Full ReactMixer component</summary>
         <CodeBlock source={stripRegions(source)} label="ReactMixer.tsx" maxLines={28} />
       </details>
-      <p>You have built notes, a beat, a bass line, an arrangement and a React player.
+      <p>You have built notes, a beat, a bass line, an arrangement and a <a href={href(ROUTES.reactMixer)}>React player</a>.
         Explore the <a href={href(ROUTES.api)}>API reference</a> or try the <a href={href(ROUTES.lofi)}>Lo-fi loop</a> next.</p>
     </>}
     previous={{ label: 'Layer the parts', path: ROUTES.layerParts }} next={{ label: 'Explore the examples', path: ROUTES.simpleMelody }} />

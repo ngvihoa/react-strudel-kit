@@ -9,12 +9,12 @@ import { ROUTES, href } from '../router'
 
 export function LayerPartsPage() {
   return <LessonArticle path={ROUTES.layerParts} title="Layer the parts" lesson={4}
-    intro="Your drums and bass are a foundation. Add harmony and a melody, then give each layer room in the mix."
+    intro={<>Your drums and <a href={href(ROUTES.bass)}>bass</a> are a foundation. Add harmony and a melody, then give each layer room in the mix.</>}
     learn={[<>Turn chord tones into an arpeggio</>, <>Combine one-bar drums with four-bar musical parts</>, <>Balance foreground and background without rewriting sounds</>]}
     steps={[
       { id: 'harmony', title: 'Give the bass some harmony', source: chordSource, region: 'arpeggio', pattern: CHORD_EXAMPLES.arpeggio,
         playerTitle: 'The harmony layer', body: <>
-          <p>The bass followed C–Am–F–G. These keys use the same progression above it. An arpeggio plays chord tones one at a time:
+          <p>The bass followed C–Am–F–G. These <a href={href(ROUTES.keys)}>keys</a> use the same progression above it. An arpeggio plays chord tones one at a time:
             low, middle, high, middle, repeated twice. That makes eight notes per bar.</p>
           <p><code>sequence</code> writes the order inside a bar; <code>cat</code> advances through the four chords.
             Compare the <a href={href(ROUTES.chords)}>chords and arpeggios example</a> for the block-chord version.</p>
@@ -22,13 +22,13 @@ export function LayerPartsPage() {
       { id: 'melody', title: 'Add a foreground melody', source: songSource, region: 'melody', pattern: LAYER_A_SONG.melody,
         playerTitle: 'The melody layer', body: <>
           <p>The melody also has four bars. Read each sequence as a phrase: held notes contrast with shorter notes,
-            and a written rest leaves room for the lead sound’s echo tail.</p>
+            and a written rest leaves room for the <a href={href(ROUTES.lead)}>lead sound</a>’s echo tail.</p>
           <p>The first bar holds its final C for two beats. In the last bar, D takes three beats and the written
-            fourth beat is a rest. The <a href={href(ROUTES.lead)}>Lead sound</a> adds a quieter, delayed copy.</p>
+            fourth beat is a rest. The lead sound adds a quieter, delayed copy.</p>
         </> },
       { id: 'mix', title: 'Stack and balance the layers', source: songSource, region: 'together', pattern: LAYER_A_SONG.song,
         playerTitle: 'The complete arrangement', body: <>
-          <p>The drums repeat every bar while bass, arpeggio and melody follow their four-bar phrases.
+          <p>The <a href={href(ROUTES.makeBeat)}>drums</a> repeat every bar while bass, arpeggio and melody follow their four-bar phrases.
             Stacking does not force the parts to have the same phrase length.</p>
           <p>The arpeggio is background, so its velocity is 0.6. The melody stays in front at 1.
             <code> postGain</code> then scales the entire result; it is separate from the balance of individual parts.</p>
