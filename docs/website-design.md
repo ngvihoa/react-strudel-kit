@@ -41,7 +41,7 @@ this brief rejects screenshot-led presentation and needs an audible demonstratio
 - The engine loads on a Play gesture; stopped controls never autoplay.
 - Lo-fi and House already exist as source-backed arrangements.
 - The Lo-fi sound was previously accepted by the owner.
-- Live listening level uses velocity, preserving the arrangements' master headroom.
+- Live listening level uses calibrated postGain, preserving each part's gain and accents.
 - The shared Docs area has lessons, sound recipes, examples and API reference.
 - Clean URLs and the Playground remain available.
 - AGPL-3.0-or-later and the upstream Strudel relationship must be discoverable.
@@ -161,3 +161,14 @@ FAQ validation: all three motion browser tests, the 40 site unit tests, lint,
 typecheck and production build passed. Browser coverage includes interrupted
 toggles, keyboard activation, live reduced-motion changes, route cleanup and an
 axe check with all answers open at 375px. Desktop/mobile renders were inspected.
+
+## Landing listening level — 2026-11-04
+
+The owner reported quiet playback even at 100%. That slider previously restored
+the arrangements' conservative output, rather than providing a calibrated demo
+level. The home player now maps 0–100% to postGain 0–2.1 for Lo-fi and 0–1.6 for
+House. Relative to their original 0.85/0.75 postGain, this adds about 7.9/6.6 dB
+at maximum. The initial slider stays at 70%. Per-event velocity is preserved;
+the slider no longer overwrites the hi-hat accents or echoed notes' velocities.
+Strudel output shows the actual applied level. Cookbook/examples and package
+defaults are unchanged. See the PCM measurement bounds in `validation.md`.

@@ -13,8 +13,8 @@ import { href, ROUTES } from '../router'
 import './home.css'
 
 const SESSIONS = {
-  lofi: { name: 'Lo-fi', title: 'Lo-fi session', description: 'Soft keys, a warm bass line and laid-back drums.', pattern: lofiLoop, source: lofiSource, path: ROUTES.lofi },
-  house: { name: 'House', title: 'House session', description: 'A driving kick, off-beat bass and bright chord stabs.', pattern: houseLoop, source: houseSource, path: ROUTES.house },
+  lofi: { name: 'Lo-fi', title: 'Lo-fi session', description: 'Soft keys, a warm bass line and laid-back drums.', pattern: lofiLoop, maxPostGain: 2.1, source: lofiSource, path: ROUTES.lofi },
+  house: { name: 'House', title: 'House session', description: 'A driving kick, off-beat bass and bright chord stabs.', pattern: houseLoop, maxPostGain: 1.6, source: houseSource, path: ROUTES.house },
 } as const
 const PATHS = [
   { title: 'Learn the language', description: 'Start with a note. Build a beat, add a bass line and bring the parts together.', path: ROUTES.firstSong, link: 'Start the lessons' },
@@ -47,8 +47,8 @@ export function HomePage() {
   const [style, setStyle] = useState<keyof typeof SESSIONS>('lofi')
   const [level, setLevel] = useState(0.7)
   const session = SESSIONS[style]
-  // Velocity preserves each arrangement's existing mix and master headroom.
-  const pattern = useMemo(() => chain(session.pattern, fn('velocity', level)), [session, level])
+  // Calibrated demo output; postGain leaves each part's gain and accents intact.
+  const pattern = useMemo(() => chain(session.pattern, fn('postGain', Number((session.maxPostGain * level).toFixed(4)))), [session, level])
 
   return <div className="landing" ref={motion}>
     <section className="landing-hero" aria-labelledby="landing-title">

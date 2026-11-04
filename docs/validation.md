@@ -360,3 +360,34 @@ content column. No public package source, metadata or version changed.
 Design choices, asset sources and motion timings are recorded in
 [`website-design.md`](website-design.md). These dependencies and notes are
 website/repository-only; this work does not require an npm release.
+
+## Landing output calibration — 2026-11-04
+
+The home demo at 100% measured around -27 dBFS RMS before calibration. This was
+digital output attenuation, independently of the owner's OS/headphone volume.
+The slider now applies postGain with per-session maxima 2.1 (Lo-fi) and 1.6
+(House), instead of overriding the arrangement's velocities. Initial level stays
+at 70%, and the example source arrangements are untouched.
+
+Headless Chromium/Web Audio, 48 kHz: a test-only unity tap before AudioDestination
+fed 32768-sample analysers, sampled every 100ms. Baseline measurements used the
+mono downmix for 14/10 seconds; final measurements split both stereo channels
+and ran 26/18 seconds (over two four-bar phrases each). Approximate windowed RMS
+and largest observed per-channel sample peak at 100%:
+
+| Session | Baseline RMS | Final stereo RMS | Final peak | Samples at or above full scale |
+| --- | --- | --- | --- | --- |
+| Lo-fi | -27.0 dBFS | -19.2 dBFS | -2.9 dBFS | 0 |
+| House | -27.7 dBFS | -21.2 dBFS | -1.8 dBFS | 0 |
+
+These overlapping-window measurements are not integrated LUFS, true-peak
+measurements or headphone sound-pressure levels. They show a louder digital
+signal with observed sample headroom, not guaranteed listening comfort or an
+exhaustive bound on future noise/reverb peaks. Subjective listening on the
+owner's device remains the final check.
+
+The 40 site unit tests passed, including live 0/50/100% changes, style switching
+and preserved Lo-fi accent velocity. The targeted landing browser test passed
+with real playback, level updates, generated code, route cleanup and axe checks;
+lint, typecheck and production build passed. This is a website-only correction;
+no package release is required.

@@ -76,7 +76,7 @@ test('landing presents installation first, plays full sessions and cleans up on 
   await expect(demo.locator('.player-state')).toHaveText('Playing')
   await demo.getByRole('slider', { name: /Listening level/ }).fill('50')
   await page.getByRole('button', { name: 'Strudel output', exact: true }).click()
-  await expect(page.locator('.session-code pre')).toContainText('velocity(0.5)')
+  await expect(page.locator('.session-code pre')).toContainText('postgain(1.05)')
   await expect(page.locator('.session-code pre')).toContainText('cpm(20)')
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([])
   await demo.getByRole('button', { name: 'Stop Lo-fi session' }).click()
