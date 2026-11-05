@@ -457,3 +457,18 @@ This verification used local production artifacts, not the live Vercel deploymen
 or Google's index. Search Console ownership, submission and live crawl validation
 remain post-deployment steps. See [`seo.md`](seo.md) for maintenance and deployment
 checks. No npm package runtime, version or publishing configuration changed.
+
+## LLM documentation index — 2026-11-05
+
+Added the consumer-facing `public/llms.txt` index with installation/import
+guidance, playback requirements and curated public documentation links. The
+shared HTML template exposes it through `rel="describedby"`. Maintenance and
+deployment checks are documented in `docs/seo.md`.
+
+`npm run build` passed, including typecheck and prerendering all 28 public pages.
+A local production HTTP check confirmed `/llms.txt` returns status 200 with
+`text/plain`, matches the 4,451-byte source, and has 23 site article links that
+return static HTML. All 28 public documents advertise the index exactly once;
+a nonexistent text URL still returns HTTP 404. No internal documentation is
+linked. The existing large-chunk build warning remains. These checks used the
+local preview, not the live deployment; no npm release is needed.

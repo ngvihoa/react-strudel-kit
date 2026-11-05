@@ -46,6 +46,21 @@ hosts must serve clean route documents and use `404.html` with HTTP 404.
 Vite dev retains its normal SPA fallback. A nonexistent route still renders the
 not-found UI in dev, but production/preview HTTP status is the SEO contract.
 
+## LLM documentation index
+
+`public/llms.txt` is a concise, consumer-facing Markdown index following the
+[llms.txt proposal](https://llmstxt.org/). Vite serves it at `/llms.txt` in dev and
+copies it unchanged into `dist` for static hosting. The shared HTML template
+advertises it with `rel="describedby"`, including before JavaScript runs.
+
+Keep the summary and curated links aligned with the public API and documentation
+when routes, compatibility or playback behavior change. Link existing Markdown
+where available; the linked site articles already expose their content in static
+HTML. Do not invent `.md` endpoints or include internal development, release or
+agent instructions. This website asset does not belong in the npm tarball.
+It complements the sitemap and robots file; it does not control crawler access
+or guarantee indexing or ranking.
+
 ## Social image
 
 `public/og-image.png` is a committed 1200 × 630 image built from the existing logo,
@@ -69,8 +84,8 @@ and test missing URLs and canonical redirects. The existing browser suite checks
 hydration, music controls, route cleanup, legacy bookmarks and responsive layout.
 
 After deploying, verify home and a nested article's raw HTML, `/sitemap.xml`,
-`/robots.txt`, `/og-image.png` and a deliberately missing URL's HTTP 404. Then the
-owner can verify the production property in Google Search Console and submit
+`/robots.txt`, `/llms.txt`, `/og-image.png` and a deliberately missing URL's HTTP 404.
+Then the owner can verify the production property in Google Search Console and submit
 `https://react-strudel-kit.vercel.app/sitemap.xml`. Verification tokens must come
 from the owner's property; none are fabricated or installed by this change.
 No deployment or Search Console submission is performed by a local build.

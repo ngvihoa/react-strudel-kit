@@ -1,0 +1,51 @@
+# React Strudel Kit
+
+> react-strudel-kit provides typed TypeScript builders for Strudel music patterns and a shared React playback hook. Strudel supplies the pattern engine and audio scheduler; this kit supplies typed composition, serializers and React lifecycle integration.
+
+Install with `npm install react-strudel-kit`. Import pattern builders from `react-strudel-kit` and `useStrudel` from `react-strudel-kit/react`.
+
+Requires React 18+ and an ESM-capable bundler. Playback needs a browser with Web Audio and an explicit user gesture. Call `play()` from a click or keyboard handler; `update()` changes a running pattern and does nothing while stopped. Hook consumers share one transport. Built-in synths need no sample downloads; sample banks are not loaded automatically. The package is licensed AGPL-3.0-or-later.
+
+The documentation pages below include readable content and source-backed examples in their initial HTML. The package README is also available as Markdown. Types validate the supported registry and Mini-Notation syntax, not sample availability, musical values or arbitrary JavaScript.
+
+## Getting started
+
+- [Introduction](https://react-strudel-kit.vercel.app/docs): Package overview and paths through the documentation.
+- [Installation](https://react-strudel-kit.vercel.app/docs/installation): Requirements, npm installation and a working React component.
+- [Package README](https://raw.githubusercontent.com/ngvihoa/react-strudel-kit/main/packages/react-strudel-kit/README.md): Markdown quick start, typed composition, playback contract and compatibility.
+- [API reference](https://react-strudel-kit.vercel.app/api): Typed builders, Mini-Notation helpers, serializers and useStrudel behavior.
+
+## Learn
+
+- [Your first song](https://react-strudel-kit.vercel.app/learn/first-song): Notes, sequences, rests, weights and tempo.
+- [Make a beat](https://react-strudel-kit.vercel.app/learn/make-a-beat): Combine synthesized kick, snare and hi-hat patterns.
+- [Add a bass line](https://react-strudel-kit.vercel.app/learn/add-a-bass-line): Combine bass patterns with drums and chords.
+- [Layer the parts](https://react-strudel-kit.vercel.app/learn/layer-the-parts): Arrange and balance musical parts.
+- [Control music with React](https://react-strudel-kit.vercel.app/learn/control-it-with-react): Connect React state, playback controls, live updates and errors.
+
+## Sound Cookbook
+
+- [Kick](https://react-strudel-kit.vercel.app/cookbook/kick): Sine-wave kick with a pitch envelope.
+- [Snare](https://react-strudel-kit.vercel.app/cookbook/snare): Filtered white-noise snare.
+- [Hi-hat](https://react-strudel-kit.vercel.app/cookbook/hi-hat): High-pass noise and short decay.
+- [Bass](https://react-strudel-kit.vercel.app/cookbook/bass): Filtered sawtooth bass.
+- [Keys](https://react-strudel-kit.vercel.app/cookbook/keys): Plucked square-wave keys.
+- [Lead](https://react-strudel-kit.vercel.app/cookbook/lead): Sawtooth lead with a delayed copy.
+- [Pad](https://react-strudel-kit.vercel.app/cookbook/pad): Slow attack, long release and reverb.
+
+## Examples
+
+- [Simple melody](https://react-strudel-kit.vercel.app/examples/simple-melody): Typed notes, rests and rhythmic weights.
+- [Backbeat](https://react-strudel-kit.vercel.app/examples/backbeat): Layer kick, snare and hi-hats.
+- [Chords and arpeggios](https://react-strudel-kit.vercel.app/examples/chords-and-arpeggios): Compare stacked notes with sequences.
+- [Layer a song](https://react-strudel-kit.vercel.app/examples/layer-a-song): Combine reusable sounds into an arrangement.
+- [React mixer](https://react-strudel-kit.vercel.app/examples/react-mixer): Working component with tempo, part controls and shared playback.
+- [Lo-fi loop](https://react-strudel-kit.vercel.app/examples/lofi-loop): Synthesized arrangement with soft chords, bass and swung hi-hats.
+- [House loop](https://react-strudel-kit.vercel.app/examples/house-loop): Four-on-the-floor drums, bass, chord stabs and lead.
+
+## Optional
+
+- [Playground](https://react-strudel-kit.vercel.app/playground): Interactive mixer and code editor; audio requires JavaScript and a Play gesture.
+- [npm package](https://www.npmjs.com/package/react-strudel-kit): Published distribution and versions.
+- [GitHub](https://github.com/ngvihoa/react-strudel-kit): Public source, license and issue tracker.
+- [Strudel documentation](https://strudel.cc/learn/): Upstream pattern engine documentation; the kit exposes a supported typed subset.
